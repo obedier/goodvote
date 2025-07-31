@@ -42,12 +42,12 @@ Building a Next.js web application that provides campaign finance transparency b
 - [x] Add top contributors and industries data
 - [x] Create state officials section
 
-## Phase 5: Elections Section
+## Phase 5: Elections Section ✅
 - [x] Build FEC data overview dashboard (all 9 tables)
 - [x] Create "Get Local!" tool for state-level data
 - [x] Implement presidential elections section
-- [ ] Add congressional elections tracking
-- [ ] Build outside spending analysis
+- [x] Add congressional elections tracking
+- [x] Build outside spending analysis
 
 ## Phase 6: Lobbying & Groups Section
 - [ ] Create lobbying overview page
@@ -115,12 +115,11 @@ Building a Next.js web application that provides campaign finance transparency b
 3. Next.js API routes fetch data
 4. React components display data with filtering/sorting
 
-## Current Status: Phase 5 - Elections Section
-Completed project setup, database integration, core navigation, comprehensive FEC data integration, key elections features, comprehensive testing framework, and complete politicians section. All 9 FEC tables are now accessible through the platform with full test coverage and comprehensive politician profiles. Currently working on congressional elections tracking and outside spending analysis.
+## Current Status: Phase 6 - Lobbying & Groups Section
+Completed project setup, database integration, core navigation, comprehensive FEC data integration, complete politicians section, and complete elections section. All 9 FEC tables are now accessible through the platform with full test coverage, comprehensive politician profiles, and complete election tracking including congressional races and outside spending analysis. Currently working on lobbying overview page and organization profiles.
 
 ## Next Steps
-1. Add congressional elections tracking
-2. Build outside spending analysis
-3. Implement lobbying overview page
-4. Add organization profiles and revolving door database
-5. Run comprehensive test suite to validate all functionality 
+1. Implement lobbying overview page
+2. Add organization profiles and revolving door database
+3. Create foreign lobby watch
+4. Run comprehensive test suite to validate all functionality 
