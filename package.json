@@ -1,0 +1,40 @@
+{
+  "name": "goodvote-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "node scripts/run-tests.js",
+    "test:db": "node scripts/test-database.js",
+    "test:api": "node scripts/test-api.js",
+    "test:frontend": "node scripts/test-frontend.js",
+    "test:campaign-finance": "node scripts/test-campaign-finance-validation.js",
+    "test:all": "npm run test:db && npm run test:api && npm run test:frontend && npm run test:campaign-finance"
+  },
+  "dependencies": {
+    "@types/pg": "^8.15.5",
+    "dotenv": "^17.2.1",
+    "lucide-react": "^0.535.0",
+    "next": "15.4.5",
+    "node-fetch": "^2.7.0",
+    "pg": "^8.16.3",
+    "puppeteer": "^21.5.2",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "recharts": "^3.1.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.4.5",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
