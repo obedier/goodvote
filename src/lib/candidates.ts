@@ -186,6 +186,55 @@ export async function getCandidateCampaignFinance(personId: string, electionYear
   const pacPercentage = totalReceipts > 0 ? (parseFloat(pacData.total_pac_contributions || 0) / totalReceipts) * 100 : 0;
   const selfFinancingPercentage = totalReceipts > 0 ? (parseFloat(financeData.cand_contrib || 0) / totalReceipts) * 100 : 0;
   
+  // Get outside spending breakdown
+  const outsideSpendingQuery = `
+    SELECT 
+      -- Bundled contributions (Type 24K)
+      COALESCE(SUM(CASE WHEN transaction_tp = '24K' THEN transaction_amt ELSE 0 END), 0) as bundled_contributions,
+      COUNT(CASE WHEN transaction_tp = '24K' THEN 1 END) as bundled_contribution_count,
+      COUNT(DISTINCT CASE WHEN transaction_tp = '24K' THEN cmte_id END) as unique_bundlers,
+      
+      -- Independent expenditures in favor (Type 24A)
+      COALESCE(SUM(CASE WHEN transaction_tp = '24A' THEN transaction_amt ELSE 0 END), 0) as independent_expenditures_in_favor,
+      COUNT(CASE WHEN transaction_tp = '24A' THEN 1 END) as independent_expenditures_in_favor_count,
+      COUNT(DISTINCT CASE WHEN transaction_tp = '24A' THEN cmte_id END) as independent_expenditures_in_favor_committees,
+      
+      -- Communication costs in favor (Type 24E)
+      COALESCE(SUM(CASE WHEN transaction_tp = '24E' THEN transaction_amt ELSE 0 END), 0) as communication_costs_in_favor,
+      COUNT(CASE WHEN transaction_tp = '24E' THEN 1 END) as communication_costs_in_favor_count,
+      COUNT(DISTINCT CASE WHEN transaction_tp = '24E' THEN cmte_id END) as communication_costs_in_favor_committees,
+      
+      -- Soft money in favor (Type 24C)
+      COALESCE(SUM(CASE WHEN transaction_tp = '24C' THEN transaction_amt ELSE 0 END), 0) as soft_money_in_favor,
+      COUNT(CASE WHEN transaction_tp = '24C' THEN 1 END) as soft_money_in_favor_count,
+      COUNT(DISTINCT CASE WHEN transaction_tp = '24C' THEN cmte_id END) as soft_money_in_favor_committees,
+      
+      -- Spending against (Type 24N)
+      COALESCE(SUM(CASE WHEN transaction_tp = '24N' THEN transaction_amt ELSE 0 END), 0) as spending_against,
+      COUNT(CASE WHEN transaction_tp = '24N' THEN 1 END) as spending_against_count,
+      COUNT(DISTINCT CASE WHEN transaction_tp = '24N' THEN cmte_id END) as spending_against_committees
+    FROM committee_candidate_contributions
+    WHERE cand_id = $1 AND file_year = $2 AND transaction_amt > 0
+  `;
+  
+  const outsideSpendingResult = await executeQuery(fecCompletePool, outsideSpendingQuery, [candId, electionYear]);
+  const outsideData = outsideSpendingResult.success && outsideSpendingResult.data && outsideSpendingResult.data.length > 0 
+    ? outsideSpendingResult.data[0] 
+    : {
+        bundled_contributions: 0, bundled_contribution_count: 0, unique_bundlers: 0,
+        independent_expenditures_in_favor: 0, independent_expenditures_in_favor_count: 0, independent_expenditures_in_favor_committees: 0,
+        communication_costs_in_favor: 0, communication_costs_in_favor_count: 0, communication_costs_in_favor_committees: 0,
+        soft_money_in_favor: 0, soft_money_in_favor_count: 0, soft_money_in_favor_committees: 0,
+        spending_against: 0, spending_against_count: 0, spending_against_committees: 0
+      };
+  
+  // Calculate total outside spending and percentage
+  const totalOutsideSpending = parseFloat(outsideData.bundled_contributions || 0) + 
+                              parseFloat(outsideData.independent_expenditures_in_favor || 0) + 
+                              parseFloat(outsideData.communication_costs_in_favor || 0) + 
+                              parseFloat(outsideData.soft_money_in_favor || 0);
+  const outsideSpendingPercentage = totalReceipts > 0 ? (totalOutsideSpending / totalReceipts) * 100 : 0;
+  
   return {
     success: true,
     data: {
@@ -213,7 +262,25 @@ export async function getCandidateCampaignFinance(personId: string, electionYear
       unique_pacs: parseInt(pacData.unique_pacs || 0),
       pac_percentage: pacPercentage,
       total_contributions: parseFloat(financeData.total_contributions || 0),
-      other_receipts: parseFloat(financeData.other_receipts || 0)
+      other_receipts: parseFloat(financeData.other_receipts || 0),
+      // Outside spending breakdown
+      bundled_contributions: parseFloat(outsideData.bundled_contributions || 0),
+      unique_bundlers: parseInt(outsideData.unique_bundlers || 0),
+      bundled_contribution_count: parseInt(outsideData.bundled_contribution_count || 0),
+      independent_expenditures_in_favor: parseFloat(outsideData.independent_expenditures_in_favor || 0),
+      independent_expenditures_in_favor_count: parseInt(outsideData.independent_expenditures_in_favor_count || 0),
+      independent_expenditures_in_favor_committees: parseInt(outsideData.independent_expenditures_in_favor_committees || 0),
+      communication_costs_in_favor: parseFloat(outsideData.communication_costs_in_favor || 0),
+      communication_costs_in_favor_count: parseInt(outsideData.communication_costs_in_favor_count || 0),
+      communication_costs_in_favor_committees: parseInt(outsideData.communication_costs_in_favor_committees || 0),
+      soft_money_in_favor: parseFloat(outsideData.soft_money_in_favor || 0),
+      soft_money_in_favor_count: parseInt(outsideData.soft_money_in_favor_count || 0),
+      soft_money_in_favor_committees: parseInt(outsideData.soft_money_in_favor_committees || 0),
+      spending_against: parseFloat(outsideData.spending_against || 0),
+      spending_against_count: parseInt(outsideData.spending_against_count || 0),
+      spending_against_committees: parseInt(outsideData.spending_against_committees || 0),
+      total_outside_spending: totalOutsideSpending,
+      outside_spending_percentage: outsideSpendingPercentage
     }
   };
 }

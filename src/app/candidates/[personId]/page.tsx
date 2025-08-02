@@ -93,14 +93,15 @@ interface CandidateProfile {
   election_history: ElectionHistory[];
 }
 
-type TabType = 'overview' | 'campaign-finance' | 'contributors' | 'industries' | 'election-history';
+type TabType = 'overview' | 'campaign-finance' | 'outside-spending' | 'contributors' | 'industries' | 'election-history';
 
 export default function CandidateProfilePage() {
   const params = useParams();
   const searchParams = useSearchParams();
   const router = useRouter();
   const personId = params.personId as string;
-  const electionYear = searchParams.get('election_year') ? parseInt(searchParams.get('election_year')!) : 2024;
+  const electionYearParam = searchParams.get('election_year');
+  const electionYear = electionYearParam === 'career' ? 'career' : (electionYearParam ? parseInt(electionYearParam) : 2024);
   
   const [profile, setProfile] = useState<CandidateProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -150,7 +151,7 @@ export default function CandidateProfilePage() {
     if (year !== 'career') {
       router.push(`/candidates/${personId}?election_year=${year}`);
     } else {
-      router.push(`/candidates/${personId}`);
+      router.push(`/candidates/${personId}?election_year=career`);
     }
   };
 
@@ -182,6 +183,7 @@ export default function CandidateProfilePage() {
   const tabs = [
     { id: 'overview', label: 'Overview', icon: FileText },
     { id: 'campaign-finance', label: 'Campaign Finance', icon: DollarSign },
+    { id: 'outside-spending', label: 'Outside Spending', icon: TrendingUp },
     { id: 'contributors', label: 'Top Contributors', icon: Users },
     { id: 'industries', label: 'Top Industries', icon: BarChart3 },
     { id: 'election-history', label: 'Election History', icon: Calendar },
@@ -510,6 +512,77 @@ export default function CandidateProfilePage() {
               </div>
             )}
 
+            {activeTab === 'outside-spending' && currentFinance && (
+              <div className="space-y-6">
+                <h3 className="text-lg font-medium text-gray-900">Outside Spending Breakdown</h3>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Spending in Favor */}
+                  <div className="bg-green-50 p-6 rounded-lg">
+                    <h4 className="text-lg font-medium text-green-800 mb-4">Spending in Favor</h4>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-green-700">Independent Expenditures:</span>
+                        <span className="font-medium text-green-900">{formatCurrency(currentFinance.independent_expenditures_in_favor || 0)}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-green-700">Communication Costs:</span>
+                        <span className="font-medium text-green-900">{formatCurrency(currentFinance.communication_costs_in_favor || 0)}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-green-700">Soft Money:</span>
+                        <span className="font-medium text-green-900">{formatCurrency(currentFinance.soft_money_in_favor || 0)}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-green-700">Bundled Contributions:</span>
+                        <span className="font-medium text-green-900">{formatCurrency(currentFinance.bundled_contributions || 0)}</span>
+                      </div>
+                      <hr className="border-green-200" />
+                      <div className="flex justify-between items-center font-semibold">
+                        <span className="text-green-800">Total in Favor:</span>
+                        <span className="text-green-900">{formatCurrency((currentFinance.independent_expenditures_in_favor || 0) + (currentFinance.communication_costs_in_favor || 0) + (currentFinance.soft_money_in_favor || 0) + (currentFinance.bundled_contributions || 0))}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Spending Against */}
+                  <div className="bg-red-50 p-6 rounded-lg">
+                    <h4 className="text-lg font-medium text-red-800 mb-4">Spending Against</h4>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-red-700">Independent Expenditures:</span>
+                        <span className="font-medium text-red-900">{formatCurrency(currentFinance.spending_against || 0)}</span>
+                      </div>
+                      <hr className="border-red-200" />
+                      <div className="flex justify-between items-center font-semibold">
+                        <span className="text-red-800">Total Against:</span>
+                        <span className="text-red-900">{formatCurrency(currentFinance.spending_against || 0)}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Summary */}
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <h4 className="text-lg font-medium text-gray-900 mb-4">Outside Spending Summary</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600">{formatCurrency(currentFinance.total_outside_spending || 0)}</div>
+                      <div className="text-sm text-gray-600">Total Outside Spending</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-600">{(currentFinance.outside_spending_percentage || 0).toFixed(1)}%</div>
+                      <div className="text-sm text-gray-600">% of Total Receipts</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-purple-600">{((currentFinance.unique_bundlers || 0) + (currentFinance.independent_expenditures_in_favor_committees || 0) + (currentFinance.communication_costs_in_favor_committees || 0) + (currentFinance.soft_money_in_favor_committees || 0) + (currentFinance.spending_against_committees || 0))}</div>
+                      <div className="text-sm text-gray-600">Unique Committees</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {activeTab === 'contributors' && (
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
@@ -526,7 +599,7 @@ export default function CandidateProfilePage() {
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">Name</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
                         <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
@@ -536,8 +609,10 @@ export default function CandidateProfilePage() {
                     <tbody className="bg-white divide-y divide-gray-200">
                       {profile.top_contributors.map((contributor, index) => (
                         <tr key={index}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {contributor.name}
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                            <div className="max-w-xs truncate" title={contributor.name}>
+                              {contributor.name}
+                            </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {contributor.location}
