@@ -271,4 +271,54 @@ export interface ExportResult {
   data?: string;
   filename?: string;
   error?: string;
+}
+
+// Campaign Finance Interfaces
+export interface CampaignFinanceTotals {
+  total_receipts: number;
+  contribution_count: number;
+  unique_contributors: number;
+  avg_contribution: number;
+  total_individual_contributions?: number;
+  other_committee_contributions?: number;
+  party_committee_contributions?: number;
+  transfers_from_auth?: number;
+  total_disbursements?: number;
+  self_financing?: number;
+  self_financing_percentage?: number;
+  candidate_loans?: number;
+  other_loans?: number;
+  debts_owed_by_candidate?: number;
+  total_debt?: number;
+  debt_to_receipts_ratio?: number;
+  candidate_loan_repayments?: number;
+  other_loan_repayments?: number;
+  total_pac_contributions?: number;
+  pac_contribution_count?: number;
+  unique_pacs?: number;
+  pac_percentage?: number;
+  bundled_contributions?: number;
+  unique_bundlers?: number;
+  bundled_contribution_count?: number;
+  independent_expenditures_in_favor?: number;
+  independent_expenditures_in_favor_count?: number;
+  independent_expenditures_in_favor_committees?: number;
+  communication_costs_in_favor?: number;
+  communication_costs_in_favor_count?: number;
+  communication_costs_in_favor_committees?: number;
+  soft_money_in_favor?: number;
+  soft_money_in_favor_count?: number;
+  soft_money_in_favor_committees?: number;
+  spending_against?: number;
+  spending_against_count?: number;
+  spending_against_committees?: number;
+  total_outside_spending?: number;
+  outside_spending_percentage?: number;
+  outside_spending_confidence?: {
+    bundled_contributions: string;
+    independent_expenditures_in_favor: string;
+    communication_costs_in_favor: string;
+    soft_money_in_favor: string;
+    spending_against: string;
+  };
 } 

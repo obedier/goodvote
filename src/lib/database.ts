@@ -1082,12 +1082,112 @@ export async function getCampaignFinanceTotals(personId: string, electionYear: n
       bundledContributionCount = parseInt(outsideData.bundled_contribution_count || 0);
     }
     
-    // Estimate outside spending categories (these would be more accurate with additional FEC tables)
-    const estimatedIndependentExpenditures = 0; // Would need independent_expenditures table
-    const estimatedCommunicationCosts = 0; // Would need communication_costs table
-    const estimatedSoftMoney = 0; // Would need 501(c)(4) and state-level data
+    // Get independent expenditures in favor (Type 24A)
+    const independentExpendituresInFavorQuery = `
+      SELECT 
+        COALESCE(SUM(cc.transaction_amt), 0) as total_amount,
+        COUNT(*) as transaction_count,
+        COUNT(DISTINCT cc.cmte_id) as unique_committees
+      FROM committee_candidate_contributions cc
+      WHERE cc.cand_id = $1 
+      AND cc.file_year = $2
+      AND cc.transaction_tp = '24A'
+      AND cc.transaction_amt > 0
+    `;
     
-    const totalOutsideSpending = bundledContributions + estimatedIndependentExpenditures + estimatedCommunicationCosts + estimatedSoftMoney;
+    const independentExpendituresInFavorResult = await executeQuery(independentExpendituresInFavorQuery, [candidateId, electionYear], true);
+    
+    let independentExpendituresInFavor = 0;
+    let independentExpendituresInFavorCount = 0;
+    let independentExpendituresInFavorCommittees = 0;
+    
+    if (independentExpendituresInFavorResult.success && independentExpendituresInFavorResult.data && independentExpendituresInFavorResult.data.length > 0) {
+      const independentData = independentExpendituresInFavorResult.data[0];
+      independentExpendituresInFavor = parseFloat(independentData.total_amount || 0);
+      independentExpendituresInFavorCount = parseInt(independentData.transaction_count || 0);
+      independentExpendituresInFavorCommittees = parseInt(independentData.unique_committees || 0);
+    }
+    
+    // Get communication costs in favor (Type 24E)
+    const communicationCostsInFavorQuery = `
+      SELECT 
+        COALESCE(SUM(cc.transaction_amt), 0) as total_amount,
+        COUNT(*) as transaction_count,
+        COUNT(DISTINCT cc.cmte_id) as unique_committees
+      FROM committee_candidate_contributions cc
+      WHERE cc.cand_id = $1 
+      AND cc.file_year = $2
+      AND cc.transaction_tp = '24E'
+      AND cc.transaction_amt > 0
+    `;
+    
+    const communicationCostsInFavorResult = await executeQuery(communicationCostsInFavorQuery, [candidateId, electionYear], true);
+    
+    let communicationCostsInFavor = 0;
+    let communicationCostsInFavorCount = 0;
+    let communicationCostsInFavorCommittees = 0;
+    
+    if (communicationCostsInFavorResult.success && communicationCostsInFavorResult.data && communicationCostsInFavorResult.data.length > 0) {
+      const communicationData = communicationCostsInFavorResult.data[0];
+      communicationCostsInFavor = parseFloat(communicationData.total_amount || 0);
+      communicationCostsInFavorCount = parseInt(communicationData.transaction_count || 0);
+      communicationCostsInFavorCommittees = parseInt(communicationData.unique_committees || 0);
+    }
+    
+    // Get soft money in favor (Type 24C - coordinated expenditures)
+    const softMoneyInFavorQuery = `
+      SELECT 
+        COALESCE(SUM(cc.transaction_amt), 0) as total_amount,
+        COUNT(*) as transaction_count,
+        COUNT(DISTINCT cc.cmte_id) as unique_committees
+      FROM committee_candidate_contributions cc
+      WHERE cc.cand_id = $1 
+      AND cc.file_year = $2
+      AND cc.transaction_tp = '24C'
+      AND cc.transaction_amt > 0
+    `;
+    
+    const softMoneyInFavorResult = await executeQuery(softMoneyInFavorQuery, [candidateId, electionYear], true);
+    
+    let softMoneyInFavor = 0;
+    let softMoneyInFavorCount = 0;
+    let softMoneyInFavorCommittees = 0;
+    
+    if (softMoneyInFavorResult.success && softMoneyInFavorResult.data && softMoneyInFavorResult.data.length > 0) {
+      const softMoneyData = softMoneyInFavorResult.data[0];
+      softMoneyInFavor = parseFloat(softMoneyData.total_amount || 0);
+      softMoneyInFavorCount = parseInt(softMoneyData.transaction_count || 0);
+      softMoneyInFavorCommittees = parseInt(softMoneyData.unique_committees || 0);
+    }
+    
+    // Get spending against (Type 24N - independent expenditures against)
+    const spendingAgainstQuery = `
+      SELECT 
+        COALESCE(SUM(cc.transaction_amt), 0) as total_amount,
+        COUNT(*) as transaction_count,
+        COUNT(DISTINCT cc.cmte_id) as unique_committees
+      FROM committee_candidate_contributions cc
+      WHERE cc.cand_id = $1 
+      AND cc.file_year = $2
+      AND cc.transaction_tp = '24N'
+      AND cc.transaction_amt > 0
+    `;
+    
+    const spendingAgainstResult = await executeQuery(spendingAgainstQuery, [candidateId, electionYear], true);
+    
+    let spendingAgainst = 0;
+    let spendingAgainstCount = 0;
+    let spendingAgainstCommittees = 0;
+    
+    if (spendingAgainstResult.success && spendingAgainstResult.data && spendingAgainstResult.data.length > 0) {
+      const againstData = spendingAgainstResult.data[0];
+      spendingAgainst = parseFloat(againstData.total_amount || 0);
+      spendingAgainstCount = parseInt(againstData.transaction_count || 0);
+      spendingAgainstCommittees = parseInt(againstData.unique_committees || 0);
+    }
+    
+    // Calculate total outside spending
+    const totalOutsideSpending = bundledContributions + independentExpendituresInFavor + communicationCostsInFavor + softMoneyInFavor;
     const outsideSpendingPercentage = totalReceipts > 0 ? (totalOutsideSpending / totalReceipts) * 100 : 0;
     
     return { 
@@ -1117,21 +1217,31 @@ export async function getCampaignFinanceTotals(personId: string, electionYear: n
         pac_contribution_count: pacContributionCount,
         unique_pacs: uniquePacs,
         pac_percentage: pacPercentage,
-        // Outside spending estimates with confidence levels
+        // Outside spending breakdown with real data
         bundled_contributions: bundledContributions,
         unique_bundlers: uniqueBundlers,
         bundled_contribution_count: bundledContributionCount,
-        estimated_independent_expenditures: estimatedIndependentExpenditures,
-        estimated_communication_costs: estimatedCommunicationCosts,
-        estimated_soft_money: estimatedSoftMoney,
+        independent_expenditures_in_favor: independentExpendituresInFavor,
+        independent_expenditures_in_favor_count: independentExpendituresInFavorCount,
+        independent_expenditures_in_favor_committees: independentExpendituresInFavorCommittees,
+        communication_costs_in_favor: communicationCostsInFavor,
+        communication_costs_in_favor_count: communicationCostsInFavorCount,
+        communication_costs_in_favor_committees: communicationCostsInFavorCommittees,
+        soft_money_in_favor: softMoneyInFavor,
+        soft_money_in_favor_count: softMoneyInFavorCount,
+        soft_money_in_favor_committees: softMoneyInFavorCommittees,
+        spending_against: spendingAgainst,
+        spending_against_count: spendingAgainstCount,
+        spending_against_committees: spendingAgainstCommittees,
         total_outside_spending: totalOutsideSpending,
         outside_spending_percentage: outsideSpendingPercentage,
         // Confidence levels for outside spending estimates
         outside_spending_confidence: {
-          bundled_contributions: 'MEDIUM', // Based on committee_candidate_contributions data
-          independent_expenditures: 'LOW', // Data not available in current database
-          communication_costs: 'LOW', // Data not available in current database
-          soft_money: 'LOW' // Data not available in current database
+          bundled_contributions: 'HIGH', // Based on committee_candidate_contributions data
+          independent_expenditures_in_favor: 'HIGH', // Based on Type 24A transactions
+          communication_costs_in_favor: 'HIGH', // Based on Type 24E transactions
+          soft_money_in_favor: 'HIGH', // Based on Type 24C transactions
+          spending_against: 'HIGH' // Based on Type 24N transactions
         }
       } 
     };

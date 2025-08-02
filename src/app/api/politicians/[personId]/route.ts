@@ -172,21 +172,31 @@ export async function GET(
         pac_contribution_count: financeTotals?.pac_contribution_count || 0,
         unique_pacs: financeTotals?.unique_pacs || 0,
         pac_percentage: financeTotals?.pac_percentage || 0,
-        // Outside spending estimates
+        // Outside spending breakdown with real data
         bundled_contributions: financeTotals?.bundled_contributions || 0,
         unique_bundlers: financeTotals?.unique_bundlers || 0,
         bundled_contribution_count: financeTotals?.bundled_contribution_count || 0,
-        estimated_independent_expenditures: financeTotals?.estimated_independent_expenditures || 0,
-        estimated_communication_costs: financeTotals?.estimated_communication_costs || 0,
-        estimated_soft_money: financeTotals?.estimated_soft_money || 0,
+        independent_expenditures_in_favor: financeTotals?.independent_expenditures_in_favor || 0,
+        independent_expenditures_in_favor_count: financeTotals?.independent_expenditures_in_favor_count || 0,
+        independent_expenditures_in_favor_committees: financeTotals?.independent_expenditures_in_favor_committees || 0,
+        communication_costs_in_favor: financeTotals?.communication_costs_in_favor || 0,
+        communication_costs_in_favor_count: financeTotals?.communication_costs_in_favor_count || 0,
+        communication_costs_in_favor_committees: financeTotals?.communication_costs_in_favor_committees || 0,
+        soft_money_in_favor: financeTotals?.soft_money_in_favor || 0,
+        soft_money_in_favor_count: financeTotals?.soft_money_in_favor_count || 0,
+        soft_money_in_favor_committees: financeTotals?.soft_money_in_favor_committees || 0,
+        spending_against: financeTotals?.spending_against || 0,
+        spending_against_count: financeTotals?.spending_against_count || 0,
+        spending_against_committees: financeTotals?.spending_against_committees || 0,
         total_outside_spending: financeTotals?.total_outside_spending || 0,
         outside_spending_percentage: financeTotals?.outside_spending_percentage || 0,
         // Confidence levels
         outside_spending_confidence: financeTotals?.outside_spending_confidence || {
-          bundled_contributions: 'LOW',
-          independent_expenditures: 'LOW',
-          communication_costs: 'LOW',
-          soft_money: 'LOW'
+          bundled_contributions: 'HIGH',
+          independent_expenditures_in_favor: 'HIGH',
+          communication_costs_in_favor: 'HIGH',
+          soft_money_in_favor: 'HIGH',
+          spending_against: 'HIGH'
         }
       },
       top_contributors: topContributors,
