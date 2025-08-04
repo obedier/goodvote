@@ -28,7 +28,7 @@ GoodVote is inspired by OpenSecrets.org and provides a modern, interactive platf
 
 ### Database Schema
 
-- **fec_complete**: Read-only FEC data (candidates, committees, contributions, expenditures)
+- **fec_gold**: Read-only FEC data (candidates, committees, contributions, expenditures)
 - **goodvote**: Application database with views and person-based mapping
 - **Views**: Bridge between FEC data and application
 
@@ -119,7 +119,7 @@ goodvote/
 │   ├── plan.md                   # Project plan and progress
 │   ├── test-plan.md              # Testing strategy
 │   ├── manual-validation-checklist.md
-│   ├── fec_complete_schema.md    # Database schema
+│   ├── fec_gold_schema.md    # Database schema
 │   └── OpenSecrets spec.MD       # UX/UI specifications
 ├── goodvote-app/                  # Next.js application
 │   ├── src/
@@ -190,7 +190,7 @@ All endpoints support filtering by:
 - **[Project Plan](docs/plan.md)** - Development phases and progress
 - **[Test Plan](docs/test-plan.md)** - Testing strategy and methodology
 - **[Manual Validation Checklist](docs/manual-validation-checklist.md)** - Comprehensive testing checklist
-- **[Database Schema](docs/fec_complete_schema.md)** - FEC data structure
+- **[Database Schema](docs/fec_gold_schema.md)** - FEC data structure
 - **[OpenSecrets Specification](docs/OpenSecrets%20spec.MD)** - UX/UI design guidelines
 
 ## 🤝 Contributing

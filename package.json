@@ -1,0 +1,22 @@
+{
+    "name": "goodvote",
+    "version": "1.0.0",
+    "description": "GoodVote Campaign Finance Transparency Platform",
+    "scripts": {
+        "dev": "echo '🚨 REMINDER: Run this command in the goodvote-app folder!' && echo 'cd goodvote-app && npm run dev' && cd goodvote-app && npm run dev",
+        "build": "cd goodvote-app && npm run build",
+        "start": "cd goodvote-app && npm run start",
+        "test": "cd goodvote-app && npm run test",
+        "test:quick": "cd goodvote-app && npm run test:quick",
+        "test:all": "cd goodvote-app && npm run test:all",
+        "lint": "cd goodvote-app && npm run lint",
+        "reminder": "./dev-reminder.sh"
+    },
+    "keywords": [
+        "campaign-finance",
+        "transparency",
+        "fec-data"
+    ],
+    "author": "GoodVote Team",
+    "license": "MIT"
+}

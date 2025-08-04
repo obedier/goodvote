@@ -3,6 +3,14 @@
 ## Project Overview
 Building a campaign finance transparency platform using FEC data and OpenSecrets UX model.
 
+Things to remember:
+- app is in goodvote-app fodler.  npm run dev has to be executed in that folder
+- fec_gold postgres db holds all the fec data
+- goodvote db holds all other app data
+- docs to undrstand fec_schema are in the docs folder
+- after running commands and before completeing work on a prompt, check server logs and solve the issues you see.
+- GitHub repository: https://github.com/obedier/goodvote
+
 ## Key Technical Concepts
 
 ### Database Architecture
@@ -21,7 +29,7 @@ Building a campaign finance transparency platform using FEC data and OpenSecrets
 1. **Politicians Section**: Congress members, state officials, personal finances
 2. **Elections Section**: Campaign finance by race type, "Get Local!" tool
 3. **Lobbying & Groups**: PACs, organizations, revolving door, foreign lobby
-4. **Search & Exploration**: Global search, donor lookup, contribution tracking
+4. **Search & Data Exploration**: Global search, donor lookup, contribution tracking
 5. **Data Visualization**: Interactive charts, tables, maps
 
 ### Technical Stack
@@ -88,6 +96,9 @@ Building a campaign finance transparency platform using FEC data and OpenSecrets
 - **Testing**: Unit tests for data utilities, integration tests for API routes
 - **Documentation**: Clear API docs and user guides
 - **Accessibility**: WCAG compliance for public transparency tool
+- regularly clean up files and code that are replaced with updated ones and put them in a folder called to_be_deleted
+- create a document to remember important concepts the use points you forgot
+- make updates to the plan.md, technical documents like database schema or quick reference as you make changes so you know how to refer to them. 
 
 ### Deployment Considerations
 - **Database Setup**: Proper PostgreSQL configuration for large datasets
