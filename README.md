@@ -23,7 +23,7 @@ A Next.js web application that provides comprehensive campaign finance transpare
 
 The application uses two main databases:
 
-### fec_complete (Read-only FEC data)
+### fec_gold (Read-only FEC data)
 - `candidate_master`: All candidates who filed with the FEC
 - `committee_master`: All committees (PACs, campaigns, parties)
 - `individual_contributions`: All individual contributions
@@ -42,7 +42,7 @@ The application uses two main databases:
 
 - Node.js 18+ 
 - PostgreSQL 12+
-- FEC data loaded in `fec_complete` database
+- FEC data loaded in `fec_gold` database
 - Person-based mapping data in `goodvote` database
 
 ### Installation
@@ -83,11 +83,11 @@ npm run dev
 
 ### 1. FEC Data Import
 
-Import FEC bulk data into the `fec_complete` database:
+Import FEC bulk data into the `fec_gold` database:
 
 ```sql
--- Create fec_complete database
-CREATE DATABASE fec_complete;
+-- Create fec_gold database
+CREATE DATABASE fec_gold;
 
 -- Import FEC data files (cn.txt, cm.txt, itcont.txt, etc.)
 -- Follow FEC Complete Database Schema documentation
@@ -103,13 +103,13 @@ CREATE DATABASE goodvote;
 
 -- Create views to access FEC data
 CREATE VIEW fec_contributions AS
-SELECT * FROM fec_complete.individual_contributions;
+SELECT * FROM fec_gold.individual_contributions;
 
 CREATE VIEW fec_committees AS
-SELECT * FROM fec_complete.committee_master;
+SELECT * FROM fec_gold.committee_master;
 
 CREATE VIEW fec_candidates AS
-SELECT * FROM fec_complete.candidate_master;
+SELECT * FROM fec_gold.candidate_master;
 
 -- Create person-based mapping tables
 -- See FEC Complete Schema documentation for full setup

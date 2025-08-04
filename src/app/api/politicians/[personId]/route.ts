@@ -73,19 +73,41 @@ export async function GET(
       pac_contribution_count: 0,
       unique_pacs: 0,
       pac_percentage: 0,
+      
+      // Outside spending breakdown from operating expenditures
+      total_operating_expenditures: 0,
+      operating_expenditure_count: 0,
+      unique_committees: 0,
+      
+      // Categorized operating expenditures
+      media_advertising: 0,
+      digital_advertising: 0,
+      polling_research: 0,
+      printing_production: 0,
+      consulting_services: 0,
+      staff_payroll: 0,
+      
+      // Committee contributions (for comparison)
+      committee_contributions: 0,
+      committee_contribution_count: 0,
+      
+      // Legacy fields for backward compatibility
       bundled_contributions: 0,
       unique_bundlers: 0,
       bundled_contribution_count: 0,
-      estimated_independent_expenditures: 0,
-      estimated_communication_costs: 0,
-      estimated_soft_money: 0,
+      independent_expenditures_in_favor: 0,
+      communication_costs_in_favor: 0,
+      soft_money_in_favor: 0,
+      spending_against: 0,
+      
       total_outside_spending: 0,
       outside_spending_percentage: 0,
       outside_spending_confidence: {
         bundled_contributions: 'LOW',
-        independent_expenditures: 'LOW',
-        communication_costs: 'LOW',
-        soft_money: 'LOW'
+        independent_expenditures_in_favor: 'LOW',
+        communication_costs_in_favor: 'LOW',
+        soft_money_in_favor: 'LOW',
+        spending_against: 'LOW'
       }
     };
 
@@ -144,6 +166,7 @@ export async function GET(
 
     const politicianData = {
       person_id: profile.person_id,
+      actual_person_id: actualPersonId, // Add the actual person ID for candidate links
       display_name: profile.display_name,
       state: profile.state,
       current_office: profile.current_office,
@@ -172,22 +195,30 @@ export async function GET(
         pac_contribution_count: financeTotals?.pac_contribution_count || 0,
         unique_pacs: financeTotals?.unique_pacs || 0,
         pac_percentage: financeTotals?.pac_percentage || 0,
-        // Outside spending breakdown with real data
+        // Outside spending breakdown from operating expenditures
+        total_operating_expenditures: (financeTotals as any)?.total_operating_expenditures || 0,
+        operating_expenditure_count: (financeTotals as any)?.operating_expenditure_count || 0,
+        unique_committees: (financeTotals as any)?.unique_committees || 0,
+        
+        // Categorized operating expenditures
+        media_advertising: (financeTotals as any)?.media_advertising || 0,
+        digital_advertising: (financeTotals as any)?.digital_advertising || 0,
+        polling_research: (financeTotals as any)?.polling_research || 0,
+        printing_production: (financeTotals as any)?.printing_production || 0,
+        consulting_services: (financeTotals as any)?.consulting_services || 0,
+        staff_payroll: (financeTotals as any)?.staff_payroll || 0,
+        
+        // Committee contributions (for comparison)
+        committee_contributions: (financeTotals as any)?.committee_contributions || 0,
+        committee_contribution_count: (financeTotals as any)?.committee_contribution_count || 0,
+        
+        // Legacy fields for backward compatibility
         bundled_contributions: financeTotals?.bundled_contributions || 0,
-        unique_bundlers: financeTotals?.unique_bundlers || 0,
-        bundled_contribution_count: financeTotals?.bundled_contribution_count || 0,
         independent_expenditures_in_favor: financeTotals?.independent_expenditures_in_favor || 0,
-        independent_expenditures_in_favor_count: financeTotals?.independent_expenditures_in_favor_count || 0,
-        independent_expenditures_in_favor_committees: financeTotals?.independent_expenditures_in_favor_committees || 0,
         communication_costs_in_favor: financeTotals?.communication_costs_in_favor || 0,
-        communication_costs_in_favor_count: financeTotals?.communication_costs_in_favor_count || 0,
-        communication_costs_in_favor_committees: financeTotals?.communication_costs_in_favor_committees || 0,
         soft_money_in_favor: financeTotals?.soft_money_in_favor || 0,
-        soft_money_in_favor_count: financeTotals?.soft_money_in_favor_count || 0,
-        soft_money_in_favor_committees: financeTotals?.soft_money_in_favor_committees || 0,
         spending_against: financeTotals?.spending_against || 0,
-        spending_against_count: financeTotals?.spending_against_count || 0,
-        spending_against_committees: financeTotals?.spending_against_committees || 0,
+        
         total_outside_spending: financeTotals?.total_outside_spending || 0,
         outside_spending_percentage: financeTotals?.outside_spending_percentage || 0,
         // Confidence levels

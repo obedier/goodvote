@@ -15,7 +15,7 @@ const goodvoteConfig = {
 const fecCompleteConfig = {
   host: process.env.FEC_DB_HOST || process.env.DB_HOST || 'localhost',
   port: parseInt(process.env.FEC_DB_PORT || process.env.DB_PORT || '5432'),
-  database: process.env.FEC_DB_NAME || 'fec_complete',
+  database: process.env.FEC_DB_NAME || 'fec_gold',
   user: process.env.FEC_DB_USER || process.env.DB_USER || 'osamabedier',
   password: process.env.FEC_DB_PASSWORD || process.env.DB_PASSWORD || '',
 };
@@ -53,12 +53,12 @@ async function testDatabaseConnection() {
     const goodvoteResult = await goodvoteClient.query('SELECT NOW()');
     goodvoteClient.release();
     
-    // Test fec_complete database
+    // Test fec_gold database
     const fecClient = await fecCompletePool.connect();
     const fecResult = await fecClient.query('SELECT NOW()');
     fecClient.release();
     
-    logTest('Database Connection', true, `Connected to goodvote and fec_complete databases`);
+    logTest('Database Connection', true, `Connected to goodvote and fec_gold databases`);
     return true;
   } catch (error) {
     logTest('Database Connection', false, error.message);

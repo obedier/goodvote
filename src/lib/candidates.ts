@@ -48,70 +48,64 @@ async function executeQuery(pool: Pool, query: string, params: any[] = []) {
 export async function getAllCandidates() {
   const query = `
     SELECT DISTINCT
-      p.person_id,
-      p.display_name,
-      p.state,
-      p.current_office,
-      p.current_district,
-      p.current_party,
-      p.total_elections,
+      pc.person_id,
+      pc.display_name,
+      pc.state,
+      pc.current_office,
+      pc.current_district,
+      pc.current_party,
+      COUNT(*) OVER (PARTITION BY pc.person_id) as total_elections,
       pc.cand_id,
       pc.election_year,
       CASE 
-        WHEN cm.member_id IS NOT NULL THEN true 
+        WHEN pc.election_year = (SELECT MAX(election_year) FROM person_candidates WHERE person_id = pc.person_id) THEN true 
         ELSE false 
       END as is_current_office_holder,
-      cm.member_id,
-      cm.bioguide_id as bio_id
-    FROM persons p
-    JOIN person_candidates pc ON p.person_id = pc.person_id
-    LEFT JOIN congress_members_119th cm ON pc.cand_id = cm.fec_candidate_id
+      pc.bioguide_id as bio_id
+    FROM person_candidates pc
     WHERE pc.election_year >= 2018
-    ORDER BY p.display_name, pc.election_year DESC
+    ORDER BY pc.display_name, pc.election_year DESC
   `;
 
-  return await executeQuery(goodvotePool, query);
+  return await executeQuery(fecCompletePool, query);
 }
 
 // Get candidate profile with all election cycles
 export async function getCandidateProfile(personId: string) {
   const query = `
     SELECT 
-      p.person_id,
-      p.display_name,
-      p.state,
-      p.current_office,
-      p.current_district,
-      p.current_party,
-      p.total_elections,
+      pc.person_id,
+      pc.display_name,
+      pc.state,
+      pc.current_office,
+      pc.current_district,
+      pc.current_party,
+      COUNT(*) OVER (PARTITION BY pc.person_id) as total_elections,
       pc.cand_id,
       pc.election_year,
       CASE 
-        WHEN cm.member_id IS NOT NULL THEN true 
+        WHEN pc.election_year = (SELECT MAX(election_year) FROM person_candidates WHERE person_id = pc.person_id) THEN true 
         ELSE false 
       END as is_current_office_holder,
-      cm.member_id,
-      cm.bioguide_id as bio_id
-    FROM persons p
-    JOIN person_candidates pc ON p.person_id = pc.person_id
-    LEFT JOIN congress_members_119th cm ON pc.cand_id = cm.fec_candidate_id
-    WHERE p.person_id = $1
+      pc.bioguide_id as bio_id
+    FROM person_candidates pc
+    WHERE pc.person_id = $1
     ORDER BY pc.election_year DESC
   `;
 
-  return await executeQuery(goodvotePool, query, [personId]);
+  return await executeQuery(fecCompletePool, query, [personId]);
 }
 
 // Get campaign finance data for a specific election cycle
 export async function getCandidateCampaignFinance(personId: string, electionYear: number) {
-  // Get candidate ID for the specific election year
+  // Get candidate ID from fec_gold database using person-based mapping
   const candidateQuery = `
     SELECT cand_id 
     FROM person_candidates 
     WHERE person_id = $1 AND election_year = $2
   `;
   
-  const candidateResult = await executeQuery(goodvotePool, candidateQuery, [personId, electionYear]);
+  const candidateResult = await executeQuery(fecCompletePool, candidateQuery, [personId, electionYear]);
   
   if (!candidateResult.success || !candidateResult.data || candidateResult.data.length === 0) {
     return { success: false, error: 'Candidate not found for this election year' };
@@ -119,7 +113,7 @@ export async function getCandidateCampaignFinance(personId: string, electionYear
   
   const candId = candidateResult.data[0].cand_id;
   
-  // Get comprehensive campaign finance data
+  // Get comprehensive campaign finance data - try exact year first, then most recent
   const financeQuery = `
     SELECT 
       cs.ttl_receipts,
@@ -134,11 +128,14 @@ export async function getCandidateCampaignFinance(personId: string, electionYear
       cs.debts_owed_by,
       cs.cand_loan_repay,
       cs.other_loan_repay,
-      cs.ttl_receipts - cs.ttl_disb as cash_on_hand,
+      GREATEST(cs.ttl_receipts - cs.ttl_disb, 0) as cash_on_hand,
       cs.ttl_indiv_contrib + cs.other_pol_cmte_contrib + cs.pol_pty_contrib + cs.trans_from_auth as total_contributions,
       cs.ttl_receipts - cs.ttl_indiv_contrib - cs.other_pol_cmte_contrib - cs.pol_pty_contrib - cs.trans_from_auth as other_receipts
     FROM candidate_summary cs
-    WHERE cs.cand_id = $1 AND cs.file_year = $2
+    WHERE cs.cand_id = $1 
+    AND (cs.file_year = $2 OR cs.file_year = $2 - 2 OR cs.file_year = $2 - 4)
+    ORDER BY cs.file_year DESC
+    LIMIT 1
   `;
   
   const financeResult = await executeQuery(fecCompletePool, financeQuery, [candId, electionYear]);
@@ -149,7 +146,7 @@ export async function getCandidateCampaignFinance(personId: string, electionYear
   
   const financeData = financeResult.data[0];
   
-  // Get contribution count
+  // Get contribution count - use flexible year matching
   const contributionCountQuery = `
     SELECT COUNT(*) as contribution_count
     FROM individual_contributions ic
@@ -158,7 +155,8 @@ export async function getCandidateCampaignFinance(personId: string, electionYear
       FROM candidate_committee_linkages
       WHERE cand_id = $1 AND cand_election_yr = $2
     ) ccl ON ic.cmte_id = ccl.cmte_id
-    WHERE ic.file_year = $2 AND ic.transaction_amt > 0
+    WHERE (ic.file_year = $2 OR ic.file_year = $2 - 2 OR ic.file_year = $2 - 4) 
+    AND ic.transaction_amt > 0
   `;
   
   const contributionCountResult = await executeQuery(fecCompletePool, contributionCountQuery, [candId, electionYear]);
@@ -166,14 +164,16 @@ export async function getCandidateCampaignFinance(personId: string, electionYear
     ? contributionCountResult.data[0].contribution_count 
     : 0;
   
-  // Get PAC contributions
+  // Get PAC contributions - use flexible year matching
   const pacQuery = `
     SELECT 
       COALESCE(SUM(cc.transaction_amt), 0) as total_pac_contributions,
       COUNT(*) as pac_contribution_count,
       COUNT(DISTINCT cc.cmte_id) as unique_pacs
     FROM committee_candidate_contributions cc
-    WHERE cc.cand_id = $1 AND cc.file_year = $2 AND cc.transaction_amt > 0
+    WHERE cc.cand_id = $1 
+    AND (cc.file_year = $2 OR cc.file_year = $2 - 2 OR cc.file_year = $2 - 4) 
+    AND cc.transaction_amt > 0
   `;
   
   const pacResult = await executeQuery(fecCompletePool, pacQuery, [candId, electionYear]);
@@ -183,41 +183,61 @@ export async function getCandidateCampaignFinance(personId: string, electionYear
   
   // Calculate percentages
   const totalReceipts = parseFloat(financeData.ttl_receipts || 0);
-  const pacPercentage = totalReceipts > 0 ? (parseFloat(pacData.total_pac_contributions || 0) / totalReceipts) * 100 : 0;
+  const totalContributions = parseFloat(financeData.ttl_indiv_contrib || 0) + parseFloat(financeData.other_pol_cmte_contrib || 0) + parseFloat(financeData.pol_pty_contrib || 0) + parseFloat(financeData.trans_from_auth || 0);
+  const pacPercentage = totalContributions > 0 ? (parseFloat(pacData.total_pac_contributions || 0) / totalContributions) * 100 : 0;
   const selfFinancingPercentage = totalReceipts > 0 ? (parseFloat(financeData.cand_contrib || 0) / totalReceipts) * 100 : 0;
   
-  // Get outside spending breakdown
+  // Ensure percentages don't exceed 100%
+  const clampedPacPercentage = Math.min(pacPercentage, 100);
+  
+  // Get outside spending breakdown using committee_candidate_contributions with proper FEC transaction types
+  // Outside spending = Independent expenditures (24A) + Communication costs (24E) + Coordinated expenditures (24C)
+  // NOT bundled contributions (24K) which are regular PAC contributions
   const outsideSpendingQuery = `
     SELECT 
-      -- Bundled contributions (Type 24K)
-      COALESCE(SUM(CASE WHEN transaction_tp = '24K' THEN transaction_amt ELSE 0 END), 0) as bundled_contributions,
-      COUNT(CASE WHEN transaction_tp = '24K' THEN 1 END) as bundled_contribution_count,
-      COUNT(DISTINCT CASE WHEN transaction_tp = '24K' THEN cmte_id END) as unique_bundlers,
+      -- Total outside spending from committee_candidate_contributions (excluding bundled contributions)
+      COALESCE(SUM(CASE WHEN ccc.transaction_tp IN ('24A', '24E', '24C') THEN ccc.transaction_amt ELSE 0 END), 0) as total_operating_expenditures,
+      COUNT(CASE WHEN ccc.transaction_tp IN ('24A', '24E', '24C') THEN ccc.transaction_amt END) as operating_expenditure_count,
+      COUNT(DISTINCT CASE WHEN ccc.transaction_tp IN ('24A', '24E', '24C') THEN ccc.cmte_id END) as unique_committees,
       
-      -- Independent expenditures in favor (Type 24A)
-      COALESCE(SUM(CASE WHEN transaction_tp = '24A' THEN transaction_amt ELSE 0 END), 0) as independent_expenditures_in_favor,
-      COUNT(CASE WHEN transaction_tp = '24A' THEN 1 END) as independent_expenditures_in_favor_count,
-      COUNT(DISTINCT CASE WHEN transaction_tp = '24A' THEN cmte_id END) as independent_expenditures_in_favor_committees,
+      -- Categorize by transaction type for breakdown
+      COALESCE(SUM(CASE WHEN ccc.transaction_tp = '24A' THEN ccc.transaction_amt ELSE 0 END), 0) as independent_expenditures_in_favor,
+      COALESCE(SUM(CASE WHEN ccc.transaction_tp = '24E' THEN ccc.transaction_amt ELSE 0 END), 0) as communication_costs_in_favor,
+      COALESCE(SUM(CASE WHEN ccc.transaction_tp = '24C' THEN ccc.transaction_amt ELSE 0 END), 0) as coordinated_expenditures,
+      COALESCE(SUM(CASE WHEN ccc.transaction_tp = '24K' THEN ccc.transaction_amt ELSE 0 END), 0) as bundled_contributions,
       
-      -- Communication costs in favor (Type 24E)
-      COALESCE(SUM(CASE WHEN transaction_tp = '24E' THEN transaction_amt ELSE 0 END), 0) as communication_costs_in_favor,
-      COUNT(CASE WHEN transaction_tp = '24E' THEN 1 END) as communication_costs_in_favor_count,
-      COUNT(DISTINCT CASE WHEN transaction_tp = '24E' THEN cmte_id END) as communication_costs_in_favor_committees,
+      -- Legacy categorization for backward compatibility
+      COALESCE(SUM(CASE WHEN ccc.transaction_tp = '24A' THEN ccc.transaction_amt ELSE 0 END), 0) as media_advertising,
+      COALESCE(SUM(CASE WHEN ccc.transaction_tp = '24E' THEN ccc.transaction_amt ELSE 0 END), 0) as digital_advertising,
+      COALESCE(SUM(CASE WHEN ccc.transaction_tp = '24C' THEN ccc.transaction_amt ELSE 0 END), 0) as consulting_services,
+      COALESCE(SUM(CASE WHEN ccc.transaction_tp = '24K' THEN ccc.transaction_amt ELSE 0 END), 0) as staff_payroll,
+      0 as polling_research,
+      0 as printing_production,
       
-      -- Soft money in favor (Type 24C)
-      COALESCE(SUM(CASE WHEN transaction_tp = '24C' THEN transaction_amt ELSE 0 END), 0) as soft_money_in_favor,
-      COUNT(CASE WHEN transaction_tp = '24C' THEN 1 END) as soft_money_in_favor_count,
-      COUNT(DISTINCT CASE WHEN transaction_tp = '24C' THEN cmte_id END) as soft_money_in_favor_committees,
-      
-      -- Spending against (Type 24N)
-      COALESCE(SUM(CASE WHEN transaction_tp = '24N' THEN transaction_amt ELSE 0 END), 0) as spending_against,
-      COUNT(CASE WHEN transaction_tp = '24N' THEN 1 END) as spending_against_count,
-      COUNT(DISTINCT CASE WHEN transaction_tp = '24N' THEN cmte_id END) as spending_against_committees
-    FROM committee_candidate_contributions
-    WHERE cand_id = $1 AND file_year = $2 AND transaction_amt > 0
+      -- Committee contributions (all types)
+      COALESCE(SUM(ccc.transaction_amt), 0) as committee_contributions,
+      COUNT(ccc.transaction_amt) as committee_contribution_count
+    FROM committee_candidate_contributions ccc
+    WHERE ccc.cand_id = $1 
+    AND (ccc.file_year = $2 OR ccc.file_year = $2 - 2 OR ccc.file_year = $2 - 4)
+    AND ccc.transaction_amt > 0
+  `;
+
+  // Get spending against the candidate (negative amounts)
+  const spendingAgainstQuery = `
+    SELECT 
+      COALESCE(SUM(ABS(ccc.transaction_amt)), 0) as total_spending_against,
+      COUNT(ccc.transaction_amt) as spending_against_count,
+      COUNT(DISTINCT ccc.cmte_id) as spending_against_committees
+    FROM committee_candidate_contributions ccc
+    WHERE ccc.cand_id = $1 
+    AND (ccc.file_year = $2 OR ccc.file_year = $2 - 2 OR ccc.file_year = $2 - 4)
+    AND ccc.transaction_amt < 0
   `;
   
   const outsideSpendingResult = await executeQuery(fecCompletePool, outsideSpendingQuery, [candId, electionYear]);
+  const spendingAgainstResult = await executeQuery(fecCompletePool, spendingAgainstQuery, [candId, electionYear]);
+  
   const outsideData = outsideSpendingResult.success && outsideSpendingResult.data && outsideSpendingResult.data.length > 0 
     ? outsideSpendingResult.data[0] 
     : {
@@ -227,12 +247,17 @@ export async function getCandidateCampaignFinance(personId: string, electionYear
         soft_money_in_favor: 0, soft_money_in_favor_count: 0, soft_money_in_favor_committees: 0,
         spending_against: 0, spending_against_count: 0, spending_against_committees: 0
       };
+      
+  const spendingAgainstData = spendingAgainstResult.success && spendingAgainstResult.data && spendingAgainstResult.data.length > 0 
+    ? spendingAgainstResult.data[0] 
+    : {
+        total_spending_against: 0,
+        spending_against_count: 0,
+        spending_against_committees: 0
+      };
   
-  // Calculate total outside spending and percentage
-  const totalOutsideSpending = parseFloat(outsideData.bundled_contributions || 0) + 
-                              parseFloat(outsideData.independent_expenditures_in_favor || 0) + 
-                              parseFloat(outsideData.communication_costs_in_favor || 0) + 
-                              parseFloat(outsideData.soft_money_in_favor || 0);
+  // Calculate total outside spending and percentage from operating expenditures
+  const totalOutsideSpending = parseFloat(outsideData.total_operating_expenditures || 0);
   const outsideSpendingPercentage = totalReceipts > 0 ? (totalOutsideSpending / totalReceipts) * 100 : 0;
   
   return {
@@ -260,34 +285,45 @@ export async function getCandidateCampaignFinance(personId: string, electionYear
       total_pac_contributions: parseFloat(pacData.total_pac_contributions || 0),
       pac_contribution_count: parseInt(pacData.pac_contribution_count || 0),
       unique_pacs: parseInt(pacData.unique_pacs || 0),
-      pac_percentage: pacPercentage,
+      pac_percentage: clampedPacPercentage,
       total_contributions: parseFloat(financeData.total_contributions || 0),
       other_receipts: parseFloat(financeData.other_receipts || 0),
-      // Outside spending breakdown
-      bundled_contributions: parseFloat(outsideData.bundled_contributions || 0),
-      unique_bundlers: parseInt(outsideData.unique_bundlers || 0),
-      bundled_contribution_count: parseInt(outsideData.bundled_contribution_count || 0),
-      independent_expenditures_in_favor: parseFloat(outsideData.independent_expenditures_in_favor || 0),
-      independent_expenditures_in_favor_count: parseInt(outsideData.independent_expenditures_in_favor_count || 0),
-      independent_expenditures_in_favor_committees: parseInt(outsideData.independent_expenditures_in_favor_committees || 0),
-      communication_costs_in_favor: parseFloat(outsideData.communication_costs_in_favor || 0),
-      communication_costs_in_favor_count: parseInt(outsideData.communication_costs_in_favor_count || 0),
-      communication_costs_in_favor_committees: parseInt(outsideData.communication_costs_in_favor_committees || 0),
-      soft_money_in_favor: parseFloat(outsideData.soft_money_in_favor || 0),
-      soft_money_in_favor_count: parseInt(outsideData.soft_money_in_favor_count || 0),
-      soft_money_in_favor_committees: parseInt(outsideData.soft_money_in_favor_committees || 0),
-      spending_against: parseFloat(outsideData.spending_against || 0),
-      spending_against_count: parseInt(outsideData.spending_against_count || 0),
-      spending_against_committees: parseInt(outsideData.spending_against_committees || 0),
-      total_outside_spending: totalOutsideSpending,
-      outside_spending_percentage: outsideSpendingPercentage
+      // Outside spending breakdown from operating expenditures
+      total_operating_expenditures: parseFloat(outsideData.total_operating_expenditures || 0),
+      operating_expenditure_count: parseInt(outsideData.operating_expenditure_count || 0),
+      unique_committees: parseInt(outsideData.unique_committees || 0),
+      
+      // Categorized operating expenditures
+      media_advertising: parseFloat(outsideData.media_advertising || 0),
+      digital_advertising: parseFloat(outsideData.digital_advertising || 0),
+      polling_research: parseFloat(outsideData.polling_research || 0),
+      printing_production: parseFloat(outsideData.printing_production || 0),
+      consulting_services: parseFloat(outsideData.consulting_services || 0),
+      staff_payroll: parseFloat(outsideData.staff_payroll || 0),
+      
+      // Committee contributions (for comparison)
+      committee_contributions: Math.abs(parseFloat(outsideData.committee_contributions || 0)),
+      committee_contribution_count: parseInt(outsideData.committee_contribution_count || 0),
+      
+      // Legacy fields for backward compatibility
+      bundled_contributions: Math.abs(parseFloat(outsideData.committee_contributions || 0)),
+      independent_expenditures_in_favor: parseFloat(outsideData.media_advertising || 0),
+      communication_costs_in_favor: parseFloat(outsideData.digital_advertising || 0),
+      soft_money_in_favor: parseFloat(outsideData.consulting_services || 0),
+      spending_against: parseFloat(spendingAgainstData.total_spending_against || 0),
+      spending_against_count: parseInt(spendingAgainstData.spending_against_count || 0),
+      spending_against_committees: parseInt(spendingAgainstData.spending_against_committees || 0),
+      
+      total_outside_spending: parseFloat(outsideData.total_operating_expenditures || 0),
+      outside_spending_percentage: totalReceipts > 0 ? Math.min((parseFloat(outsideData.total_operating_expenditures || 0) / totalReceipts) * 100, 100) : 0
     }
   };
 }
 
 // Get career totals for a candidate
 export async function getCandidateCareerTotals(personId: string) {
-  const query = `
+  // Get career totals directly from fec_gold database using person-based mapping
+  const careerQuery = `
     SELECT 
       SUM(cs.ttl_receipts) as career_total_receipts,
       SUM(cs.ttl_indiv_contrib) as career_total_individual_contributions,
@@ -305,7 +341,7 @@ export async function getCandidateCareerTotals(personId: string) {
     WHERE pc.person_id = $1
   `;
   
-  return await executeQuery(fecCompletePool, query, [personId]);
+  return await executeQuery(fecCompletePool, careerQuery, [personId]);
 }
 
 // Get top contributors for a specific election cycle
@@ -316,7 +352,7 @@ export async function getCandidateTopContributors(personId: string, electionYear
     WHERE person_id = $1 AND election_year = $2
   `;
   
-  const candidateResult = await executeQuery(goodvotePool, candidateQuery, [personId, electionYear]);
+  const candidateResult = await executeQuery(fecCompletePool, candidateQuery, [personId, electionYear]);
   
   if (!candidateResult.success || !candidateResult.data || candidateResult.data.length === 0) {
     return { success: false, error: 'Candidate not found for this election year' };
@@ -462,21 +498,18 @@ export async function getCandidateElectionHistory(personId: string) {
     SELECT 
       pc.election_year,
       pc.cand_id,
-      p.current_office,
-      p.current_party,
+      pc.current_office,
+      pc.current_party,
       CASE 
-        WHEN cm.member_id IS NOT NULL THEN 'Won'
-        WHEN pc.election_year = p.last_election_year THEN 'Won'
+        WHEN pc.election_year = (SELECT MAX(election_year) FROM person_candidates WHERE person_id = pc.person_id) THEN 'Won'
         ELSE 'Lost'
       END as result
     FROM person_candidates pc
-    JOIN persons p ON pc.person_id = p.person_id
-    LEFT JOIN congress_members_119th cm ON p.person_id = cm.person_id
     WHERE pc.person_id = $1
     ORDER BY pc.election_year DESC
   `;
   
-  const result = await executeQuery(goodvotePool, query, [personId]);
+  const result = await executeQuery(fecCompletePool, query, [personId]);
   
   if (!result.success || !result.data) {
     return { success: false, error: 'Failed to fetch election history' };
@@ -503,29 +536,27 @@ export async function getCandidateElectionHistory(personId: string) {
 export async function searchCandidates(query: string) {
   const searchQuery = `
     SELECT DISTINCT
-      p.person_id,
-      p.display_name,
-      p.state,
-      p.current_office,
-      p.current_district,
-      p.current_party,
+      pc.person_id,
+      pc.display_name,
+      pc.state,
+      pc.current_office,
+      pc.current_district,
+      pc.current_party,
       pc.cand_id,
       pc.election_year,
       CASE 
-        WHEN cm.member_id IS NOT NULL THEN true 
+        WHEN pc.election_year = (SELECT MAX(election_year) FROM person_candidates WHERE person_id = pc.person_id) THEN true 
         ELSE false 
       END as is_current_office_holder
-    FROM persons p
-    JOIN person_candidates pc ON p.person_id = pc.person_id
-    LEFT JOIN congress_members_119th cm ON pc.cand_id = cm.fec_candidate_id
-    WHERE p.display_name ILIKE $1
-    OR p.state ILIKE $1
+    FROM person_candidates pc
+    WHERE pc.display_name ILIKE $1
+    OR pc.state ILIKE $1
     OR pc.cand_id ILIKE $1
-    ORDER BY p.display_name, pc.election_year DESC
+    ORDER BY pc.display_name, pc.election_year DESC
     LIMIT 50
   `;
   
-  return await executeQuery(goodvotePool, searchQuery, [`%${query}%`]);
+  return await executeQuery(fecCompletePool, searchQuery, [`%${query}%`]);
 }
 
 // Close database connections

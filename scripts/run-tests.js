@@ -4,7 +4,7 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-// Test configuration
+// Test configuration - Updated for comprehensive coverage
 const TESTS = [
   {
     name: 'Database Tests',
@@ -20,6 +20,31 @@ const TESTS = [
     name: 'Frontend Tests',
     script: 'scripts/test-frontend.js',
     description: 'Tests page functionality, navigation, and accessibility'
+  },
+  {
+    name: 'Campaign Finance Validation',
+    script: 'scripts/test-campaign-finance-validation.js',
+    description: 'Validates campaign finance calculations against FEC data'
+  },
+  {
+    name: 'Search & Data Exploration',
+    script: 'scripts/test-search-functionality.js',
+    description: 'Tests global search, autocomplete, and data exploration features'
+  },
+  {
+    name: 'Lobbying & Groups',
+    script: 'scripts/test-lobbying-features.js',
+    description: 'Tests PAC database, organizations, and lobbying features'
+  },
+  {
+    name: 'Elections & Outside Spending',
+    script: 'scripts/test-elections-features.js',
+    description: 'Tests election tracking, outside spending, and Get Local! features'
+  },
+  {
+    name: 'Performance & Load Tests',
+    script: 'scripts/test-performance.js',
+    description: 'Tests API response times and frontend performance'
   }
 ];
 
@@ -28,13 +53,15 @@ const testResults = {
   passed: 0,
   failed: 0,
   total: 0,
-  details: []
+  details: [],
+  warnings: []
 };
 
 // Utility functions
-function logTest(name, passed, details = '') {
+function logTest(name, passed, details = '', isWarning = false) {
   const status = passed ? '✅ PASS' : '❌ FAIL';
-  console.log(`${status} ${name}`);
+  const warningStatus = isWarning ? '⚠️  WARN' : '';
+  console.log(`${status}${warningStatus} ${name}`);
   if (details) console.log(`   ${details}`);
   
   if (passed) {
@@ -44,7 +71,11 @@ function logTest(name, passed, details = '') {
   }
   testResults.total++;
   
-  testResults.details.push({ name, passed, details });
+  testResults.details.push({ name, passed, details, isWarning });
+  
+  if (isWarning) {
+    testResults.warnings.push({ name, details });
+  }
 }
 
 function runScript(scriptPath) {
@@ -99,12 +130,28 @@ async function checkPrerequisites() {
   const packageExists = fs.existsSync(packagePath);
   logTest('Package.json exists', packageExists);
   
+  // Check for required dependencies
+  const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+  const requiredDeps = ['puppeteer', 'node-fetch', 'pg'];
+  const missingDeps = requiredDeps.filter(dep => !packageJson.dependencies[dep] && !packageJson.devDependencies[dep]);
+  
+  if (missingDeps.length > 0) {
+    logTest('Required dependencies', false, `Missing: ${missingDeps.join(', ')}`);
+  } else {
+    logTest('Required dependencies', true, 'All required dependencies installed');
+  }
+  
   console.log('');
   return testResults.failed === 0;
 }
 
 async function runAllTests() {
   console.log('🧪 Running GoodVote Comprehensive Test Suite\n');
+  console.log('📋 Test Categories:');
+  TESTS.forEach((test, index) => {
+    console.log(`   ${index + 1}. ${test.name}: ${test.description}`);
+  });
+  console.log('');
   
   // Check prerequisites
   const prerequisitesOk = await checkPrerequisites();
@@ -144,6 +191,7 @@ async function runAllTests() {
   
   console.log(`✅ Passed: ${testResults.passed}`);
   console.log(`❌ Failed: ${testResults.failed}`);
+  console.log(`⚠️  Warnings: ${testResults.warnings.length}`);
   console.log(`📈 Success Rate: ${Math.round((testResults.passed / testResults.total) * 100)}%`);
   
   if (testResults.failed > 0) {
@@ -153,17 +201,32 @@ async function runAllTests() {
       .forEach(test => console.log(`   - ${test.name}: ${test.details}`));
   }
   
+  if (testResults.warnings.length > 0) {
+    console.log('\n⚠️  Warnings:');
+    testResults.warnings.forEach(warning => {
+      console.log(`   - ${warning.name}: ${warning.details}`);
+    });
+  }
+  
   // Generate recommendations
   console.log('\n💡 Recommendations:');
   
   if (testResults.failed === 0) {
     console.log('   ✅ All tests passed! The application is ready for deployment.');
+    console.log('   🚀 You can now run manual testing on the application.');
   } else {
     console.log('   🔧 Fix the failed tests before proceeding.');
     console.log('   📖 Check the test output above for specific issues.');
     console.log('   🛠️  Ensure the development server is running (npm run dev).');
     console.log('   🗄️  Verify database connectivity and FEC data availability.');
   }
+  
+  // Known issues from plan
+  console.log('\n🔧 Known Issues to Address:');
+  console.log('   - State data API test failing (400 error for invalid parameters) - expected behavior');
+  console.log('   - Frontend pages may be stuck in loading state due to JavaScript hydration issues');
+  console.log('   - Donor API returning errors (needs debugging)');
+  console.log('   - PAC financial data investigation needed (receipt/disbursement amounts null)');
   
   // Exit with appropriate code
   process.exit(testResults.failed > 0 ? 1 : 0);

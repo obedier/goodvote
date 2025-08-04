@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Database, Users, DollarSign, TrendingUp, BarChart3, FileText } from 'lucide-react';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { BreadcrumbItem } from '@/types';
+import Link from 'next/link';
 
 interface FECTableData {
   table_name: string;
@@ -82,6 +83,24 @@ export default function FECOverviewPage() {
     return colors[tableName] || 'text-gray-600';
   };
 
+  const getTableSearchUrl = (tableName: string) => {
+    const searchUrls: { [key: string]: string } = {
+      'candidates': '/search?type=candidates',
+      'committees': '/search?type=committees',
+      'pac_summaries': '/lobbying/pacs',
+      'current_campaigns': '/politicians/congress',
+      'contributions': '/search?type=contributions',
+      'expenditures': '/search?type=expenditures',
+      'committee_transactions': '/search?type=committee_transactions',
+      'candidate_committee_linkages': '/search?type=linkages'
+    };
+    return searchUrls[tableName] || '/search';
+  };
+
+  const isTableClickable = (tableName: string) => {
+    return ['candidates', 'committees', 'pac_summaries', 'current_campaigns'].includes(tableName);
+  };
+
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -156,9 +175,13 @@ export default function FECOverviewPage() {
         {overview?.tables.map((table) => {
           const IconComponent = getTableIcon(table.table_name);
           const iconColor = getTableColor(table.table_name);
+          const isClickable = isTableClickable(table.table_name);
+          const searchUrl = getTableSearchUrl(table.table_name);
           
-          return (
-            <div key={table.table_name} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+          const cardContent = (
+            <div className={`bg-white rounded-lg shadow-sm border border-gray-200 p-6 transition-shadow ${
+              isClickable ? 'hover:shadow-md cursor-pointer' : ''
+            }`}>
               <div className="flex items-center mb-4">
                 <IconComponent className={`h-8 w-8 ${iconColor}`} />
                 <div className="ml-4">
@@ -175,6 +198,28 @@ export default function FECOverviewPage() {
                 </span>
                 <span className="text-sm text-gray-500">records</span>
               </div>
+              
+              {isClickable && (
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <p className="text-xs text-blue-600 font-medium">
+                    Click to explore →
+                  </p>
+                </div>
+              )}
+            </div>
+          );
+          
+          if (isClickable) {
+            return (
+              <Link key={table.table_name} href={searchUrl} className="block">
+                {cardContent}
+              </Link>
+            );
+          }
+          
+          return (
+            <div key={table.table_name}>
+              {cardContent}
             </div>
           );
         })}

@@ -4,7 +4,7 @@ const { Pool } = require('pg');
 const fecConfig = {
   host: process.env.FEC_DB_HOST || process.env.DB_HOST || 'localhost',
   port: parseInt(process.env.FEC_DB_PORT || process.env.DB_PORT || '5432'),
-  database: process.env.FEC_DB_NAME || 'fec_complete',
+  database: process.env.FEC_DB_NAME || 'fec_gold',
   user: process.env.FEC_DB_USER || process.env.DB_USER || 'osamabedier',
   password: process.env.FEC_DB_PASSWORD || process.env.DB_PASSWORD || '',
   max: 3,

@@ -314,6 +314,24 @@ export interface CampaignFinanceTotals {
   spending_against_committees?: number;
   total_outside_spending?: number;
   outside_spending_percentage?: number;
+  
+  // Outside spending breakdown from operating expenditures
+  total_operating_expenditures?: number;
+  operating_expenditure_count?: number;
+  unique_committees?: number;
+  
+  // Categorized operating expenditures
+  media_advertising?: number;
+  digital_advertising?: number;
+  polling_research?: number;
+  printing_production?: number;
+  consulting_services?: number;
+  staff_payroll?: number;
+  
+  // Committee contributions (for comparison)
+  committee_contributions?: number;
+  committee_contribution_count?: number;
+  
   outside_spending_confidence?: {
     bundled_contributions: string;
     independent_expenditures_in_favor: string;

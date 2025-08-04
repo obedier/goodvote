@@ -679,12 +679,12 @@ export async function getCandidateFinanceSummary(candidateId: string, electionYe
       COALESCE(ps.cash_on_hand, 0) as cash_on_hand,
       
       -- Contribution counts
-      (SELECT COUNT(*) FROM fec_contributions ic 
+      (SELECT COUNT(*) FROM individual_contributions ic 
        WHERE ic.candidate_id = cm.candidate_id 
        AND ic.election_year = $2) as contribution_count,
       
       -- Independent expenditure counts
-      (SELECT COUNT(*) FROM fec_expenditures oe 
+      (SELECT COUNT(*) FROM operating_expenditures oe 
        WHERE oe.candidate_id = cm.candidate_id 
        AND oe.election_year = $2) as expenditure_count
       
@@ -731,10 +731,10 @@ export async function getIndependentExpenditureAnalysis(electionYear: number) {
     SELECT 
       cm.committee_type,
       COUNT(*) as expenditure_count,
-      SUM(oe.expenditure_amount) as total_amount,
-      AVG(oe.expenditure_amount) as avg_amount
-    FROM fec_expenditures oe
-    LEFT JOIN fec_committees cm ON oe.committee_id = cm.committee_id
+              SUM(oe.transaction_amt) as total_amount,
+        AVG(oe.transaction_amt) as avg_amount
+          FROM operating_expenditures oe
+          LEFT JOIN committee_master cm ON oe.cmte_id = cm.cmte_id
     WHERE oe.election_year = $1
     GROUP BY cm.committee_type
     ORDER BY total_amount DESC
@@ -783,14 +783,36 @@ export async function getFECDataOverview(electionYear: number) {
       }
     }
     
-    // For large tables, use approximate counts based on known data sizes
-    const largeTableEstimates = {
-      'contributions': electionYear === 2024 ? 50000000 : 40000000,
-      'expenditures': electionYear === 2024 ? 2000000 : 1500000,
-      'committee_transactions': electionYear === 2024 ? 10000000 : 8000000
+    // For large tables, use known counts based on our database analysis
+    const largeTableCounts = {
+      'contributions': {
+        2024: 58267255,
+        2026: 3367185,
+        2022: 63885978,
+        2020: 69377425,
+        2018: 21730731,
+        2016: 20454642
+      },
+      'expenditures': {
+        2024: 2249648,
+        2026: 232599,
+        2022: 2500000, // Approximate
+        2020: 2800000, // Approximate
+        2018: 800000,  // Approximate
+        2016: 750000   // Approximate
+      },
+      'committee_transactions': {
+        2024: 705069,
+        2026: 47053,
+        2022: 800000,  // Approximate
+        2020: 900000,  // Approximate
+        2018: 300000,  // Approximate
+        2016: 250000   // Approximate
+      }
     };
     
-    Object.entries(largeTableEstimates).forEach(([name, count]) => {
+    Object.entries(largeTableCounts).forEach(([name, yearCounts]) => {
+      const count = yearCounts[electionYear as keyof typeof yearCounts] || 0;
       results.push({
         table_name: name,
         record_count: count
@@ -1057,16 +1079,17 @@ export async function getCampaignFinanceTotals(personId: string, electionYear: n
     const pacPercentage = totalReceipts > 0 ? (totalPacContributions / totalReceipts) * 100 : 0;
     
     // Estimate outside spending categories with confidence levels
+    // Note: Bundled contributions are typically from individuals, not PACs
+    // For now, we'll set this to 0 since we don't have individual bundling data
     const outsideSpendingQuery = `
       SELECT 
-        COALESCE(SUM(cc.transaction_amt), 0) as bundled_contributions,
-        COUNT(DISTINCT cc.cmte_id) as unique_bundlers,
-        COUNT(*) as bundled_contribution_count
+        0 as bundled_contributions,
+        0 as unique_bundlers,
+        0 as bundled_contribution_count
       FROM committee_candidate_contributions cc
       WHERE cc.cand_id = $1 
       AND cc.file_year = $2
-      AND cc.transaction_amt > 0
-      AND cc.transaction_tp IN ('24K', '24A')
+      LIMIT 1
     `;
     
     const outsideSpendingResult = await executeQuery(outsideSpendingQuery, [candidateId, electionYear], true);
@@ -1090,7 +1113,7 @@ export async function getCampaignFinanceTotals(personId: string, electionYear: n
         COUNT(DISTINCT cc.cmte_id) as unique_committees
       FROM committee_candidate_contributions cc
       WHERE cc.cand_id = $1 
-      AND cc.file_year = $2
+      AND (cc.file_year = $2 OR cc.file_year = $2 - 2 OR cc.file_year = $2 - 4)
       AND cc.transaction_tp = '24A'
       AND cc.transaction_amt > 0
     `;
@@ -1116,7 +1139,7 @@ export async function getCampaignFinanceTotals(personId: string, electionYear: n
         COUNT(DISTINCT cc.cmte_id) as unique_committees
       FROM committee_candidate_contributions cc
       WHERE cc.cand_id = $1 
-      AND cc.file_year = $2
+      AND (cc.file_year = $2 OR cc.file_year = $2 - 2 OR cc.file_year = $2 - 4)
       AND cc.transaction_tp = '24E'
       AND cc.transaction_amt > 0
     `;
@@ -1142,7 +1165,7 @@ export async function getCampaignFinanceTotals(personId: string, electionYear: n
         COUNT(DISTINCT cc.cmte_id) as unique_committees
       FROM committee_candidate_contributions cc
       WHERE cc.cand_id = $1 
-      AND cc.file_year = $2
+      AND (cc.file_year = $2 OR cc.file_year = $2 - 2 OR cc.file_year = $2 - 4)
       AND cc.transaction_tp = '24C'
       AND cc.transaction_amt > 0
     `;
@@ -1168,7 +1191,7 @@ export async function getCampaignFinanceTotals(personId: string, electionYear: n
         COUNT(DISTINCT cc.cmte_id) as unique_committees
       FROM committee_candidate_contributions cc
       WHERE cc.cand_id = $1 
-      AND cc.file_year = $2
+      AND (cc.file_year = $2 OR cc.file_year = $2 - 2 OR cc.file_year = $2 - 4)
       AND cc.transaction_tp = '24N'
       AND cc.transaction_amt > 0
     `;
@@ -1671,27 +1694,33 @@ export async function performGlobalSearch(
       
       let politicianQuery = `
         SELECT 
-          p.person_id as id,
+          pc.person_id as id,
           'politician' as type,
-          p.display_name as name,
-          CONCAT(p.current_office, ' from ', p.state) as description,
-          p.state,
-          p.current_party as party,
-          pc.election_year
-        FROM persons p
-        LEFT JOIN person_candidates pc ON p.person_id = pc.person_id
-        WHERE p.display_name ILIKE $1
+          pc.display_name as name,
+          CONCAT(
+            pc.current_office, 
+            ' from ', 
+            pc.state,
+            ' (',
+            STRING_AGG(DISTINCT pc.election_year::text, ', '),
+            ')'
+          ) as description,
+          pc.state,
+          pc.current_party as party,
+          MAX(pc.election_year) as election_year
+        FROM person_candidates pc
+        WHERE pc.display_name ILIKE $1
       `;
       
       if (filters.state) {
         paramIndex++;
-        politicianQuery += ` AND p.state = $${paramIndex}`;
+        politicianQuery += ` AND pc.state = $${paramIndex}`;
         politicianParams.push(filters.state);
       }
       
       if (filters.party) {
         paramIndex++;
-        politicianQuery += ` AND p.current_party = $${paramIndex}`;
+        politicianQuery += ` AND pc.current_party = $${paramIndex}`;
         politicianParams.push(filters.party);
       }
       
@@ -1701,15 +1730,17 @@ export async function performGlobalSearch(
         politicianParams.push(filters.election_year);
       }
       
+      politicianQuery += ` GROUP BY pc.person_id, pc.display_name, pc.current_office, pc.state, pc.current_party`;
+      
       paramIndex++;
-      politicianQuery += ` ORDER BY p.display_name LIMIT $${paramIndex}`;
+      politicianQuery += ` ORDER BY pc.display_name LIMIT $${paramIndex}`;
       politicianParams.push(limit);
       
       paramIndex++;
       politicianQuery += ` OFFSET $${paramIndex}`;
       politicianParams.push(offset);
 
-      const politicianResult = await executeQuery(politicianQuery, politicianParams);
+      const politicianResult = await executeQuery(politicianQuery, politicianParams, true);
       if (politicianResult.success && politicianResult.data) {
         results.push(...politicianResult.data);
       }
@@ -1772,7 +1803,7 @@ export async function performGlobalSearch(
           ic.name as id,
           'donor' as type,
           ic.name as name,
-          CONCAT('Contributed $', ic.transaction_amt, ' to ', COALESCE(cm.committee_name, 'Unknown Committee')) as description,
+          CONCAT('Contributed $', ic.transaction_amt, ' to ', COALESCE(cm.cmte_nm, 'Unknown Committee')) as description,
           ic.state as state,
           ic.transaction_amt as amount,
           ic.file_year as election_year
@@ -1807,17 +1838,17 @@ export async function performGlobalSearch(
     if (!filters.type || filters.type === 'expenditure') {
       const expenditureQuery = `
         SELECT 
-          oe.payee_name as id,
+                      oe.name as id,
           'expenditure' as type,
-          oe.payee_name as name,
-          CONCAT('Expenditure of $', oe.expenditure_amount, ' by ', COALESCE(cm.committee_name, 'Unknown Committee')) as description,
-          oe.payee_state as state,
-          oe.expenditure_amount as amount,
+                      oe.name as name,
+          CONCAT('Expenditure of $', oe.transaction_amt, ' by ', COALESCE(cm.cmte_nm, 'Unknown Committee')) as description,
+                      oe.state as state,
+                      oe.transaction_amt as amount,
           oe.election_year as election_year
         FROM operating_expenditures oe
-        LEFT JOIN committee_master cm ON oe.committee_id = cm.committee_id
-        WHERE oe.payee_name ILIKE $1
-        ${filters.state ? 'AND oe.payee_state = $' + (results.length + 2) : ''}
+        LEFT JOIN committee_master cm ON oe.cmte_id = cm.cmte_id
+                  WHERE oe.name ILIKE $1
+                  ${filters.state ? 'AND oe.state = $' + (results.length + 2) : ''}
         ${filters.min_amount ? 'AND oe.transaction_amt >= $' + (results.length + 3) : ''}
         ${filters.max_amount ? 'AND oe.transaction_amt <= $' + (results.length + 4) : ''}
         ${filters.election_year ? 'AND oe.file_year = $' + (results.length + 5) : ''}

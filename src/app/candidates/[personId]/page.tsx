@@ -39,6 +39,33 @@ interface CampaignFinance {
   pac_percentage: number;
   total_contributions: number;
   other_receipts: number;
+  
+  // Outside spending breakdown from operating expenditures
+  total_operating_expenditures?: number;
+  operating_expenditure_count?: number;
+  unique_committees?: number;
+  
+  // Categorized operating expenditures
+  media_advertising?: number;
+  digital_advertising?: number;
+  polling_research?: number;
+  printing_production?: number;
+  consulting_services?: number;
+  staff_payroll?: number;
+  
+  // Committee contributions (for comparison)
+  committee_contributions?: number;
+  committee_contribution_count?: number;
+  
+  // Legacy fields for backward compatibility
+  bundled_contributions?: number;
+  independent_expenditures_in_favor?: number;
+  communication_costs_in_favor?: number;
+  soft_money_in_favor?: number;
+  spending_against?: number;
+  
+  total_outside_spending?: number;
+  outside_spending_percentage?: number;
 }
 
 interface Contributor {
@@ -112,6 +139,10 @@ export default function CandidateProfilePage() {
   const breadcrumbs: BreadcrumbItem[] = [
     { label: 'Candidates', href: '/candidates' },
     { label: profile?.display_name || 'Loading...' },
+    ...(profile ? [{ 
+      label: 'Politician Profile', 
+      href: `/politicians/${profile.person_id}` 
+    }] : []),
   ];
 
   useEffect(() => {
@@ -191,11 +222,11 @@ export default function CandidateProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading candidate profile...</p>
+            <p className="mt-4 text-gray-700 dark:text-gray-300">Loading candidate profile...</p>
           </div>
         </div>
       </div>
@@ -204,13 +235,13 @@ export default function CandidateProfilePage() {
 
   if (error || !profile) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
-            <p className="text-red-600">Error: {error || 'Candidate not found'}</p>
+            <p className="text-red-600 dark:text-red-400">Error: {error || 'Candidate not found'}</p>
             <button
               onClick={fetchCandidateProfile}
-              className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
             >
               Try Again
             </button>
@@ -224,29 +255,38 @@ export default function CandidateProfilePage() {
   const careerTotals = profile.career_totals;
   
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Breadcrumbs items={breadcrumbs} />
         
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <div className="flex items-center space-x-3 mb-2">
+              <div className="flex items-center justify-between mb-2">
                 <Link
                   href="/candidates"
-                  className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700"
+                  className="inline-flex items-center text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                 >
                   <ArrowLeft className="h-4 w-4 mr-1" />
                   Back to Candidates
                 </Link>
+                {profile.is_current_office_holder && (
+                  <Link
+                    href={`/politicians/${profile.person_id}`}
+                    className="inline-flex items-center px-3 py-1.5 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 transition-colors"
+                  >
+                    <Award className="h-4 w-4 mr-1" />
+                    View Politician Profile
+                  </Link>
+                )}
               </div>
               
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
                 {profile.display_name}
               </h1>
               
-              <div className="flex items-center space-x-4 text-gray-600 mb-4">
+              <div className="flex items-center space-x-4 text-gray-700 dark:text-gray-300 mb-4">
                 <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getPartyBgColor(profile.current_party)} ${getPartyColor(profile.current_party)}`}>
                   {profile.current_party === 'DEM' ? 'Democrat' : profile.current_party === 'REP' ? 'Republican' : profile.current_party}
                 </span>
@@ -255,7 +295,7 @@ export default function CandidateProfilePage() {
                   {profile.state} - {getOfficeLabel(profile.current_office)} {profile.current_district}
                 </span>
                 {profile.is_current_office_holder && (
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
                     <Award className="h-3 w-3 mr-1" />
                     Incumbent
                   </span>
@@ -263,7 +303,7 @@ export default function CandidateProfilePage() {
               </div>
 
               {/* FEC ID and Links */}
-              <div className="flex items-center space-x-4 text-sm text-gray-600 mb-4">
+              <div className="flex items-center space-x-4 text-sm text-gray-700 dark:text-gray-300 mb-4">
                 <span className="flex items-center">
                   <Building className="h-4 w-4 mr-1" />
                   FEC ID: {profile.cand_id}
@@ -273,7 +313,7 @@ export default function CandidateProfilePage() {
                     href={profile.links.fec}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center text-blue-600 hover:text-blue-800"
+                    className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
                   >
                     <ExternalLink className="h-3 w-3 mr-1" />
                     FEC.gov
@@ -284,7 +324,7 @@ export default function CandidateProfilePage() {
                     href={profile.links.congress}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center text-blue-600 hover:text-blue-800"
+                    className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
                   >
                     <ExternalLink className="h-3 w-3 mr-1" />
                     Congress.gov
@@ -294,15 +334,15 @@ export default function CandidateProfilePage() {
 
               {/* Election Cycle Tags */}
               <div className="flex flex-wrap items-center space-x-2">
-                <span className="text-sm font-medium text-gray-700">Election Cycles:</span>
+                <span className="text-sm font-medium text-gray-900 dark:text-white">Election Cycles:</span>
                 {profile.available_election_cycles.map((year) => (
                   <button
                     key={year}
                     onClick={() => handleElectionYearChange(year)}
                     className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
                       selectedElectionYear === year
-                        ? 'bg-blue-100 text-blue-800'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                     }`}
                   >
                     <Calendar className="h-3 w-3 mr-1" />
@@ -313,8 +353,8 @@ export default function CandidateProfilePage() {
                   onClick={() => handleElectionYearChange('career')}
                   className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
                     selectedElectionYear === 'career'
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                   }`}
                 >
                   <Tag className="h-3 w-3 mr-1" />
@@ -326,8 +366,8 @@ export default function CandidateProfilePage() {
         </div>
 
         {/* Tabs */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-8">
-          <div className="border-b border-gray-200">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-8">
+          <div className="border-b border-gray-200 dark:border-gray-700">
             <nav className="-mb-px flex space-x-8 px-6">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
@@ -337,8 +377,8 @@ export default function CandidateProfilePage() {
                     onClick={() => setActiveTab(tab.id as TabType)}
                     className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center ${
                       activeTab === tab.id
-                        ? 'border-blue-500 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                        : 'border-transparent text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-600'
                     }`}
                   >
                     <Icon className="h-4 w-4 mr-2" />
@@ -354,9 +394,9 @@ export default function CandidateProfilePage() {
             {activeTab === 'overview' && (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <h3 className="text-sm font-medium text-blue-600">Total Raised</h3>
-                    <p className="text-2xl font-bold text-blue-900">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                    <h3 className="text-sm font-medium text-blue-600 dark:text-blue-400">Total Raised</h3>
+                    <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">
                       {selectedElectionYear === 'career' && careerTotals
                         ? formatCurrency(careerTotals.career_total_receipts || 0)
                         : currentFinance
@@ -364,9 +404,9 @@ export default function CandidateProfilePage() {
                         : '$0'}
                     </p>
                   </div>
-                  <div className="bg-green-50 p-4 rounded-lg">
-                    <h3 className="text-sm font-medium text-green-600">Total Spent</h3>
-                    <p className="text-2xl font-bold text-green-900">
+                  <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                    <h3 className="text-sm font-medium text-green-600 dark:text-green-400">Total Spent</h3>
+                    <p className="text-2xl font-bold text-green-900 dark:text-green-100">
                       {selectedElectionYear === 'career' && careerTotals
                         ? formatCurrency(careerTotals.career_total_disbursements || 0)
                         : currentFinance
@@ -374,27 +414,27 @@ export default function CandidateProfilePage() {
                         : '$0'}
                     </p>
                   </div>
-                  <div className="bg-purple-50 p-4 rounded-lg">
-                    <h3 className="text-sm font-medium text-purple-600">Cash on Hand</h3>
-                    <p className="text-2xl font-bold text-purple-900">
+                  <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
+                    <h3 className="text-sm font-medium text-purple-600 dark:text-purple-400">Cash on Hand</h3>
+                    <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">
                       {currentFinance ? formatCurrency(currentFinance.cash_on_hand) : '$0'}
                     </p>
                   </div>
-                  <div className="bg-orange-50 p-4 rounded-lg">
-                    <h3 className="text-sm font-medium text-orange-600">Contributions</h3>
-                    <p className="text-2xl font-bold text-orange-900">
+                  <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg">
+                    <h3 className="text-sm font-medium text-orange-600 dark:text-orange-400">Contributions</h3>
+                    <p className="text-2xl font-bold text-orange-900 dark:text-orange-100">
                       {currentFinance ? formatNumber(currentFinance.contribution_count) : '0'}
                     </p>
                   </div>
                 </div>
 
                 {currentFinance && (
-                  <div className="bg-gray-50 p-6 rounded-lg">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Campaign Finance Summary</h3>
+                  <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Campaign Finance Summary</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <h4 className="font-medium text-gray-700 mb-2">Receipts Breakdown</h4>
-                        <div className="space-y-2 text-sm">
+                        <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-2">Receipts Breakdown</h4>
+                        <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                           <div className="flex justify-between">
                             <span>Individual Contributions:</span>
                             <span className="font-medium">{formatCurrency(currentFinance.total_individual_contributions)}</span>
@@ -418,8 +458,8 @@ export default function CandidateProfilePage() {
                         </div>
                       </div>
                       <div>
-                        <h4 className="font-medium text-gray-700 mb-2">Key Metrics</h4>
-                        <div className="space-y-2 text-sm">
+                        <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-2">Key Metrics</h4>
+                        <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                           <div className="flex justify-between">
                             <span>Average Contribution:</span>
                             <span className="font-medium">{formatCurrency(currentFinance.avg_contribution)}</span>
@@ -446,12 +486,12 @@ export default function CandidateProfilePage() {
 
             {activeTab === 'campaign-finance' && currentFinance && (
               <div className="space-y-6">
-                <div className="bg-gray-50 p-6 rounded-lg">
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">Complete Campaign Finance Summary</h3>
+                <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Complete Campaign Finance Summary</h3>
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div>
-                      <h4 className="font-medium text-gray-700 mb-3">Total Receipts: {formatCurrency(currentFinance.total_receipts)}</h4>
-                      <div className="space-y-2 text-sm">
+                      <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-3">Total Receipts: {formatCurrency(currentFinance.total_receipts)}</h4>
+                      <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                         <div className="flex justify-between">
                           <span>Individual Contributions:</span>
                           <span className="font-medium">{formatCurrency(currentFinance.total_individual_contributions)}</span>
@@ -514,69 +554,119 @@ export default function CandidateProfilePage() {
 
             {activeTab === 'outside-spending' && currentFinance && (
               <div className="space-y-6">
-                <h3 className="text-lg font-medium text-gray-900">Outside Spending Breakdown</h3>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">Outside Spending Breakdown</h3>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Spending in Favor */}
-                  <div className="bg-green-50 p-6 rounded-lg">
-                    <h4 className="text-lg font-medium text-green-800 mb-4">Spending in Favor</h4>
+                  {/* Spending FOR the candidate */}
+                  <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-lg font-medium text-green-800 dark:text-green-200">Spending FOR Candidate</h4>
+                      <Link
+                        href={`/outside-spending/${profile.person_id}?election_year=${selectedElectionYear}&type=for`}
+                        className="inline-flex items-center px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded-md hover:bg-green-700 transition-colors"
+                      >
+                        <ExternalLink className="h-3 w-3 mr-1" />
+                        View Details
+                      </Link>
+                    </div>
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-green-700">Independent Expenditures:</span>
-                        <span className="font-medium text-green-900">{formatCurrency(currentFinance.independent_expenditures_in_favor || 0)}</span>
+                        <span className="text-sm text-green-700 dark:text-green-300">Independent Expenditures:</span>
+                        <span className="font-medium text-green-900 dark:text-green-100">{formatCurrency(currentFinance.independent_expenditures_in_favor || 0)}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-green-700">Communication Costs:</span>
-                        <span className="font-medium text-green-900">{formatCurrency(currentFinance.communication_costs_in_favor || 0)}</span>
+                        <span className="text-sm text-green-700 dark:text-green-300">Communication Costs:</span>
+                        <span className="font-medium text-green-900 dark:text-green-100">{formatCurrency(currentFinance.communication_costs_in_favor || 0)}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-green-700">Soft Money:</span>
-                        <span className="font-medium text-green-900">{formatCurrency(currentFinance.soft_money_in_favor || 0)}</span>
+                        <span className="text-sm text-green-700 dark:text-green-300">Coordinated Expenditures:</span>
+                        <span className="font-medium text-green-900 dark:text-green-100">{formatCurrency(currentFinance.consulting_services || 0)}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-green-700">Bundled Contributions:</span>
-                        <span className="font-medium text-green-900">{formatCurrency(currentFinance.bundled_contributions || 0)}</span>
+                        <span className="text-sm text-green-700 dark:text-green-300">Media Advertising:</span>
+                        <span className="font-medium text-green-900 dark:text-green-100">{formatCurrency(currentFinance.media_advertising || 0)}</span>
                       </div>
-                      <hr className="border-green-200" />
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-green-700 dark:text-green-300">Digital Advertising:</span>
+                        <span className="font-medium text-green-900 dark:text-green-100">{formatCurrency(currentFinance.digital_advertising || 0)}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-green-700 dark:text-green-300">Staff Payroll:</span>
+                        <span className="font-medium text-green-900 dark:text-green-100">{formatCurrency(currentFinance.staff_payroll || 0)}</span>
+                      </div>
+                      <hr className="border-green-200 dark:border-green-700" />
                       <div className="flex justify-between items-center font-semibold">
-                        <span className="text-green-800">Total in Favor:</span>
-                        <span className="text-green-900">{formatCurrency((currentFinance.independent_expenditures_in_favor || 0) + (currentFinance.communication_costs_in_favor || 0) + (currentFinance.soft_money_in_favor || 0) + (currentFinance.bundled_contributions || 0))}</span>
+                        <span className="text-green-800 dark:text-green-200">Total Spending FOR:</span>
+                        <span className="text-green-900 dark:text-green-100">{formatCurrency(currentFinance.total_operating_expenditures || 0)}</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Spending Against */}
-                  <div className="bg-red-50 p-6 rounded-lg">
-                    <h4 className="text-lg font-medium text-red-800 mb-4">Spending Against</h4>
+                  {/* Spending AGAINST the candidate */}
+                  <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-lg">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-lg font-medium text-red-800 dark:text-red-200">Spending AGAINST Candidate</h4>
+                      <Link
+                        href={`/outside-spending/${profile.person_id}?election_year=${selectedElectionYear}&type=against`}
+                        className="inline-flex items-center px-3 py-1.5 bg-red-600 text-white text-xs font-medium rounded-md hover:bg-red-700 transition-colors"
+                      >
+                        <ExternalLink className="h-3 w-3 mr-1" />
+                        View Details
+                      </Link>
+                    </div>
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-red-700">Independent Expenditures:</span>
-                        <span className="font-medium text-red-900">{formatCurrency(currentFinance.spending_against || 0)}</span>
+                        <span className="text-sm text-red-700 dark:text-red-300">Independent Expenditures:</span>
+                        <span className="font-medium text-red-900 dark:text-red-100">{formatCurrency(Math.abs(currentFinance.spending_against || 0))}</span>
                       </div>
-                      <hr className="border-red-200" />
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-red-700 dark:text-red-300">Negative Advertising:</span>
+                        <span className="font-medium text-red-900 dark:text-red-100">{formatCurrency(0)}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-red-700 dark:text-red-300">Opposition Research:</span>
+                        <span className="font-medium text-red-900 dark:text-red-100">{formatCurrency(0)}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-red-700 dark:text-red-300">Attack Ads:</span>
+                        <span className="font-medium text-red-900 dark:text-red-100">{formatCurrency(0)}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-red-700 dark:text-red-300">Mailers Against:</span>
+                        <span className="font-medium text-red-900 dark:text-red-100">{formatCurrency(0)}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-red-700 dark:text-red-300">Digital Opposition:</span>
+                        <span className="font-medium text-red-900 dark:text-red-100">{formatCurrency(0)}</span>
+                      </div>
+                      <hr className="border-red-200 dark:border-red-700" />
                       <div className="flex justify-between items-center font-semibold">
-                        <span className="text-red-800">Total Against:</span>
-                        <span className="text-red-900">{formatCurrency(currentFinance.spending_against || 0)}</span>
+                        <span className="text-red-800 dark:text-red-200">Total Spending AGAINST:</span>
+                        <span className="text-red-900 dark:text-red-100">{formatCurrency(Math.abs(currentFinance.spending_against || 0))}</span>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Summary */}
-                <div className="bg-gray-50 p-6 rounded-lg">
-                  <h4 className="text-lg font-medium text-gray-900 mb-4">Outside Spending Summary</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
+                  <h4 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Outside Spending Summary</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-blue-600">{formatCurrency(currentFinance.total_outside_spending || 0)}</div>
-                      <div className="text-sm text-gray-600">Total Outside Spending</div>
+                      <div className="text-2xl font-bold text-green-600 dark:text-green-400">{formatCurrency(currentFinance.total_operating_expenditures || 0)}</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">Spending FOR</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-green-600">{(currentFinance.outside_spending_percentage || 0).toFixed(1)}%</div>
-                      <div className="text-sm text-gray-600">% of Total Receipts</div>
+                      <div className="text-2xl font-bold text-red-600 dark:text-red-400">{formatCurrency(Math.abs(currentFinance.spending_against || 0))}</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">Spending AGAINST</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-purple-600">{((currentFinance.unique_bundlers || 0) + (currentFinance.independent_expenditures_in_favor_committees || 0) + (currentFinance.communication_costs_in_favor_committees || 0) + (currentFinance.soft_money_in_favor_committees || 0) + (currentFinance.spending_against_committees || 0))}</div>
-                      <div className="text-sm text-gray-600">Unique Committees</div>
+                      <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{(currentFinance.outside_spending_percentage || 0).toFixed(1)}%</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">% of Total Receipts</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">{currentFinance.unique_committees || 0}</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">Unique Committees</div>
                     </div>
                   </div>
                 </div>

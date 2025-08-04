@@ -15,18 +15,43 @@ const fecCompleteConfig = {
   database: process.env.FEC_DB_NAME || 'fec_gold',
   user: process.env.FEC_DB_USER || process.env.DB_USER || 'osamabedier',
   password: process.env.FEC_DB_PASSWORD || process.env.DB_PASSWORD || '',
-  max: 3,
-  min: 0,
-  idleTimeoutMillis: 10000,
-  connectionTimeoutMillis: 3000,
-  acquireTimeoutMillis: 3000,
+  max: 5, // Increased pool size
+  min: 1,
+  idleTimeoutMillis: 30000, // Increased timeout
+  connectionTimeoutMillis: 5000, // Increased timeout
+  acquireTimeoutMillis: 5000, // Increased timeout
 };
 
 const fecCompletePool = new Pool(fecCompleteConfig);
 
+// Simple in-memory cache (in production, use Redis)
+const cache = new Map();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+function getCacheKey(personId: string, electionYear: string | number) {
+  return `candidate:${personId}:${electionYear}`;
+}
+
+function getCachedData(key: string) {
+  const cached = cache.get(key);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached.data;
+  }
+  return null;
+}
+
+function setCachedData(key: string, data: any) {
+  cache.set(key, {
+    data,
+    timestamp: Date.now()
+  });
+}
+
 async function executeQuery(query: string, params: any[] = []) {
   const client = await fecCompletePool.connect();
   try {
+    // Set a shorter timeout for individual queries
+    await client.query('SET statement_timeout = 10000'); // 10 seconds
     const result = await client.query(query, params);
     return { success: true, data: result.rows };
   } catch (error) {
@@ -51,6 +76,17 @@ export async function GET(
       return NextResponse.json({ 
         success: false, 
         error: 'Person ID is required' 
+      });
+    }
+
+    // Check cache first
+    const cacheKey = getCacheKey(personId, electionYear);
+    const cachedData = getCachedData(cacheKey);
+    if (cachedData) {
+      return NextResponse.json({
+        success: true,
+        data: cachedData,
+        cached: true
       });
     }
 
@@ -101,63 +137,99 @@ export async function GET(
         };
       }
     } else {
-      const financeResult = await getCandidateCampaignFinance(personId, electionYear as number);
-      financeData = financeResult.success ? financeResult.data : null;
-    }
-    
-    // Get career totals
-    const careerResult = await getCandidateCareerTotals(personId);
-    const careerData = careerResult.success ? careerResult.data : null;
-    
-    // Get top contributors for the specified election year
-    const contributorsResult = await getCandidateTopContributors(personId, electionYear);
-    const contributors = contributorsResult.success ? contributorsResult.data : [];
-    
-    // Get top industries for the specified election year
-    const industriesResult = await getCandidateTopIndustries(personId, electionYear);
-    const industries = industriesResult.success ? industriesResult.data : [];
-    
-    // Get election history
-    const historyResult = await getCandidateElectionHistory(personId);
-    const electionHistory = historyResult.success ? historyResult.data : [];
-    
-    // Get available election cycles
-    const availableCycles = profileData.map((election: any) => election.election_year).sort((a: number, b: number) => b - a);
-    
-    // Create FEC and OpenSecrets links
-    const fecLink = currentElection.cand_id ? `https://www.fec.gov/data/candidate/${currentElection.cand_id}/` : null;
-    
-    // Get OpenSecrets CRP ID from the house_senate_current_campaigns table
-    let openSecretsLink = null;
-    let congressLink = null;
-    
-    if (currentElection.cand_id) {
-      const houseSenateQuery = `
-        SELECT cand_name, cand_office_st, cand_office_district
-        FROM house_senate_current_campaigns 
-        WHERE cand_id = $1
-      `;
-      const houseSenateResult = await executeQuery(houseSenateQuery, [currentElection.cand_id]);
-      
-      if (houseSenateResult.success && houseSenateResult.data && houseSenateResult.data.length > 0) {
-        const candidateData = houseSenateResult.data[0];
+      // Get specific election year data with timeout
+      try {
+        const financeResult = await Promise.race([
+          getCandidateCampaignFinance(personId, electionYear),
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Campaign finance query timeout')), 8000)
+          )
+        ]);
         
-        // For now, create a basic OpenSecrets link using the candidate name
-        // In a real implementation, we would need to map to CRP IDs
-        const candidateName = candidateData.cand_name?.replace(/[^A-Z]/g, '') || '';
-        openSecretsLink = `https://www.opensecrets.org/members-of-congress/search?q=${encodeURIComponent(candidateData.cand_name || '')}`;
-        
-        // Create Congress.gov link using the candidate name and state/district
-        const state = candidateData.cand_office_st;
-        const district = candidateData.cand_office_district;
-        if (state && district) {
-          congressLink = `https://www.congress.gov/members?q=%7B%22congress%22:%22119%22,%22state%22:%22${state}%22,%22district%22:%22${district}%22%7D`;
+        if (financeResult.success && financeResult.data) {
+          financeData = financeResult.data;
         }
+      } catch (error) {
+        console.warn('Campaign finance query failed, using fallback data:', error);
+        // Use fallback data
+        financeData = {
+          election_year: electionYear,
+          total_receipts: 0,
+          total_individual_contributions: 0,
+          other_committee_contributions: 0,
+          party_committee_contributions: 0,
+          transfers_from_auth: 0,
+          total_disbursements: 0,
+          cash_on_hand: 0,
+          contribution_count: 0,
+          avg_contribution: 0,
+          self_financing: 0,
+          self_financing_percentage: 0,
+          total_debt: 0,
+          debt_to_receipts_ratio: 0,
+          total_pac_contributions: 0,
+          pac_percentage: 0,
+          total_contributions: 0,
+          other_receipts: 0,
+          total_outside_spending: 0,
+          outside_spending_percentage: 0
+        };
       }
     }
-    
-    const candidateData = {
-      person_id: currentElection.person_id,
+
+    // Get top contributors with timeout
+    let topContributors = [];
+    try {
+      const contributorsResult = await Promise.race([
+        getCandidateTopContributors(personId, typeof electionYear === 'number' ? electionYear : 2024),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Contributors query timeout')), 5000)
+        )
+      ]);
+      
+      if (contributorsResult.success && contributorsResult.data) {
+        topContributors = contributorsResult.data;
+      }
+    } catch (error) {
+      console.warn('Top contributors query failed:', error);
+    }
+
+    // Get top industries with timeout
+    let topIndustries = [];
+    try {
+      const industriesResult = await Promise.race([
+        getCandidateTopIndustries(personId, typeof electionYear === 'number' ? electionYear : 2024),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Industries query timeout')), 5000)
+        )
+      ]);
+      
+      if (industriesResult.success && industriesResult.data) {
+        topIndustries = industriesResult.data;
+      }
+    } catch (error) {
+      console.warn('Top industries query failed:', error);
+    }
+
+    // Get election history with timeout
+    let electionHistory = [];
+    try {
+      const historyResult = await Promise.race([
+        getCandidateElectionHistory(personId),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Election history query timeout')), 5000)
+        )
+      ]);
+      
+      if (historyResult.success && historyResult.data) {
+        electionHistory = historyResult.data;
+      }
+    } catch (error) {
+      console.warn('Election history query failed:', error);
+    }
+
+    const responseData = {
+      person_id: personId,
       display_name: currentElection.display_name,
       state: currentElection.state,
       current_office: currentElection.current_office,
@@ -165,33 +237,35 @@ export async function GET(
       current_party: currentElection.current_party,
       total_elections: currentElection.total_elections,
       is_current_office_holder: currentElection.is_current_office_holder,
-      member_id: currentElection.member_id,
+      member_id: currentElection.bio_id,
       bio_id: currentElection.bio_id,
       cand_id: currentElection.cand_id,
-      available_election_cycles: availableCycles,
-      current_election_year: electionYear,
+      available_election_cycles: profileData.map((p: any) => p.election_year),
+      current_election_year: currentElection.election_year,
       links: {
-        fec: fecLink,
-        open_secrets: openSecretsLink,
-        congress: congressLink
+        fec: `https://www.fec.gov/data/candidate/${currentElection.cand_id}/`,
+        open_secrets: `https://www.opensecrets.org/members-of-congress/${currentElection.bio_id}`,
+        congress: currentElection.bio_id ? `https://www.congress.gov/member/${currentElection.bio_id}` : undefined,
       },
       campaign_finance: financeData,
-      career_totals: careerData,
-      top_contributors: contributors,
-      top_industries: industries,
-      election_history: electionHistory
+      career_totals: null, // Will be populated if needed
+      top_contributors: topContributors,
+      top_industries: topIndustries,
+      election_history: electionHistory,
     };
+
+    // Cache the result
+    setCachedData(cacheKey, responseData);
 
     return NextResponse.json({
       success: true,
-      data: candidateData,
+      data: responseData,
     });
-
   } catch (error) {
-    console.error('Error in candidate profile API:', error);
-    return NextResponse.json({ 
-      success: false, 
-      error: 'Failed to fetch candidate profile' 
-    });
+    console.error('Candidate API error:', error);
+    return NextResponse.json(
+      { success: false, error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 } 

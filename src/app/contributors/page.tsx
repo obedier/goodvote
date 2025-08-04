@@ -26,6 +26,7 @@ interface Contributor {
   type: string;
   committee_name?: string;
   committee_type?: string;
+  committee_id?: string;
 }
 
 interface CandidateInfo {
@@ -52,6 +53,8 @@ export default function ContributorsPage() {
   const [filterType, setFilterType] = useState<'all' | 'individual' | 'committee'>('all');
   const [sortBy, setSortBy] = useState<'amount' | 'count' | 'name'>('amount');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  
+  console.log('Component rendered with:', { candidateId, electionYear, loading, error });
 
   const breadcrumbs: BreadcrumbItem[] = [
     { label: 'Candidates', href: '/candidates' },
@@ -60,7 +63,9 @@ export default function ContributorsPage() {
   ];
 
   useEffect(() => {
+    console.log('useEffect triggered with candidateId:', candidateId, 'electionYear:', electionYear);
     if (candidateId) {
+      console.log('Starting to fetch data...');
       fetchContributors();
       fetchCandidateInfo();
     }
@@ -68,15 +73,26 @@ export default function ContributorsPage() {
 
   const fetchCandidateInfo = async () => {
     try {
-      const response = await fetch(`/api/candidates/${candidateId}`);
+      console.log('Fetching candidate info for:', candidateId);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      
+      const response = await fetch(`/api/candidates/${candidateId}`, {
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
       if (response.ok) {
         const data = await response.json();
+        console.log('Candidate info response:', data);
         if (data.success) {
           setCandidateInfo(data.data);
         }
       }
     } catch (error) {
       console.error('Error fetching candidate info:', error);
+    } finally {
+      console.log('Candidate info fetch completed');
     }
   };
 
@@ -86,23 +102,39 @@ export default function ContributorsPage() {
       setError(null);
       
       const url = `/api/contributors?candidate=${candidateId}&election_year=${electionYear}`;
-      const response = await fetch(url);
+      console.log('Fetching contributors from:', url);
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+      
+      const response = await fetch(url, {
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
       
       if (!response.ok) {
-        throw new Error('Failed to fetch contributors');
+        throw new Error(`Failed to fetch contributors: ${response.status}`);
       }
       
       const data = await response.json();
+      console.log('Contributors API response:', data);
       
       if (!data.success) {
         throw new Error(data.error || 'Failed to fetch contributors');
       }
       
-      setContributors(data.data || []);
+      if (!data.data || !Array.isArray(data.data)) {
+        throw new Error('Invalid data format received');
+      }
+      
+      console.log('Setting contributors:', data.data.length);
+      setContributors(data.data);
     } catch (err) {
       console.error('Error fetching contributors:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch contributors');
     } finally {
+      console.log('Setting loading to false');
       setLoading(false);
     }
   };
@@ -164,12 +196,14 @@ export default function ContributorsPage() {
     });
 
   if (loading) {
+    console.log('Rendering loading state...');
     return (
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
             <p className="mt-4 text-gray-600">Loading contributors...</p>
+            <p className="mt-2 text-sm text-gray-500">Debug: {candidateId} - {electionYear}</p>
           </div>
         </div>
       </div>
@@ -338,7 +372,12 @@ export default function ContributorsPage() {
                     <div className="max-w-xs truncate" title={contributor.name}>
                       {contributor.name}
                     </div>
-                    {contributor.employer && (
+                    {contributor.type === 'Committee' && contributor.committee_type && (
+                      <div className="text-xs text-gray-500 mt-1">
+                        {contributor.committee_type} • {contributor.committee_id}
+                      </div>
+                    )}
+                    {contributor.type === 'Individual' && contributor.employer && (
                       <div className="text-xs text-gray-500 mt-1">
                         {contributor.employer}
                       </div>
@@ -353,6 +392,18 @@ export default function ContributorsPage() {
                     }`}>
                       {contributor.type}
                     </span>
+                    {contributor.type === 'Committee' && contributor.committee_id && (
+                      <div className="mt-1">
+                        <a
+                          href={`https://www.fec.gov/data/committee/${contributor.committee_id}/`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-blue-600 hover:text-blue-800"
+                        >
+                          View on FEC →
+                        </a>
+                      </div>
+                    )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
                     {formatCurrency(contributor.amount)}

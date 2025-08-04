@@ -10,10 +10,12 @@ import {
   Calendar,
   Building,
   FileText,
-  BarChart3
+  BarChart3,
+  ExternalLink
 } from 'lucide-react';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { BreadcrumbItem } from '@/types';
+import Link from 'next/link';
 
 interface PoliticianProfile {
   person_id: string;
@@ -24,12 +26,14 @@ interface PoliticianProfile {
   current_party: string;
   total_elections: number;
   last_election_year: number;
+  actual_person_id?: string; // Add this field for the correct person ID
   campaign_finance: {
-    total_receipts: number;
-    total_disbursements: number;
-    cash_on_hand: number;
-    contribution_count: number;
-    avg_contribution: number;
+    total_receipts: string | number;
+    total_disbursements: string | number;
+    cash_on_hand: string | number;
+    contribution_count: string | number;
+    avg_contribution: string | number;
+    [key: string]: any; // Allow additional fields from API
   };
   top_contributors: Array<{
     name: string;
@@ -46,13 +50,13 @@ interface PoliticianProfile {
     office: string;
     party: string;
     result: string;
-    total_receipts: number;
+    total_receipts: string | number;
   }>;
   committees: Array<{
     committee_id: string;
     committee_name: string;
     committee_type: string;
-    total_receipts: number;
+    total_receipts: string | number;
   }>;
 }
 
@@ -67,11 +71,7 @@ export default function PoliticianProfilePage() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>('overview');
 
-  const breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Politicians', href: '/politicians' },
-    { label: 'Congress', href: '/politicians/congress' },
-    { label: profile?.display_name || 'Loading...' },
-  ];
+
 
   useEffect(() => {
     console.log('🔍 useEffect running for personId:', personId);
@@ -155,6 +155,16 @@ export default function PoliticianProfilePage() {
     );
   }
 
+  const breadcrumbs: BreadcrumbItem[] = [
+    { label: 'Politicians', href: '/politicians' },
+    { label: 'Congress', href: '/politicians/congress' },
+    { label: profile?.display_name || 'Loading...' },
+    ...(profile && profile.actual_person_id ? [{ 
+      label: 'Candidate Profile', 
+      href: `/candidates/${profile.actual_person_id}?election_year=${profile.last_election_year || 2024}` 
+    }] : []),
+  ];
+
   if (error || !profile) {
     console.log('❌ Component error state:', { error, profile: !!profile });
     return (
@@ -198,11 +208,20 @@ export default function PoliticianProfilePage() {
                 </span>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-2xl font-bold text-gray-900">
-                {formatCurrency(profile.campaign_finance.total_receipts)}
-              </p>
-              <p className="text-sm text-gray-600">Total Raised</p>
+            <div className="flex flex-col items-end space-y-3">
+              <div className="text-right">
+                <p className="text-2xl font-bold text-gray-900">
+                  {formatCurrency(profile.campaign_finance.total_receipts)}
+                </p>
+                <p className="text-sm text-gray-600">Total Raised</p>
+              </div>
+              <Link
+                href={`/candidates/${profile.actual_person_id || profile.person_id}?election_year=${profile.last_election_year || 2024}`}
+                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                View Detailed Candidate Profile
+              </Link>
             </div>
           </div>
         </div>

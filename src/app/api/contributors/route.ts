@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
         CONCAT(ic.city, ', ', ic.state) as location,
         ic.employer,
         ic.occupation,
-        SUM(ic.transaction_amt) as total_amount,
+        SUM(CAST(ic.transaction_amt AS NUMERIC)) as total_amount,
         COUNT(*) as contribution_count,
         'Individual' as type
       FROM individual_contributions ic
@@ -81,29 +81,33 @@ export async function GET(request: NextRequest) {
       AND ic.transaction_tp IN ('15', '15E', '22Y')
       GROUP BY ic.name, ic.city, ic.state, ic.employer, ic.occupation
       ORDER BY total_amount DESC
+      LIMIT 50
     `;
     
     const individualResult = await executeQuery(individualQuery, [candId, electionYear]);
     
-    // Get committee contributors
+    // Get committee contributors (including PACs, parties, and other committees)
     const committeeQuery = `
       SELECT 
         COALESCE(cm.cmte_nm, cc.name) as name,
         CONCAT(cc.city, ', ', cc.state) as location,
         '' as employer,
         '' as occupation,
-        SUM(cc.transaction_amt) as total_amount,
+        SUM(CAST(cc.transaction_amt AS NUMERIC)) as total_amount,
         COUNT(*) as contribution_count,
         'Committee' as type,
         cm.cmte_nm as committee_name,
-        cm.cmte_tp as committee_type
+        cm.cmte_tp as committee_type,
+        cm.cmte_id as committee_id
       FROM committee_candidate_contributions cc
-      LEFT JOIN committee_master cm ON cc.cmte_id = cm.cmte_id
+      LEFT JOIN committee_master cm ON cc.cmte_id = cm.cmte_id AND cm.file_year = cc.file_year
       WHERE cc.cand_id = $1 
       AND cc.file_year = $2
       AND cc.transaction_amt > 0
-      GROUP BY cm.cmte_nm, cc.name, cc.city, cc.state
+      AND cc.transaction_tp IN ('24A', '24E', '24C', '24N', '24K', '24Z', '24F')
+      GROUP BY cm.cmte_nm, cc.name, cc.city, cc.state, cm.cmte_tp, cm.cmte_id
       ORDER BY total_amount DESC
+      LIMIT 50
     `;
     
     const committeeResult = await executeQuery(committeeQuery, [candId, electionYear]);
@@ -128,7 +132,8 @@ export async function GET(request: NextRequest) {
       count: parseInt(contributor.contribution_count),
       type: contributor.type,
       committee_name: contributor.committee_name,
-      committee_type: contributor.committee_type
+      committee_type: contributor.committee_type,
+      committee_id: contributor.committee_id
     })) : [];
     
     // Combine all contributors and sort by amount

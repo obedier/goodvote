@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Search, Users, Building, DollarSign, TrendingUp, Download, Filter } from 'lucide-react';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { BreadcrumbItem } from '@/types';
+import Link from 'next/link';
 
 interface SearchResult {
   id: string;
@@ -73,6 +74,15 @@ export default function SearchPage() {
       setSuggestions([]);
     }
   }, [searchTerm]);
+
+  // Handle URL parameters on page load
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const typeParam = urlParams.get('type');
+    if (typeParam) {
+      setFilters(prev => ({ ...prev, type: typeParam }));
+    }
+  }, []);
 
   const fetchSuggestions = async () => {
     try {
@@ -183,6 +193,26 @@ export default function SearchPage() {
         return 'Expenditure';
       default:
         return 'Other';
+    }
+  };
+
+  const getDetailPageUrl = (result: SearchResult) => {
+    switch (result.type) {
+      case 'politician':
+        // Politicians are candidates who won their last race
+        const electionYear = result.election_year || 2024;
+        return `/candidates/${result.id}?election_year=${electionYear}`;
+      case 'committee':
+        // Committees link to PACs page or committee detail
+        return `/lobbying/pacs?committee=${result.id}`;
+      case 'donor':
+        // Donors link to contributors page
+        return `/contributors?donor=${result.id}`;
+      case 'expenditure':
+        // Expenditures link to expenditures page
+        return `/expenditures?expenditure=${result.id}`;
+      default:
+        return '#';
     }
   };
 
@@ -413,44 +443,72 @@ export default function SearchPage() {
             </div>
 
             <div className="space-y-4">
-              {results.map((result) => (
-                <div key={result.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start space-x-4">
-                      <div className="flex-shrink-0">
-                        {getTypeIcon(result.type)}
-                      </div>
-                      <div>
-                        <h4 className="text-lg font-semibold text-gray-900 mb-1">
-                          {result.name}
-                        </h4>
-                        <p className="text-sm text-gray-600 mb-2">{result.description}</p>
-                        <div className="flex items-center space-x-4 text-sm text-gray-500">
-                          <span className="inline-block px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-medium">
-                            {getTypeLabel(result.type)}
-                          </span>
-                          {result.state && (
-                            <span>{result.state}</span>
-                          )}
-                          {result.party && (
-                            <span>{result.party}</span>
-                          )}
-                          {result.election_year && (
-                            <span>{result.election_year}</span>
+              {results.map((result) => {
+                const detailUrl = getDetailPageUrl(result);
+                const isClickable = detailUrl !== '#';
+                
+                const resultContent = (
+                  <div className={`bg-white rounded-lg shadow-sm border border-gray-200 p-6 transition-shadow ${
+                    isClickable ? 'hover:shadow-md cursor-pointer' : ''
+                  }`}>
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start space-x-4">
+                        <div className="flex-shrink-0">
+                          {getTypeIcon(result.type)}
+                        </div>
+                        <div>
+                          <h4 className="text-lg font-semibold text-gray-900 mb-1">
+                            {result.name}
+                          </h4>
+                          <p className="text-sm text-gray-600 mb-2">{result.description}</p>
+                          <div className="flex items-center space-x-4 text-sm text-gray-500">
+                            <span className="inline-block px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-medium">
+                              {getTypeLabel(result.type)}
+                            </span>
+                            {result.state && (
+                              <span>{result.state}</span>
+                            )}
+                            {result.party && (
+                              <span>{result.party}</span>
+                            )}
+                            {result.election_year && (
+                              <span>{result.election_year}</span>
+                            )}
+                          </div>
+                          {isClickable && (
+                            <div className="mt-2">
+                              <p className="text-xs text-blue-600 font-medium">
+                                Click to view details →
+                              </p>
+                            </div>
                           )}
                         </div>
                       </div>
+                      {result.amount && (
+                        <div className="text-right">
+                          <p className="text-lg font-semibold text-gray-900">
+                            {formatCurrency(result.amount)}
+                          </p>
+                        </div>
+                      )}
                     </div>
-                    {result.amount && (
-                      <div className="text-right">
-                        <p className="text-lg font-semibold text-gray-900">
-                          {formatCurrency(result.amount)}
-                        </p>
-                      </div>
-                    )}
                   </div>
-                </div>
-              ))}
+                );
+
+                if (isClickable) {
+                  return (
+                    <Link key={result.id} href={detailUrl} className="block">
+                      {resultContent}
+                    </Link>
+                  );
+                }
+
+                return (
+                  <div key={result.id}>
+                    {resultContent}
+                  </div>
+                );
+              })}
             </div>
 
             {/* Pagination */}
