@@ -1,0 +1,108 @@
+# GoodVote Project Rules & Key Concepts
+
+## Project Overview
+Building a campaign finance transparency platform using FEC data and OpenSecrets UX model.
+
+Things to remember:
+- app is in goodvote-app fodler.  npm run dev has to be executed in that folder
+- fec_gold postgres db holds all the fec data
+- goodvote db holds all other app data
+- docs to undrstand fec_schema are in the docs folder
+- after running commands and before completeing work on a prompt, check server logs and solve the issues you see.
+- GitHub repository: https://github.com/obedier/goodvote
+
+## Key Technical Concepts
+
+### Database Architecture
+- **fec_complete**: Read-only FEC data database (candidates, committees, contributions, expenditures)
+- **goodvote**: Application database with views and person-based mapping system
+- **Views**: Bridge between fec_complete and application (fec_contributions, fec_committees, etc.)
+- **Person-based mapping**: Unifies multiple FEC candidate IDs for same person across election cycles
+
+### Data Sources & Integration
+- **FEC Data**: Federal Election Commission bulk data (cn.txt, cm.txt, itcont.txt, etc.)
+- **OpenSecrets Model**: Comprehensive campaign finance transparency platform
+- **Data Cycles**: 2020, 2022, 2024 (and other cycles)
+- **Real-time Updates**: FEC data typically 30-60 days behind real-time
+
+### Core Features (Following OpenSecrets Model)
+1. **Politicians Section**: Congress members, state officials, personal finances
+2. **Elections Section**: Campaign finance by race type, "Get Local!" tool
+3. **Lobbying & Groups**: PACs, organizations, revolving door, foreign lobby
+4. **Search & Data Exploration**: Global search, donor lookup, contribution tracking
+5. **Data Visualization**: Interactive charts, tables, maps
+
+### Technical Stack
+- **Frontend**: Next.js 14, TypeScript, Tailwind CSS
+- **Database**: PostgreSQL with FEC data
+- **Charts**: Recharts or Chart.js for data visualization
+- **Search**: Full-text search with autocomplete
+- **API**: Next.js API routes for data access
+
+### UX/UI Principles (From OpenSecrets)
+- **Intuitive Navigation**: Hierarchical menus with clear categories
+- **Comprehensive Search**: Global search with filters and autocomplete
+- **Data Transparency**: Clear data sources and methodology notes
+- **Mobile Responsive**: Hamburger menu, responsive tables
+- **Interactive Elements**: Charts, filters, export options
+- **Educational Content**: Campaign finance basics, methodology explanations
+
+### Data Quality Considerations
+- **Name Variations**: Handle slight name variations across cycles
+- **Missing Data**: Graceful handling of incomplete information
+- **Data Lag**: Account for FEC reporting delays
+- **Validation**: Proper data types (NUMERIC for amounts, DATE for dates)
+
+### Performance Optimizations
+- **Database Indexing**: Index on election_year, committee_id, candidate_id
+- **Query Optimization**: Use LIMIT clauses for large result sets
+- **Caching**: Cache frequently accessed data
+- **Pagination**: Handle large datasets efficiently
+
+### Key Database Tables (FEC Complete)
+- **candidate_master**: All candidates who filed with FEC
+- **committee_master**: All committees (PACs, campaigns, parties)
+- **individual_contributions**: All individual contributions
+- **operating_expenditures**: All committee expenditures
+- **committee_transactions**: Committee-to-committee transactions
+- **candidate_committee_linkages**: Links candidates to committees
+
+### Person-Based Mapping System
+- **persons**: Master table of unique persons (person_id format: P + 8-char hash)
+- **person_candidates**: Links persons to FEC candidate records across cycles
+- **Normalization**: Remove titles, suffixes, standardize names
+- **State-based Grouping**: Group by state to avoid false matches
+
+### Search & Filtering Patterns
+- **Global Search**: Site-wide search with category filters
+- **Autocomplete**: Popular searches, name suggestions
+- **Advanced Filters**: Party, chamber, election year, amount ranges
+- **Export Options**: CSV downloads for data analysis
+
+### Lessons Learned
+1. **Always filter by election_year** when querying FEC data
+2. **Use candidate_committee_linkages** to properly link candidates to committees
+3. **Join with committee_master** to get committee names and types
+4. **Consider data lag** when analyzing recent elections
+5. **Handle name variations** in candidate and committee names
+6. **Provide clear methodology notes** for data interpretation
+7. **Optimize for both casual users and power researchers**
+8. **Include educational content** alongside data exploration tools
+
+### Development Guidelines
+- **TypeScript**: Use strict typing for all data models
+- **Component Structure**: Reusable components for data tables, charts, filters
+- **API Design**: RESTful endpoints with proper error handling
+- **Testing**: Unit tests for data utilities, integration tests for API routes
+- **Documentation**: Clear API docs and user guides
+- **Accessibility**: WCAG compliance for public transparency tool
+- regularly clean up files and code that are replaced with updated ones and put them in a folder called to_be_deleted
+- create a document to remember important concepts the use points you forgot
+- make updates to the plan.md, technical documents like database schema or quick reference as you make changes so you know how to refer to them. 
+
+### Deployment Considerations
+- **Database Setup**: Proper PostgreSQL configuration for large datasets
+- **Environment Variables**: Secure database credentials and API keys
+- **Monitoring**: Query performance and error tracking
+- **Backup Strategy**: Regular database backups for FEC data
+- **Scalability**: Handle millions of contribution records efficiently
