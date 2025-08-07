@@ -241,6 +241,9 @@ export default function CongressPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Israel Score
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -284,6 +287,28 @@ export default function CongressPage() {
                        member.incumbent_challenge === 'C' ? 'Challenger' :
                        member.incumbent_challenge === 'O' ? 'Open Seat' : member.incumbent_challenge}
                     </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {member.israel_score !== null ? (
+                      <div className="flex items-center space-x-2">
+                        <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold text-white ${
+                          member.israel_score === 0 ? 'bg-red-500' :
+                          member.israel_score === 1 ? 'bg-orange-500' :
+                          member.israel_score === 2 ? 'bg-yellow-500' :
+                          member.israel_score === 3 ? 'bg-blue-500' :
+                          member.israel_score === 4 ? 'bg-green-500' :
+                          member.israel_score === 5 ? 'bg-green-600' :
+                          'bg-gray-500'
+                        }`}>
+                          {member.israel_score}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {member.israel_grade} • ${member.israel_total?.toLocaleString() || 0}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-gray-400 text-sm">N/A</span>
+                    )}
                   </td>
                 </tr>
               ))}

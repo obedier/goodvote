@@ -319,9 +319,9 @@ export default function CandidateProfilePage() {
                 </Link>
                 <div className="flex items-center space-x-2">
                   {profile.israel_lobby && (
-                    <div className="flex items-center space-x-2">
+                    <div className="flex flex-col items-end space-y-1">
                       <Link
-                        href={`/israel-lobby/${profile.person_id}?election_year=${selectedElectionYear}`}
+                        href={`/israel-lobby/${profile.person_id}`}
                         className={`inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer ${getHumanityScoreColor(profile.israel_lobby.humanity_score)}`}
                       >
                         <span className="font-bold mr-1">{profile.israel_lobby.humanity_score}</span>
@@ -331,15 +331,6 @@ export default function CandidateProfilePage() {
                         {formatCurrency(profile.israel_lobby.total_pro_israel_contributions)}
                       </span>
                     </div>
-                  )}
-                  {profile.is_current_office_holder && (
-                    <Link
-                      href={`/politicians/${profile.person_id}`}
-                      className="inline-flex items-center px-3 py-1.5 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 transition-colors"
-                    >
-                      <Award className="h-4 w-4 mr-1" />
-                      View Politician Profile
-                    </Link>
                   )}
                 </div>
               </div>
@@ -357,10 +348,13 @@ export default function CandidateProfilePage() {
                   {profile.state} - {getOfficeLabel(profile.current_office)} {profile.current_district}
                 </span>
                 {profile.is_current_office_holder && (
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
+                  <Link
+                    href={`/politicians/${profile.person_id}`}
+                    className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-800 transition-colors cursor-pointer"
+                  >
                     <Award className="h-3 w-3 mr-1" />
                     Incumbent
-                  </span>
+                  </Link>
                 )}
               </div>
 
@@ -738,16 +732,45 @@ export default function CandidateProfilePage() {
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="text-lg font-medium text-orange-800 dark:text-orange-200">Israel Lobby Analysis</h4>
                     <Link
-                      href={`/israel-lobby/${profile.person_id}?election_year=${selectedElectionYear}`}
+                      href={`/israel-lobby/${profile.person_id}`}
                       className="inline-flex items-center px-3 py-1.5 bg-orange-600 text-white text-xs font-medium rounded-md hover:bg-orange-700 transition-colors"
                     >
                       <ExternalLink className="h-3 w-3 mr-1" />
                       View Analysis
                     </Link>
                   </div>
-                  <div className="text-sm text-orange-700 dark:text-orange-300">
-                    Track pro-Israel PAC contributions and SuperPAC expenditures to understand Israel lobby influence on this candidate.
-                  </div>
+                  {profile.israel_lobby ? (
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                      <div className="text-center">
+                        <div className={`text-2xl font-bold ${getHumanityScoreColor(profile.israel_lobby.humanity_score)}`}>
+                          {profile.israel_lobby.humanity_score}
+                        </div>
+                        <div className="text-sm text-orange-700 dark:text-orange-300">Humanity Score</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                          {formatCurrency(profile.israel_lobby.total_pro_israel_contributions)}
+                        </div>
+                        <div className="text-sm text-orange-700 dark:text-orange-300">Total Pro-Israel</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                          {formatCurrency(profile.israel_lobby.pro_israel_contribution_amount)}
+                        </div>
+                        <div className="text-sm text-orange-700 dark:text-orange-300">PAC Contributions</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                          {formatCurrency(profile.israel_lobby.pro_israel_superpac_amount)}
+                        </div>
+                        <div className="text-sm text-orange-700 dark:text-orange-300">SuperPAC Spending</div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-sm text-orange-700 dark:text-orange-300">
+                      Track pro-Israel PAC contributions and SuperPAC expenditures to understand Israel lobby influence on this candidate.
+                    </div>
+                  )}
                 </div>
               </div>
             )}

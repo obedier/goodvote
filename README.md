@@ -36,6 +36,8 @@ The application uses two main databases:
 - `person_candidates`: Links persons to FEC candidate records
 - Views: `fec_contributions`, `fec_committees`, `fec_candidates`, etc.
 
+**📖 For detailed database connection guidelines, see [docs/database-connection-guide.md](docs/database-connection-guide.md)**
+
 ## Getting Started
 
 ### Prerequisites

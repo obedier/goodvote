@@ -8,7 +8,7 @@ import {
   getCandidateTopIndustries,
   getCandidateElectionHistory
 } from '@/lib/candidates';
-import { getIsraelLobbyScore } from '@/lib/israel-lobby';
+import { getIsraelLobbySummary } from '@/lib/israel-lobby';
 
 const fecCompleteConfig = {
   host: process.env.FEC_DB_HOST || process.env.DB_HOST || 'localhost',
@@ -229,13 +229,13 @@ export async function GET(
       console.warn('Election history query failed:', error);
     }
 
-    // Get Israel lobby data with timeout
+    // Get Israel lobby data with timeout (optimized for performance)
     let israelLobbyData = null;
     try {
       const israelResult = await Promise.race([
-        getIsraelLobbyScore(personId, typeof electionYear === 'number' ? electionYear : 2024),
+        getIsraelLobbySummary(personId),
         new Promise<never>((_, reject) => 
-          setTimeout(() => reject(new Error('Israel lobby query timeout')), 5000)
+          setTimeout(() => reject(new Error('Israel lobby query timeout')), 3000)
         )
       ]);
       
