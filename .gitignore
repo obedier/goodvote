@@ -129,3 +129,11 @@ test-results.xml
 .env.development.local
 .env.test.local
 .env.production.local 
+
+# Large GeoJSON files (exceed GitHub's 100MB limit)
+public/districts/congressional-districts*.json
+public/districts/*-original-with-real-data.json
+public/districts/*-conservative.json
+public/districts/*-final.json
+public/districts/*-fixed.json
+public/districts/*.json_bak 
