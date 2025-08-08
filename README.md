@@ -40,7 +40,13 @@ GoodVote is inspired by OpenSecrets.org and provides a modern, interactive platf
 - **API Routes**: RESTful endpoints for data access
 - **Utilities**: Database connections, data fetching, validation
 
+<<<<<<< HEAD
+**📖 For detailed database connection guidelines, see [docs/database-connection-guide.md](docs/database-connection-guide.md)**
+
+## Getting Started
+=======
 ## 🚀 Getting Started
+>>>>>>> 30bd68b54e825a17d58735643b9eed34a5aba774
 
 ### Prerequisites
 

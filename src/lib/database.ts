@@ -1,3 +1,29 @@
+/**
+ * Database Connection Guidelines
+ * 
+ * This project uses TWO separate PostgreSQL databases:
+ * 
+ * 1. goodvote database (default, useFECDatabase: false)
+ *    - Contains application data, user preferences, cached results
+ *    - Tables: congress, state_officials, etc.
+ *    - Use for: User data, application state, cached summaries
+ * 
+ * 2. fec_gold database (useFECDatabase: true)
+ *    - Contains all FEC (Federal Election Commission) raw data
+ *    - Tables: candidate_master, committee_master, committee_candidate_contributions, 
+ *              individual_contributions, operating_expenditures, etc.
+ *    - Use for: All campaign finance data, candidate info, contributions, expenditures
+ * 
+ * IMPORTANT: When querying FEC data (candidates, contributions, committees, etc.),
+ * ALWAYS use useFECDatabase: true. When querying application data, use false.
+ * 
+ * Examples:
+ * - Candidate data: useFECDatabase: true
+ * - Israel lobby analysis: useFECDatabase: true  
+ * - Congress members list: useFECDatabase: false
+ * - User preferences: useFECDatabase: false
+ */
+
 import { Pool } from 'pg';
 
 // Database configurations
@@ -55,35 +81,34 @@ export async function testConnection() {
 }
 
 // Execute a query with error handling and timeout (defaults to goodvote database)
-export async function executeQuery(query: string, params?: any[], useFECDatabase: boolean = false, timeoutMs: number = 10000) {
-  let client: any = null;
+export async function executeQuery(
+  query: string, 
+  params: any[] = [], 
+  useFECDatabase: boolean = false,
+  timeoutMs: number = 10000
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  // Database selection: false = goodvote (app data), true = fec_gold (FEC data)
+  const pool = useFECDatabase ? fecCompletePool : goodvotePool;
+  
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`🔍 Database Query: ${useFECDatabase ? 'fec_gold' : 'goodvote'} - ${query.substring(0, 100)}...`);
+  }
+
   try {
-    const pool = useFECDatabase ? fecCompletePool : goodvotePool;
-    
-    // Add timeout for connection acquisition
-    const connectionPromise = pool.connect();
-    const timeoutPromise = new Promise<never>((_, reject) => 
-      setTimeout(() => reject(new Error('Connection timeout')), 5000)
-    );
-    
-    client = await Promise.race([connectionPromise, timeoutPromise]);
-    
-    // Set statement timeout
-    await client.query(`SET statement_timeout = ${timeoutMs}`);
-    
-    const result = await client.query(query, params);
-    return { success: true, data: result.rows, rowCount: result.rowCount };
-  } catch (error) {
-    console.error('Query execution failed:', error);
-    return { success: false, error: error };
-  } finally {
-    if (client && typeof client.release === 'function') {
-      try {
-        client.release();
-      } catch (releaseError) {
-        console.error('Error releasing client:', releaseError);
+    const client = await pool.connect();
+    try {
+      // Set statement timeout if provided
+      if (timeoutMs > 0) {
+        await client.query(`SET statement_timeout = ${timeoutMs}`);
       }
+      const result = await client.query(query, params);
+      return { success: true, data: result.rows };
+    } finally {
+      client.release();
     }
+  } catch (error) {
+    console.error(`❌ Query failed: ${error}`);
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 }
 
@@ -837,22 +862,30 @@ export async function getCurrentCongressMembers(filters: {
 }) {
   let query = `
     SELECT 
-      member_id as person_id,
-      name as display_name,
-      state,
+      COALESCE(pc.person_id, cm.member_id) as person_id,
+      cm.name as display_name,
+      cm.state,
       CASE 
-        WHEN chamber = 'house' THEN 'H'
-        WHEN chamber = 'senate' THEN 'S'
-        ELSE chamber
+        WHEN cm.chamber = 'house' THEN 'H'
+        WHEN cm.chamber = 'senate' THEN 'S'
+        ELSE cm.chamber
       END as current_office,
-      district as current_district,
-      party as current_party,
-      fec_candidate_id as cand_id,
-      election_year,
-      incumbent_challenge,
+      cm.district as current_district,
+      cm.party as current_party,
+      cm.fec_candidate_id as cand_id,
+      cm.election_year,
+      cm.incumbent_challenge,
       1 as total_elections
-    FROM congress_members_119th
-    WHERE chamber IN ('house', 'senate')
+    FROM congress_members_119th cm
+    LEFT JOIN (
+      SELECT DISTINCT ON (cand_id) cand_id, person_id
+      FROM person_candidates
+      ORDER BY cand_id, election_year DESC
+    ) pc ON cm.fec_candidate_id = pc.cand_id
+    WHERE cm.chamber IN ('house', 'senate')
+    AND cm.name NOT ILIKE '%feinstein%'
+    AND cm.name NOT ILIKE '%pelosi%'
+    AND cm.name NOT ILIKE '%mcconnell%'
   `;
   
   const params: any[] = [];

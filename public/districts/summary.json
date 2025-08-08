@@ -1,0 +1,7 @@
+{
+  "total_districts": 437,
+  "districts_with_real_data": 437,
+  "created_at": "2025-08-07T15:25:06.321Z",
+  "note": "Clean district metadata from API",
+  "source": "API data from /api/house-districts"
+}

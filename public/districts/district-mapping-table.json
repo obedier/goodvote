@@ -1,0 +1,6457 @@
+{
+  "mappingTable": [
+    {
+      "geoJsonKey": "CA-23",
+      "stateFips": "06",
+      "districtFips": "23",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 23",
+      "apiState": "CA",
+      "incumbentName": "OBERNOLTE, JAY",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 286944,
+      "incumbentCashOnHand": "997839.76",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-31",
+      "stateFips": "06",
+      "districtFips": "31",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 31",
+      "apiState": "CA",
+      "incumbentName": "Gilbert Ray Cisneros, Jr.",
+      "incumbentParty": null,
+      "incumbentIsraelScore": null,
+      "incumbentTotalIsraelFunding": null,
+      "incumbentCashOnHand": null,
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-44",
+      "stateFips": "06",
+      "districtFips": "44",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 44",
+      "apiState": "CA",
+      "incumbentName": "Nanette Diaz Barragán",
+      "incumbentParty": null,
+      "incumbentIsraelScore": null,
+      "incumbentTotalIsraelFunding": null,
+      "incumbentCashOnHand": null,
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-50",
+      "stateFips": "06",
+      "districtFips": "50",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 50",
+      "apiState": "CA",
+      "incumbentName": "PETERS, SCOTT",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 281400,
+      "incumbentCashOnHand": "2150520.81",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-27",
+      "stateFips": "06",
+      "districtFips": "27",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 27",
+      "apiState": "CA",
+      "incumbentName": "WHITESIDES, GEORGE",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "326733.36",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-13",
+      "stateFips": "06",
+      "districtFips": "13",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 13",
+      "apiState": "CA",
+      "incumbentName": "GRAY, ADAM C.",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "191957.72",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-20",
+      "stateFips": "06",
+      "districtFips": "20",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 20",
+      "apiState": "CA",
+      "incumbentName": "FONG, VINCE",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 60072,
+      "incumbentCashOnHand": "39231.4",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-14",
+      "stateFips": "06",
+      "districtFips": "14",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 14",
+      "apiState": "CA",
+      "incumbentName": "SWALWELL, ERIC MICHAEL",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 441063,
+      "incumbentCashOnHand": "300002.78",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-33",
+      "stateFips": "06",
+      "districtFips": "33",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 33",
+      "apiState": "CA",
+      "incumbentName": "AGUILAR, PETE",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 3542448,
+      "incumbentCashOnHand": "2649071.17",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-46",
+      "stateFips": "06",
+      "districtFips": "46",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 46",
+      "apiState": "CA",
+      "incumbentName": "CORREA, LOU",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 232200,
+      "incumbentCashOnHand": "1867362.63",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-16",
+      "stateFips": "06",
+      "districtFips": "16",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 16",
+      "apiState": "CA",
+      "incumbentName": "LICCARDO, SAM T.",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "90392.1",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-30",
+      "stateFips": "06",
+      "districtFips": "30",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 30",
+      "apiState": "CA",
+      "incumbentName": "FRIEDMAN, LAURA",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 36000,
+      "incumbentCashOnHand": "296748.24",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-49",
+      "stateFips": "06",
+      "districtFips": "49",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 49",
+      "apiState": "CA",
+      "incumbentName": "LEVIN, MIKE",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 601275,
+      "incumbentCashOnHand": "269736.98",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-35",
+      "stateFips": "06",
+      "districtFips": "35",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 35",
+      "apiState": "CA",
+      "incumbentName": "TORRES, NORMA",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 1293873,
+      "incumbentCashOnHand": "303315.03",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-39",
+      "stateFips": "06",
+      "districtFips": "39",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 39",
+      "apiState": "CA",
+      "incumbentName": "TAKANO, MARK",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "269169.88",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-12",
+      "stateFips": "06",
+      "districtFips": "12",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 12",
+      "apiState": "CA",
+      "incumbentName": "SIMON, LATEEFAH",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "285654.71",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-24",
+      "stateFips": "06",
+      "districtFips": "24",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 24",
+      "apiState": "CA",
+      "incumbentName": "CARBAJAL, SALUD O.",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 52200,
+      "incumbentCashOnHand": "2643869.51",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-32",
+      "stateFips": "06",
+      "districtFips": "32",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 32",
+      "apiState": "CA",
+      "incumbentName": "SHERMAN, BRAD",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 2116863,
+      "incumbentCashOnHand": "3921944.7",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-45",
+      "stateFips": "06",
+      "districtFips": "45",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 45",
+      "apiState": "CA",
+      "incumbentName": "TRAN, DEREK",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "327322.79",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-52",
+      "stateFips": "06",
+      "districtFips": "52",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 52",
+      "apiState": "CA",
+      "incumbentName": "VARGAS, JUAN C.",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 942963,
+      "incumbentCashOnHand": "90840.64",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-34",
+      "stateFips": "06",
+      "districtFips": "34",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 34",
+      "apiState": "CA",
+      "incumbentName": "GOMEZ, JIMMY",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 26245335,
+      "incumbentCashOnHand": "88758.91",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-36",
+      "stateFips": "06",
+      "districtFips": "36",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 36",
+      "apiState": "CA",
+      "incumbentName": "LIEU, TED",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 2060751,
+      "incumbentCashOnHand": "675006.75",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-38",
+      "stateFips": "06",
+      "districtFips": "38",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 38",
+      "apiState": "CA",
+      "incumbentName": "Linda T. Sánchez",
+      "incumbentParty": null,
+      "incumbentIsraelScore": null,
+      "incumbentTotalIsraelFunding": null,
+      "incumbentCashOnHand": null,
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-17",
+      "stateFips": "06",
+      "districtFips": "17",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 17",
+      "apiState": "CA",
+      "incumbentName": "KHANNA, ROHIT",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "10709091.4",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-18",
+      "stateFips": "06",
+      "districtFips": "18",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 18",
+      "apiState": "CA",
+      "incumbentName": "LOFGREN, ZOE",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "239752.35",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-47",
+      "stateFips": "06",
+      "districtFips": "47",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 47",
+      "apiState": "CA",
+      "incumbentName": "MIN, DAVE",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "173065.78",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-48",
+      "stateFips": "06",
+      "districtFips": "48",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 48",
+      "apiState": "CA",
+      "incumbentName": "ISSA, DARRELL",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 476892,
+      "incumbentCashOnHand": "1644616.32",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-25",
+      "stateFips": "06",
+      "districtFips": "25",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 25",
+      "apiState": "CA",
+      "incumbentName": "RUIZ, RAUL DR.",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 507213,
+      "incumbentCashOnHand": "1702739.4",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-37",
+      "stateFips": "06",
+      "districtFips": "37",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 37",
+      "apiState": "CA",
+      "incumbentName": "KAMLAGER-DOVE, SYDNEY",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 45000,
+      "incumbentCashOnHand": "61997.98",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-41",
+      "stateFips": "06",
+      "districtFips": "41",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 41",
+      "apiState": "CA",
+      "incumbentName": "CALVERT, KEN",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 6228369,
+      "incumbentCashOnHand": "262135.61",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-42",
+      "stateFips": "06",
+      "districtFips": "42",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 42",
+      "apiState": "CA",
+      "incumbentName": "GARCIA, ROBERT",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 237600,
+      "incumbentCashOnHand": "412427.9",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-15",
+      "stateFips": "06",
+      "districtFips": "15",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 15",
+      "apiState": "CA",
+      "incumbentName": "MULLIN, KEVIN",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 5415786,
+      "incumbentCashOnHand": "36771.24",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-28",
+      "stateFips": "06",
+      "districtFips": "28",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 28",
+      "apiState": "CA",
+      "incumbentName": "CHU, JUDY",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "3602004.95",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-29",
+      "stateFips": "06",
+      "districtFips": "29",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 29",
+      "apiState": "CA",
+      "incumbentName": "RIVAS, LUZ",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 30078,
+      "incumbentCashOnHand": "264263.23",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-40",
+      "stateFips": "06",
+      "districtFips": "40",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 40",
+      "apiState": "CA",
+      "incumbentName": "KIM, YOUNG",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 2174865,
+      "incumbentCashOnHand": "1737498.43",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-10",
+      "stateFips": "06",
+      "districtFips": "10",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 10",
+      "apiState": "CA",
+      "incumbentName": "DESAULNIER, MARK",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "628987.32",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-22",
+      "stateFips": "06",
+      "districtFips": "22",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 22",
+      "apiState": "CA",
+      "incumbentName": "VALADAO, DAVID",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 1182531,
+      "incumbentCashOnHand": "45535.53",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-21",
+      "stateFips": "06",
+      "districtFips": "21",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 21",
+      "apiState": "CA",
+      "incumbentName": "COSTA, JIM",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 1365000,
+      "incumbentCashOnHand": "208882.1",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-11",
+      "stateFips": "06",
+      "districtFips": "11",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 11",
+      "apiState": "CA",
+      "incumbentName": "PELOSI, NANCY",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 354963,
+      "incumbentCashOnHand": "2078066.46",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-43",
+      "stateFips": "06",
+      "districtFips": "43",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 43",
+      "apiState": "CA",
+      "incumbentName": "WATERS, MAXINE MS",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "116456.48",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-51",
+      "stateFips": "06",
+      "districtFips": "51",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 51",
+      "apiState": "CA",
+      "incumbentName": "JACOBS, SARA",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "77372.16",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-26",
+      "stateFips": "06",
+      "districtFips": "26",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 26",
+      "apiState": "CA",
+      "incumbentName": "BROWNLEY, JULIA",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 622125,
+      "incumbentCashOnHand": "942357.13",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "CA-19",
+      "stateFips": "06",
+      "districtFips": "19",
+      "stateAbbr": "CA",
+      "apiDistrictName": "CA District 19",
+      "apiState": "CA",
+      "incumbentName": "PANETTA, JIMMY",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 717300,
+      "incumbentCashOnHand": "3714638.61",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "FL-23",
+      "stateFips": "12",
+      "districtFips": "23",
+      "stateAbbr": "FL",
+      "apiDistrictName": "FL District 23",
+      "apiState": "FL",
+      "incumbentName": "MOSKOWITZ, JARED",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 747099,
+      "incumbentCashOnHand": "349286.7",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "FL-27",
+      "stateFips": "12",
+      "districtFips": "27",
+      "stateAbbr": "FL",
+      "apiDistrictName": "FL District 27",
+      "apiState": "FL",
+      "incumbentName": "SALAZAR, MARIA ELVIRA",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 1624770,
+      "incumbentCashOnHand": "1410827.14",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "FL-13",
+      "stateFips": "12",
+      "districtFips": "13",
+      "stateAbbr": "FL",
+      "apiDistrictName": "FL District 13",
+      "apiState": "FL",
+      "incumbentName": "PAULINA LUNA, ANNA",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 171120,
+      "incumbentCashOnHand": "131415.55",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "FL-20",
+      "stateFips": "12",
+      "districtFips": "20",
+      "stateAbbr": "FL",
+      "apiDistrictName": "FL District 20",
+      "apiState": "FL",
+      "incumbentName": "CHERFILUS-MCCORMICK, SHEILA",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 702375,
+      "incumbentCashOnHand": "7516.27",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "FL-14",
+      "stateFips": "12",
+      "districtFips": "14",
+      "stateAbbr": "FL",
+      "apiDistrictName": "FL District 14",
+      "apiState": "FL",
+      "incumbentName": "CASTOR, KATHY",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 662025,
+      "incumbentCashOnHand": "226729.87",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "FL-16",
+      "stateFips": "12",
+      "districtFips": "16",
+      "stateAbbr": "FL",
+      "apiDistrictName": "FL District 16",
+      "apiState": "FL",
+      "incumbentName": "BUCHANAN, VERNON",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 518490,
+      "incumbentCashOnHand": "1049213.35",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "FL-12",
+      "stateFips": "12",
+      "districtFips": "12",
+      "stateAbbr": "FL",
+      "apiDistrictName": "FL District 12",
+      "apiState": "FL",
+      "incumbentName": "BILIRAKIS, GUS M",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 948234,
+      "incumbentCashOnHand": "121417.04",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "FL-24",
+      "stateFips": "12",
+      "districtFips": "24",
+      "stateAbbr": "FL",
+      "apiDistrictName": "FL District 24",
+      "apiState": "FL",
+      "incumbentName": "WILSON, FREDERICA S.",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 672063,
+      "incumbentCashOnHand": "497199.62",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "FL-17",
+      "stateFips": "12",
+      "districtFips": "17",
+      "stateAbbr": "FL",
+      "apiDistrictName": "FL District 17",
+      "apiState": "FL",
+      "incumbentName": "STEUBE, GREG",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 593460,
+      "incumbentCashOnHand": "1591295.8",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "FL-18",
+      "stateFips": "12",
+      "districtFips": "18",
+      "stateAbbr": "FL",
+      "apiDistrictName": "FL District 18",
+      "apiState": "FL",
+      "incumbentName": "FRANKLIN, SCOTT MR.",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 186120,
+      "incumbentCashOnHand": "481895.48",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "FL-25",
+      "stateFips": "12",
+      "districtFips": "25",
+      "stateAbbr": "FL",
+      "apiDistrictName": "FL District 25",
+      "apiState": "FL",
+      "incumbentName": "WASSERMAN SCHULTZ, DEBBIE",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 1629453,
+      "incumbentCashOnHand": "1057308.92",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "FL-15",
+      "stateFips": "12",
+      "districtFips": "15",
+      "stateAbbr": "FL",
+      "apiDistrictName": "FL District 15",
+      "apiState": "FL",
+      "incumbentName": "LEE, LAUREL",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 286866,
+      "incumbentCashOnHand": "434770.5",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "FL-28",
+      "stateFips": "12",
+      "districtFips": "28",
+      "stateAbbr": "FL",
+      "apiDistrictName": "FL District 28",
+      "apiState": "FL",
+      "incumbentName": "GIMENEZ, CARLOS",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 1018296,
+      "incumbentCashOnHand": "576027.97",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "FL-10",
+      "stateFips": "12",
+      "districtFips": "10",
+      "stateAbbr": "FL",
+      "apiDistrictName": "FL District 10",
+      "apiState": "FL",
+      "incumbentName": "FROST, MAXWELL ALEJANDRO",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "1091725.72",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "FL-22",
+      "stateFips": "12",
+      "districtFips": "22",
+      "stateAbbr": "FL",
+      "apiDistrictName": "FL District 22",
+      "apiState": "FL",
+      "incumbentName": "FRANKEL, LOIS J.",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 1776516,
+      "incumbentCashOnHand": "287321.25",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "FL-21",
+      "stateFips": "12",
+      "districtFips": "21",
+      "stateAbbr": "FL",
+      "apiDistrictName": "FL District 21",
+      "apiState": "FL",
+      "incumbentName": "MAST, BRIAN",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 4886928,
+      "incumbentCashOnHand": "1771377.66",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "FL-11",
+      "stateFips": "12",
+      "districtFips": "11",
+      "stateAbbr": "FL",
+      "apiDistrictName": "FL District 11",
+      "apiState": "FL",
+      "incumbentName": "WEBSTER, DANIEL",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 546252,
+      "incumbentCashOnHand": "100028.54",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "FL-26",
+      "stateFips": "12",
+      "districtFips": "26",
+      "stateAbbr": "FL",
+      "apiDistrictName": "FL District 26",
+      "apiState": "FL",
+      "incumbentName": "DIAZ-BALART, MARIO",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 4538184,
+      "incumbentCashOnHand": "1819320.2",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "FL-19",
+      "stateFips": "12",
+      "districtFips": "19",
+      "stateAbbr": "FL",
+      "apiDistrictName": "FL District 19",
+      "apiState": "FL",
+      "incumbentName": "DONALDS, BYRON",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 215832,
+      "incumbentCashOnHand": "1740010.46",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "GA-11",
+      "stateFips": "13",
+      "districtFips": "11",
+      "stateAbbr": "GA",
+      "apiDistrictName": "GA District 11",
+      "apiState": "GA",
+      "incumbentName": "LOUDERMILK, BARRY",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 381360,
+      "incumbentCashOnHand": "172983.85",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "GA-12",
+      "stateFips": "13",
+      "districtFips": "12",
+      "stateAbbr": "GA",
+      "apiDistrictName": "GA District 12",
+      "apiState": "GA",
+      "incumbentName": "ALLEN, RICHARD W",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 861714,
+      "incumbentCashOnHand": "1174956.66",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "GA-13",
+      "stateFips": "13",
+      "districtFips": "13",
+      "stateAbbr": "GA",
+      "apiDistrictName": "GA District 13",
+      "apiState": "GA",
+      "incumbentName": "SCOTT, DAVID ALBERT",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 769713,
+      "incumbentCashOnHand": "174524.68",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "GA-14",
+      "stateFips": "13",
+      "districtFips": "14",
+      "stateAbbr": "GA",
+      "apiDistrictName": "GA District 14",
+      "apiState": "GA",
+      "incumbentName": "GREENE, MARJORIE TAYLOR",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "855505.7",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "GA-10",
+      "stateFips": "13",
+      "districtFips": "10",
+      "stateAbbr": "GA",
+      "apiDistrictName": "GA District 10",
+      "apiState": "GA",
+      "incumbentName": "Mike Collins",
+      "incumbentParty": null,
+      "incumbentIsraelScore": null,
+      "incumbentTotalIsraelFunding": null,
+      "incumbentCashOnHand": null,
+      "matched": true
+    },
+    {
+      "geoJsonKey": "IL-13",
+      "stateFips": "17",
+      "districtFips": "13",
+      "stateAbbr": "IL",
+      "apiDistrictName": "IL District 13",
+      "apiState": "IL",
+      "incumbentName": "BUDZINSKI, NIKKI",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 45000,
+      "incumbentCashOnHand": "1784732.35",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "IL-14",
+      "stateFips": "17",
+      "districtFips": "14",
+      "stateAbbr": "IL",
+      "apiDistrictName": "IL District 14",
+      "apiState": "IL",
+      "incumbentName": "UNDERWOOD, LAUREN",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "1055102.02",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "IL-16",
+      "stateFips": "17",
+      "districtFips": "16",
+      "stateAbbr": "IL",
+      "apiDistrictName": "IL District 16",
+      "apiState": "IL",
+      "incumbentName": "LAHOOD, DARIN MCKAY",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 513180,
+      "incumbentCashOnHand": "5521283.07",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "IL-12",
+      "stateFips": "17",
+      "districtFips": "12",
+      "stateAbbr": "IL",
+      "apiDistrictName": "IL District 12",
+      "apiState": "IL",
+      "incumbentName": "BOST, MICHAEL",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 620739,
+      "incumbentCashOnHand": "352296.01",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "IL-17",
+      "stateFips": "17",
+      "districtFips": "17",
+      "stateAbbr": "IL",
+      "apiDistrictName": "IL District 17",
+      "apiState": "IL",
+      "incumbentName": "SORENSEN, ERIC",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 83367,
+      "incumbentCashOnHand": "112794.28",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "IL-15",
+      "stateFips": "17",
+      "districtFips": "15",
+      "stateAbbr": "IL",
+      "apiDistrictName": "IL District 15",
+      "apiState": "IL",
+      "incumbentName": "MILLER, MARY",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 12000,
+      "incumbentCashOnHand": "646256.34",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "IL-10",
+      "stateFips": "17",
+      "districtFips": "10",
+      "stateAbbr": "IL",
+      "apiDistrictName": "IL District 10",
+      "apiState": "IL",
+      "incumbentName": "SCHNEIDER, BRADLEY S.",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 1643271,
+      "incumbentCashOnHand": "971426.09",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "IL-11",
+      "stateFips": "17",
+      "districtFips": "11",
+      "stateAbbr": "IL",
+      "apiDistrictName": "IL District 11",
+      "apiState": "IL",
+      "incumbentName": "FOSTER, G. WILLIAM (BILL)",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 147000,
+      "incumbentCashOnHand": "1550564.66",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "MI-13",
+      "stateFips": "26",
+      "districtFips": "13",
+      "stateAbbr": "MI",
+      "apiDistrictName": "MI District 13",
+      "apiState": "MI",
+      "incumbentName": "THANEDAR, SHRI",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 351108,
+      "incumbentCashOnHand": "6904567.7",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "MI-12",
+      "stateFips": "26",
+      "districtFips": "12",
+      "stateAbbr": "MI",
+      "apiDistrictName": "MI District 12",
+      "apiState": "MI",
+      "incumbentName": "TLAIB, RASHIDA",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "4263554.98",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "MI-10",
+      "stateFips": "26",
+      "districtFips": "10",
+      "stateAbbr": "MI",
+      "apiDistrictName": "MI District 10",
+      "apiState": "MI",
+      "incumbentName": "JAMES, JOHN",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 684474,
+      "incumbentCashOnHand": "734681.03",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "MI-11",
+      "stateFips": "26",
+      "districtFips": "11",
+      "stateAbbr": "MI",
+      "apiDistrictName": "MI District 11",
+      "apiState": "MI",
+      "incumbentName": "Haley M. Stevens",
+      "incumbentParty": null,
+      "incumbentIsraelScore": null,
+      "incumbentTotalIsraelFunding": null,
+      "incumbentCashOnHand": null,
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NJ-12",
+      "stateFips": "34",
+      "districtFips": "12",
+      "stateAbbr": "NJ",
+      "apiDistrictName": "NJ District 12",
+      "apiState": "NJ",
+      "incumbentName": "COLEMAN, BONNIE WATSON",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "39378.09",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NJ-10",
+      "stateFips": "34",
+      "districtFips": "10",
+      "stateAbbr": "NJ",
+      "apiDistrictName": "NJ District 10",
+      "apiState": "NJ",
+      "incumbentName": "MCIVER, LAMONICA",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "163212.47",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NJ-11",
+      "stateFips": "34",
+      "districtFips": "11",
+      "stateAbbr": "NJ",
+      "apiDistrictName": "NJ District 11",
+      "apiState": "NJ",
+      "incumbentName": "SHERRILL, MIKIE",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 834795,
+      "incumbentCashOnHand": "184065.51",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NY-16",
+      "stateFips": "36",
+      "districtFips": "16",
+      "stateAbbr": "NY",
+      "apiDistrictName": "NY District 16",
+      "apiState": "NY",
+      "incumbentName": "LATIMER, GEORGE",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 30171348,
+      "incumbentCashOnHand": "192653.99",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NY-17",
+      "stateFips": "36",
+      "districtFips": "17",
+      "stateAbbr": "NY",
+      "apiDistrictName": "NY District 17",
+      "apiState": "NY",
+      "incumbentName": "LAWLER, MICHAEL VINCENT",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 1861110,
+      "incumbentCashOnHand": "169368.52",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NY-18",
+      "stateFips": "36",
+      "districtFips": "18",
+      "stateAbbr": "NY",
+      "apiDistrictName": "NY District 18",
+      "apiState": "NY",
+      "incumbentName": "RYAN, PATRICK",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 60000,
+      "incumbentCashOnHand": "167191.36",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NY-19",
+      "stateFips": "36",
+      "districtFips": "19",
+      "stateAbbr": "NY",
+      "apiDistrictName": "NY District 19",
+      "apiState": "NY",
+      "incumbentName": "RILEY, JOSH",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "68319.61",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NY-20",
+      "stateFips": "36",
+      "districtFips": "20",
+      "stateAbbr": "NY",
+      "apiDistrictName": "NY District 20",
+      "apiState": "NY",
+      "incumbentName": "TONKO, PAUL DAVID",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "599501.91",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NY-21",
+      "stateFips": "36",
+      "districtFips": "21",
+      "stateAbbr": "NY",
+      "apiDistrictName": "NY District 21",
+      "apiState": "NY",
+      "incumbentName": "STEFANIK, ELISE M.",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 1752954,
+      "incumbentCashOnHand": "8747917.48",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NY-22",
+      "stateFips": "36",
+      "districtFips": "22",
+      "stateAbbr": "NY",
+      "apiDistrictName": "NY District 22",
+      "apiState": "NY",
+      "incumbentName": "MANNION, JOHN W",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "128241.3",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NY-23",
+      "stateFips": "36",
+      "districtFips": "23",
+      "stateAbbr": "NY",
+      "apiDistrictName": "NY District 23",
+      "apiState": "NY",
+      "incumbentName": "LANGWORTHY, NICK",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 373914,
+      "incumbentCashOnHand": "1093808.09",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NY-24",
+      "stateFips": "36",
+      "districtFips": "24",
+      "stateAbbr": "NY",
+      "apiDistrictName": "NY District 24",
+      "apiState": "NY",
+      "incumbentName": "TENNEY, CLAUDIA",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 1081164,
+      "incumbentCashOnHand": "355002.36",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NY-25",
+      "stateFips": "36",
+      "districtFips": "25",
+      "stateAbbr": "NY",
+      "apiDistrictName": "NY District 25",
+      "apiState": "NY",
+      "incumbentName": "MORELLE, JOSEPH D",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 940890,
+      "incumbentCashOnHand": "380204.28",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NY-26",
+      "stateFips": "36",
+      "districtFips": "26",
+      "stateAbbr": "NY",
+      "apiDistrictName": "NY District 26",
+      "apiState": "NY",
+      "incumbentName": "KENNEDY, TIMOTHY",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 72156,
+      "incumbentCashOnHand": "339064.55",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NY-10",
+      "stateFips": "36",
+      "districtFips": "10",
+      "stateAbbr": "NY",
+      "apiDistrictName": "NY District 10",
+      "apiState": "NY",
+      "incumbentName": "GOLDMAN, DANIEL",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 787554,
+      "incumbentCashOnHand": "932248.88",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NY-11",
+      "stateFips": "36",
+      "districtFips": "11",
+      "stateAbbr": "NY",
+      "apiDistrictName": "NY District 11",
+      "apiState": "NY",
+      "incumbentName": "MALLIOTAKIS, NICOLE",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 899316,
+      "incumbentCashOnHand": "1346246.46",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NY-12",
+      "stateFips": "36",
+      "districtFips": "12",
+      "stateAbbr": "NY",
+      "apiDistrictName": "NY District 12",
+      "apiState": "NY",
+      "incumbentName": "NADLER, JERROLD L",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 165900,
+      "incumbentCashOnHand": "194551.65",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NY-13",
+      "stateFips": "36",
+      "districtFips": "13",
+      "stateAbbr": "NY",
+      "apiDistrictName": "NY District 13",
+      "apiState": "NY",
+      "incumbentName": "ESPAILLAT, ADRIANO",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 1291374,
+      "incumbentCashOnHand": "396590.78",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NY-14",
+      "stateFips": "36",
+      "districtFips": "14",
+      "stateAbbr": "NY",
+      "apiDistrictName": "NY District 14",
+      "apiState": "NY",
+      "incumbentName": "OCASIO-CORTEZ, ALEXANDRIA",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "3734646.88",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NY-15",
+      "stateFips": "36",
+      "districtFips": "15",
+      "stateAbbr": "NY",
+      "apiDistrictName": "NY District 15",
+      "apiState": "NY",
+      "incumbentName": "TORRES, RITCHIE JOHN",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 2432964,
+      "incumbentCashOnHand": "11423981.97",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NC-11",
+      "stateFips": "37",
+      "districtFips": "11",
+      "stateAbbr": "NC",
+      "apiDistrictName": "NC District 11",
+      "apiState": "NC",
+      "incumbentName": "EDWARDS, CHUCK",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 297855,
+      "incumbentCashOnHand": "108764.04",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NC-12",
+      "stateFips": "37",
+      "districtFips": "12",
+      "stateAbbr": "NC",
+      "apiDistrictName": "NC District 12",
+      "apiState": "NC",
+      "incumbentName": "ADAMS, ALMA SHEALEY",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 480900,
+      "incumbentCashOnHand": "573409.37",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NC-13",
+      "stateFips": "37",
+      "districtFips": "13",
+      "stateAbbr": "NC",
+      "apiDistrictName": "NC District 13",
+      "apiState": "NC",
+      "incumbentName": "KNOTT, BRAD",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 60000,
+      "incumbentCashOnHand": "17260.1",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NC-14",
+      "stateFips": "37",
+      "districtFips": "14",
+      "stateAbbr": "NC",
+      "apiDistrictName": "NC District 14",
+      "apiState": "NC",
+      "incumbentName": "MOORE, TIM",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 30060,
+      "incumbentCashOnHand": "923566.56",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "NC-10",
+      "stateFips": "37",
+      "districtFips": "10",
+      "stateAbbr": "NC",
+      "apiDistrictName": "NC District 10",
+      "apiState": "NC",
+      "incumbentName": "HARRIGAN, PAT",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 90000,
+      "incumbentCashOnHand": "52841.35",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "OH-13",
+      "stateFips": "39",
+      "districtFips": "13",
+      "stateAbbr": "OH",
+      "apiDistrictName": "OH District 13",
+      "apiState": "OH",
+      "incumbentName": "SYKES, EMILIA",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 243027,
+      "incumbentCashOnHand": "122678.54",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "OH-14",
+      "stateFips": "39",
+      "districtFips": "14",
+      "stateAbbr": "OH",
+      "apiDistrictName": "OH District 14",
+      "apiState": "OH",
+      "incumbentName": "JOYCE, DAVID P.",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 472710,
+      "incumbentCashOnHand": "2742875.45",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "OH-12",
+      "stateFips": "39",
+      "districtFips": "12",
+      "stateAbbr": "OH",
+      "apiDistrictName": "OH District 12",
+      "apiState": "OH",
+      "incumbentName": "BALDERSON, WILLIAM TROY",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 468660,
+      "incumbentCashOnHand": "1006424.82",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "OH-15",
+      "stateFips": "39",
+      "districtFips": "15",
+      "stateAbbr": "OH",
+      "apiDistrictName": "OH District 15",
+      "apiState": "OH",
+      "incumbentName": "CAREY, MIKE",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 355581,
+      "incumbentCashOnHand": "161294.31",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "OH-10",
+      "stateFips": "39",
+      "districtFips": "10",
+      "stateAbbr": "OH",
+      "apiDistrictName": "OH District 10",
+      "apiState": "OH",
+      "incumbentName": "TURNER, MICHAEL R REP.",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 1667379,
+      "incumbentCashOnHand": "430424.96",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "OH-11",
+      "stateFips": "39",
+      "districtFips": "11",
+      "stateAbbr": "OH",
+      "apiDistrictName": "OH District 11",
+      "apiState": "OH",
+      "incumbentName": "BROWN, M SHONTEL",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 2636776,
+      "incumbentCashOnHand": "855814.06",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "PA-13",
+      "stateFips": "42",
+      "districtFips": "13",
+      "stateAbbr": "PA",
+      "apiDistrictName": "PA District 13",
+      "apiState": "PA",
+      "incumbentName": "JOYCE, JOHN",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "2600138.09",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "PA-14",
+      "stateFips": "42",
+      "districtFips": "14",
+      "stateAbbr": "PA",
+      "apiDistrictName": "PA District 14",
+      "apiState": "PA",
+      "incumbentName": "RESCHENTHALER, GUY MR.",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 889680,
+      "incumbentCashOnHand": "549080.16",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "PA-16",
+      "stateFips": "42",
+      "districtFips": "16",
+      "stateAbbr": "PA",
+      "apiDistrictName": "PA District 16",
+      "apiState": "PA",
+      "incumbentName": "KELLY, GEORGE J JR",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 536130,
+      "incumbentCashOnHand": "1042687.78",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "PA-12",
+      "stateFips": "42",
+      "districtFips": "12",
+      "stateAbbr": "PA",
+      "apiDistrictName": "PA District 12",
+      "apiState": "PA",
+      "incumbentName": "LEE, SUMMER",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "1011579.11",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "PA-17",
+      "stateFips": "42",
+      "districtFips": "17",
+      "stateAbbr": "PA",
+      "apiDistrictName": "PA District 17",
+      "apiState": "PA",
+      "incumbentName": "DELUZIO, CHRISTOPHER",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 29259,
+      "incumbentCashOnHand": "353671.67",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "PA-15",
+      "stateFips": "42",
+      "districtFips": "15",
+      "stateAbbr": "PA",
+      "apiDistrictName": "PA District 15",
+      "apiState": "PA",
+      "incumbentName": "THOMPSON, GLENN MR.",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 281652,
+      "incumbentCashOnHand": "791793.9",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "PA-10",
+      "stateFips": "42",
+      "districtFips": "10",
+      "stateAbbr": "PA",
+      "apiDistrictName": "PA District 10",
+      "apiState": "PA",
+      "incumbentName": "PERRY, SCOTT",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 1635312,
+      "incumbentCashOnHand": "81918.98",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "PA-11",
+      "stateFips": "42",
+      "districtFips": "11",
+      "stateAbbr": "PA",
+      "apiDistrictName": "PA District 11",
+      "apiState": "PA",
+      "incumbentName": "SMUCKER, LLOYD K.",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 389916,
+      "incumbentCashOnHand": "904091.93",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-13",
+      "stateFips": "48",
+      "districtFips": "13",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 13",
+      "apiState": "TX",
+      "incumbentName": "JACKSON, RONNY LYNN",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 596952,
+      "incumbentCashOnHand": "3401947.63",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-20",
+      "stateFips": "48",
+      "districtFips": "20",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 20",
+      "apiState": "TX",
+      "incumbentName": "CASTRO, JOAQUIN",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "138657.52",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-14",
+      "stateFips": "48",
+      "districtFips": "14",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 14",
+      "apiState": "TX",
+      "incumbentName": "ELLZEY, JOHN KEVIN SR.",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 448740,
+      "incumbentCashOnHand": "1095447.64",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-33",
+      "stateFips": "48",
+      "districtFips": "33",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 33",
+      "apiState": "TX",
+      "incumbentName": "VEASEY, MARC ALLISON",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 1446123,
+      "incumbentCashOnHand": "1009480.43",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-16",
+      "stateFips": "48",
+      "districtFips": "16",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 16",
+      "apiState": "TX",
+      "incumbentName": "ESCOBAR, VERONICA",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "115844.62",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-30",
+      "stateFips": "48",
+      "districtFips": "30",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 30",
+      "apiState": "TX",
+      "incumbentName": "CROCKETT, JASMINE",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 18000,
+      "incumbentCashOnHand": "1611233.21",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-35",
+      "stateFips": "48",
+      "districtFips": "35",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 35",
+      "apiState": "TX",
+      "incumbentName": "CASAR, GREG",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "370838.96",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-12",
+      "stateFips": "48",
+      "districtFips": "12",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 12",
+      "apiState": "TX",
+      "incumbentName": "GOLDMAN, CRAIG",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 302430,
+      "incumbentCashOnHand": "535896.46",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-24",
+      "stateFips": "48",
+      "districtFips": "24",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 24",
+      "apiState": "TX",
+      "incumbentName": "VAN DUYNE, ELIZABETH ANN",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 282144,
+      "incumbentCashOnHand": "1960872.11",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-32",
+      "stateFips": "48",
+      "districtFips": "32",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 32",
+      "apiState": "TX",
+      "incumbentName": "JOHNSON, JULIE",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 30000,
+      "incumbentCashOnHand": "230903.4",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-34",
+      "stateFips": "48",
+      "districtFips": "34",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 34",
+      "apiState": "TX",
+      "incumbentName": "GONZALEZ, VICENTE",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 1302444,
+      "incumbentCashOnHand": "282059.76",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-36",
+      "stateFips": "48",
+      "districtFips": "36",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 36",
+      "apiState": "TX",
+      "incumbentName": "BABIN, BRIAN",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 2392614,
+      "incumbentCashOnHand": "646202.65",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-38",
+      "stateFips": "48",
+      "districtFips": "38",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 38",
+      "apiState": "TX",
+      "incumbentName": "HUNT, WESLEY",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 390576,
+      "incumbentCashOnHand": "2487176.16",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-17",
+      "stateFips": "48",
+      "districtFips": "17",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 17",
+      "apiState": "TX",
+      "incumbentName": "SESSIONS, PETE",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 619773,
+      "incumbentCashOnHand": "440935.66",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-25",
+      "stateFips": "48",
+      "districtFips": "25",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 25",
+      "apiState": "TX",
+      "incumbentName": "WILLIAMS, ROGER",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 432852,
+      "incumbentCashOnHand": "571500.96",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-37",
+      "stateFips": "48",
+      "districtFips": "37",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 37",
+      "apiState": "TX",
+      "incumbentName": "DOGGETT, LLOYD",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "6227828.08",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-15",
+      "stateFips": "48",
+      "districtFips": "15",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 15",
+      "apiState": "TX",
+      "incumbentName": "DE LA CRUZ, MONICA",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 582552,
+      "incumbentCashOnHand": "613969.89",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-28",
+      "stateFips": "48",
+      "districtFips": "28",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 28",
+      "apiState": "TX",
+      "incumbentName": "CUELLAR, HENRY R.",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 10289727,
+      "incumbentCashOnHand": "47958.91",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-29",
+      "stateFips": "48",
+      "districtFips": "29",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 29",
+      "apiState": "TX",
+      "incumbentName": "GARCIA, SYLVIA R",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 480015,
+      "incumbentCashOnHand": "371753.81",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-10",
+      "stateFips": "48",
+      "districtFips": "10",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 10",
+      "apiState": "TX",
+      "incumbentName": "MCCAUL, MICHAEL",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 3092068,
+      "incumbentCashOnHand": "131068.91",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-22",
+      "stateFips": "48",
+      "districtFips": "22",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 22",
+      "apiState": "TX",
+      "incumbentName": "NEHLS, TROY",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 256920,
+      "incumbentCashOnHand": "289078.7",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-21",
+      "stateFips": "48",
+      "districtFips": "21",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 21",
+      "apiState": "TX",
+      "incumbentName": "ROY, CHIP",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 300000,
+      "incumbentCashOnHand": "2277316.63",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-11",
+      "stateFips": "48",
+      "districtFips": "11",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 11",
+      "apiState": "TX",
+      "incumbentName": "PFLUGER, AUGUST LEE II",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 799152,
+      "incumbentCashOnHand": "2324105.54",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-26",
+      "stateFips": "48",
+      "districtFips": "26",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 26",
+      "apiState": "TX",
+      "incumbentName": "GILL, BRANDON",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 60000,
+      "incumbentCashOnHand": "127823.4",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-19",
+      "stateFips": "48",
+      "districtFips": "19",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 19",
+      "apiState": "TX",
+      "incumbentName": "ARRINGTON, JODEY",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 597312,
+      "incumbentCashOnHand": "1884196.33",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-23",
+      "stateFips": "48",
+      "districtFips": "23",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 23",
+      "apiState": "TX",
+      "incumbentName": "GONZALES, ERNEST ANTHONY TONY II",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 2440692,
+      "incumbentCashOnHand": "1458986.92",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-31",
+      "stateFips": "48",
+      "districtFips": "31",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 31",
+      "apiState": "TX",
+      "incumbentName": "CARTER, JOHN R REP.",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 357000,
+      "incumbentCashOnHand": "41438.95",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "TX-27",
+      "stateFips": "48",
+      "districtFips": "27",
+      "stateAbbr": "TX",
+      "apiDistrictName": "TX District 27",
+      "apiState": "TX",
+      "incumbentName": "CLOUD, MICHAEL",
+      "incumbentParty": "REP",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 459135,
+      "incumbentCashOnHand": "136877.29",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "VA-10",
+      "stateFips": "51",
+      "districtFips": "10",
+      "stateAbbr": "VA",
+      "apiDistrictName": "VA District 10",
+      "apiState": "VA",
+      "incumbentName": "SUBRAMANYAM, SUHAS",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 5,
+      "incumbentTotalIsraelFunding": 0,
+      "incumbentCashOnHand": "90833.44",
+      "matched": true
+    },
+    {
+      "geoJsonKey": "WA-10",
+      "stateFips": "53",
+      "districtFips": "10",
+      "stateAbbr": "WA",
+      "apiDistrictName": "WA District 10",
+      "apiState": "WA",
+      "incumbentName": "STRICKLAND, MARILYN",
+      "incumbentParty": "DEM",
+      "incumbentIsraelScore": 0,
+      "incumbentTotalIsraelFunding": 575436,
+      "incumbentCashOnHand": "580587.75",
+      "matched": true
+    }
+  ],
+  "unmatchedGeoJsonDistricts": [
+    {
+      "geoJsonKey": "AL-01",
+      "stateFips": "01",
+      "districtFips": "01",
+      "stateAbbr": "AL"
+    },
+    {
+      "geoJsonKey": "AL-02",
+      "stateFips": "01",
+      "districtFips": "02",
+      "stateAbbr": "AL"
+    },
+    {
+      "geoJsonKey": "AL-03",
+      "stateFips": "01",
+      "districtFips": "03",
+      "stateAbbr": "AL"
+    },
+    {
+      "geoJsonKey": "AL-04",
+      "stateFips": "01",
+      "districtFips": "04",
+      "stateAbbr": "AL"
+    },
+    {
+      "geoJsonKey": "AL-05",
+      "stateFips": "01",
+      "districtFips": "05",
+      "stateAbbr": "AL"
+    },
+    {
+      "geoJsonKey": "AL-06",
+      "stateFips": "01",
+      "districtFips": "06",
+      "stateAbbr": "AL"
+    },
+    {
+      "geoJsonKey": "AL-07",
+      "stateFips": "01",
+      "districtFips": "07",
+      "stateAbbr": "AL"
+    },
+    {
+      "geoJsonKey": "AK-00",
+      "stateFips": "02",
+      "districtFips": "00",
+      "stateAbbr": "AK"
+    },
+    {
+      "geoJsonKey": "AZ-03",
+      "stateFips": "04",
+      "districtFips": "03",
+      "stateAbbr": "AZ"
+    },
+    {
+      "geoJsonKey": "AZ-09",
+      "stateFips": "04",
+      "districtFips": "09",
+      "stateAbbr": "AZ"
+    },
+    {
+      "geoJsonKey": "AZ-01",
+      "stateFips": "04",
+      "districtFips": "01",
+      "stateAbbr": "AZ"
+    },
+    {
+      "geoJsonKey": "AZ-08",
+      "stateFips": "04",
+      "districtFips": "08",
+      "stateAbbr": "AZ"
+    },
+    {
+      "geoJsonKey": "AZ-05",
+      "stateFips": "04",
+      "districtFips": "05",
+      "stateAbbr": "AZ"
+    },
+    {
+      "geoJsonKey": "AZ-06",
+      "stateFips": "04",
+      "districtFips": "06",
+      "stateAbbr": "AZ"
+    },
+    {
+      "geoJsonKey": "AZ-04",
+      "stateFips": "04",
+      "districtFips": "04",
+      "stateAbbr": "AZ"
+    },
+    {
+      "geoJsonKey": "AZ-02",
+      "stateFips": "04",
+      "districtFips": "02",
+      "stateAbbr": "AZ"
+    },
+    {
+      "geoJsonKey": "AZ-07",
+      "stateFips": "04",
+      "districtFips": "07",
+      "stateAbbr": "AZ"
+    },
+    {
+      "geoJsonKey": "AR-03",
+      "stateFips": "05",
+      "districtFips": "03",
+      "stateAbbr": "AR"
+    },
+    {
+      "geoJsonKey": "AR-01",
+      "stateFips": "05",
+      "districtFips": "01",
+      "stateAbbr": "AR"
+    },
+    {
+      "geoJsonKey": "AR-04",
+      "stateFips": "05",
+      "districtFips": "04",
+      "stateAbbr": "AR"
+    },
+    {
+      "geoJsonKey": "AR-02",
+      "stateFips": "05",
+      "districtFips": "02",
+      "stateAbbr": "AR"
+    },
+    {
+      "geoJsonKey": "CA-03",
+      "stateFips": "06",
+      "districtFips": "03",
+      "stateAbbr": "CA"
+    },
+    {
+      "geoJsonKey": "CA-09",
+      "stateFips": "06",
+      "districtFips": "09",
+      "stateAbbr": "CA"
+    },
+    {
+      "geoJsonKey": "CA-01",
+      "stateFips": "06",
+      "districtFips": "01",
+      "stateAbbr": "CA"
+    },
+    {
+      "geoJsonKey": "CA-08",
+      "stateFips": "06",
+      "districtFips": "08",
+      "stateAbbr": "CA"
+    },
+    {
+      "geoJsonKey": "CA-05",
+      "stateFips": "06",
+      "districtFips": "05",
+      "stateAbbr": "CA"
+    },
+    {
+      "geoJsonKey": "CA-06",
+      "stateFips": "06",
+      "districtFips": "06",
+      "stateAbbr": "CA"
+    },
+    {
+      "geoJsonKey": "CA-04",
+      "stateFips": "06",
+      "districtFips": "04",
+      "stateAbbr": "CA"
+    },
+    {
+      "geoJsonKey": "CA-02",
+      "stateFips": "06",
+      "districtFips": "02",
+      "stateAbbr": "CA"
+    },
+    {
+      "geoJsonKey": "CA-07",
+      "stateFips": "06",
+      "districtFips": "07",
+      "stateAbbr": "CA"
+    },
+    {
+      "geoJsonKey": "CO-03",
+      "stateFips": "08",
+      "districtFips": "03",
+      "stateAbbr": "CO"
+    },
+    {
+      "geoJsonKey": "CO-01",
+      "stateFips": "08",
+      "districtFips": "01",
+      "stateAbbr": "CO"
+    },
+    {
+      "geoJsonKey": "CO-08",
+      "stateFips": "08",
+      "districtFips": "08",
+      "stateAbbr": "CO"
+    },
+    {
+      "geoJsonKey": "CO-05",
+      "stateFips": "08",
+      "districtFips": "05",
+      "stateAbbr": "CO"
+    },
+    {
+      "geoJsonKey": "CO-06",
+      "stateFips": "08",
+      "districtFips": "06",
+      "stateAbbr": "CO"
+    },
+    {
+      "geoJsonKey": "CO-04",
+      "stateFips": "08",
+      "districtFips": "04",
+      "stateAbbr": "CO"
+    },
+    {
+      "geoJsonKey": "CO-02",
+      "stateFips": "08",
+      "districtFips": "02",
+      "stateAbbr": "CO"
+    },
+    {
+      "geoJsonKey": "CO-07",
+      "stateFips": "08",
+      "districtFips": "07",
+      "stateAbbr": "CO"
+    },
+    {
+      "geoJsonKey": "CT-03",
+      "stateFips": "09",
+      "districtFips": "03",
+      "stateAbbr": "CT"
+    },
+    {
+      "geoJsonKey": "CT-01",
+      "stateFips": "09",
+      "districtFips": "01",
+      "stateAbbr": "CT"
+    },
+    {
+      "geoJsonKey": "CT-05",
+      "stateFips": "09",
+      "districtFips": "05",
+      "stateAbbr": "CT"
+    },
+    {
+      "geoJsonKey": "CT-04",
+      "stateFips": "09",
+      "districtFips": "04",
+      "stateAbbr": "CT"
+    },
+    {
+      "geoJsonKey": "CT-02",
+      "stateFips": "09",
+      "districtFips": "02",
+      "stateAbbr": "CT"
+    },
+    {
+      "geoJsonKey": "CT-ZZ",
+      "stateFips": "09",
+      "districtFips": "ZZ",
+      "stateAbbr": "CT"
+    },
+    {
+      "geoJsonKey": "DE-00",
+      "stateFips": "10",
+      "districtFips": "00",
+      "stateAbbr": "DE"
+    },
+    {
+      "geoJsonKey": "DC-98",
+      "stateFips": "11",
+      "districtFips": "98",
+      "stateAbbr": "DC"
+    },
+    {
+      "geoJsonKey": "FL-03",
+      "stateFips": "12",
+      "districtFips": "03",
+      "stateAbbr": "FL"
+    },
+    {
+      "geoJsonKey": "FL-09",
+      "stateFips": "12",
+      "districtFips": "09",
+      "stateAbbr": "FL"
+    },
+    {
+      "geoJsonKey": "FL-01",
+      "stateFips": "12",
+      "districtFips": "01",
+      "stateAbbr": "FL"
+    },
+    {
+      "geoJsonKey": "FL-08",
+      "stateFips": "12",
+      "districtFips": "08",
+      "stateAbbr": "FL"
+    },
+    {
+      "geoJsonKey": "FL-05",
+      "stateFips": "12",
+      "districtFips": "05",
+      "stateAbbr": "FL"
+    },
+    {
+      "geoJsonKey": "FL-06",
+      "stateFips": "12",
+      "districtFips": "06",
+      "stateAbbr": "FL"
+    },
+    {
+      "geoJsonKey": "FL-04",
+      "stateFips": "12",
+      "districtFips": "04",
+      "stateAbbr": "FL"
+    },
+    {
+      "geoJsonKey": "FL-02",
+      "stateFips": "12",
+      "districtFips": "02",
+      "stateAbbr": "FL"
+    },
+    {
+      "geoJsonKey": "FL-07",
+      "stateFips": "12",
+      "districtFips": "07",
+      "stateAbbr": "FL"
+    },
+    {
+      "geoJsonKey": "GA-01",
+      "stateFips": "13",
+      "districtFips": "01",
+      "stateAbbr": "GA"
+    },
+    {
+      "geoJsonKey": "GA-02",
+      "stateFips": "13",
+      "districtFips": "02",
+      "stateAbbr": "GA"
+    },
+    {
+      "geoJsonKey": "GA-03",
+      "stateFips": "13",
+      "districtFips": "03",
+      "stateAbbr": "GA"
+    },
+    {
+      "geoJsonKey": "GA-04",
+      "stateFips": "13",
+      "districtFips": "04",
+      "stateAbbr": "GA"
+    },
+    {
+      "geoJsonKey": "GA-05",
+      "stateFips": "13",
+      "districtFips": "05",
+      "stateAbbr": "GA"
+    },
+    {
+      "geoJsonKey": "GA-06",
+      "stateFips": "13",
+      "districtFips": "06",
+      "stateAbbr": "GA"
+    },
+    {
+      "geoJsonKey": "GA-07",
+      "stateFips": "13",
+      "districtFips": "07",
+      "stateAbbr": "GA"
+    },
+    {
+      "geoJsonKey": "GA-08",
+      "stateFips": "13",
+      "districtFips": "08",
+      "stateAbbr": "GA"
+    },
+    {
+      "geoJsonKey": "GA-09",
+      "stateFips": "13",
+      "districtFips": "09",
+      "stateAbbr": "GA"
+    },
+    {
+      "geoJsonKey": "HI-02",
+      "stateFips": "15",
+      "districtFips": "02",
+      "stateAbbr": "HI"
+    },
+    {
+      "geoJsonKey": "HI-01",
+      "stateFips": "15",
+      "districtFips": "01",
+      "stateAbbr": "HI"
+    },
+    {
+      "geoJsonKey": "ID-01",
+      "stateFips": "16",
+      "districtFips": "01",
+      "stateAbbr": "ID"
+    },
+    {
+      "geoJsonKey": "ID-02",
+      "stateFips": "16",
+      "districtFips": "02",
+      "stateAbbr": "ID"
+    },
+    {
+      "geoJsonKey": "IL-03",
+      "stateFips": "17",
+      "districtFips": "03",
+      "stateAbbr": "IL"
+    },
+    {
+      "geoJsonKey": "IL-09",
+      "stateFips": "17",
+      "districtFips": "09",
+      "stateAbbr": "IL"
+    },
+    {
+      "geoJsonKey": "IL-01",
+      "stateFips": "17",
+      "districtFips": "01",
+      "stateAbbr": "IL"
+    },
+    {
+      "geoJsonKey": "IL-08",
+      "stateFips": "17",
+      "districtFips": "08",
+      "stateAbbr": "IL"
+    },
+    {
+      "geoJsonKey": "IL-05",
+      "stateFips": "17",
+      "districtFips": "05",
+      "stateAbbr": "IL"
+    },
+    {
+      "geoJsonKey": "IL-06",
+      "stateFips": "17",
+      "districtFips": "06",
+      "stateAbbr": "IL"
+    },
+    {
+      "geoJsonKey": "IL-04",
+      "stateFips": "17",
+      "districtFips": "04",
+      "stateAbbr": "IL"
+    },
+    {
+      "geoJsonKey": "IL-02",
+      "stateFips": "17",
+      "districtFips": "02",
+      "stateAbbr": "IL"
+    },
+    {
+      "geoJsonKey": "IL-07",
+      "stateFips": "17",
+      "districtFips": "07",
+      "stateAbbr": "IL"
+    },
+    {
+      "geoJsonKey": "IL-ZZ",
+      "stateFips": "17",
+      "districtFips": "ZZ",
+      "stateAbbr": "IL"
+    },
+    {
+      "geoJsonKey": "IN-03",
+      "stateFips": "18",
+      "districtFips": "03",
+      "stateAbbr": "IN"
+    },
+    {
+      "geoJsonKey": "IN-09",
+      "stateFips": "18",
+      "districtFips": "09",
+      "stateAbbr": "IN"
+    },
+    {
+      "geoJsonKey": "IN-01",
+      "stateFips": "18",
+      "districtFips": "01",
+      "stateAbbr": "IN"
+    },
+    {
+      "geoJsonKey": "IN-08",
+      "stateFips": "18",
+      "districtFips": "08",
+      "stateAbbr": "IN"
+    },
+    {
+      "geoJsonKey": "IN-05",
+      "stateFips": "18",
+      "districtFips": "05",
+      "stateAbbr": "IN"
+    },
+    {
+      "geoJsonKey": "IN-06",
+      "stateFips": "18",
+      "districtFips": "06",
+      "stateAbbr": "IN"
+    },
+    {
+      "geoJsonKey": "IN-04",
+      "stateFips": "18",
+      "districtFips": "04",
+      "stateAbbr": "IN"
+    },
+    {
+      "geoJsonKey": "IN-02",
+      "stateFips": "18",
+      "districtFips": "02",
+      "stateAbbr": "IN"
+    },
+    {
+      "geoJsonKey": "IN-07",
+      "stateFips": "18",
+      "districtFips": "07",
+      "stateAbbr": "IN"
+    },
+    {
+      "geoJsonKey": "IA-03",
+      "stateFips": "19",
+      "districtFips": "03",
+      "stateAbbr": "IA"
+    },
+    {
+      "geoJsonKey": "IA-01",
+      "stateFips": "19",
+      "districtFips": "01",
+      "stateAbbr": "IA"
+    },
+    {
+      "geoJsonKey": "IA-04",
+      "stateFips": "19",
+      "districtFips": "04",
+      "stateAbbr": "IA"
+    },
+    {
+      "geoJsonKey": "IA-02",
+      "stateFips": "19",
+      "districtFips": "02",
+      "stateAbbr": "IA"
+    },
+    {
+      "geoJsonKey": "KS-01",
+      "stateFips": "20",
+      "districtFips": "01",
+      "stateAbbr": "KS"
+    },
+    {
+      "geoJsonKey": "KS-04",
+      "stateFips": "20",
+      "districtFips": "04",
+      "stateAbbr": "KS"
+    },
+    {
+      "geoJsonKey": "KS-02",
+      "stateFips": "20",
+      "districtFips": "02",
+      "stateAbbr": "KS"
+    },
+    {
+      "geoJsonKey": "KS-03",
+      "stateFips": "20",
+      "districtFips": "03",
+      "stateAbbr": "KS"
+    },
+    {
+      "geoJsonKey": "KY-03",
+      "stateFips": "21",
+      "districtFips": "03",
+      "stateAbbr": "KY"
+    },
+    {
+      "geoJsonKey": "KY-01",
+      "stateFips": "21",
+      "districtFips": "01",
+      "stateAbbr": "KY"
+    },
+    {
+      "geoJsonKey": "KY-05",
+      "stateFips": "21",
+      "districtFips": "05",
+      "stateAbbr": "KY"
+    },
+    {
+      "geoJsonKey": "KY-06",
+      "stateFips": "21",
+      "districtFips": "06",
+      "stateAbbr": "KY"
+    },
+    {
+      "geoJsonKey": "KY-04",
+      "stateFips": "21",
+      "districtFips": "04",
+      "stateAbbr": "KY"
+    },
+    {
+      "geoJsonKey": "KY-02",
+      "stateFips": "21",
+      "districtFips": "02",
+      "stateAbbr": "KY"
+    },
+    {
+      "geoJsonKey": "LA-01",
+      "stateFips": "22",
+      "districtFips": "01",
+      "stateAbbr": "LA"
+    },
+    {
+      "geoJsonKey": "LA-02",
+      "stateFips": "22",
+      "districtFips": "02",
+      "stateAbbr": "LA"
+    },
+    {
+      "geoJsonKey": "LA-03",
+      "stateFips": "22",
+      "districtFips": "03",
+      "stateAbbr": "LA"
+    },
+    {
+      "geoJsonKey": "LA-04",
+      "stateFips": "22",
+      "districtFips": "04",
+      "stateAbbr": "LA"
+    },
+    {
+      "geoJsonKey": "LA-05",
+      "stateFips": "22",
+      "districtFips": "05",
+      "stateAbbr": "LA"
+    },
+    {
+      "geoJsonKey": "LA-06",
+      "stateFips": "22",
+      "districtFips": "06",
+      "stateAbbr": "LA"
+    },
+    {
+      "geoJsonKey": "ME-01",
+      "stateFips": "23",
+      "districtFips": "01",
+      "stateAbbr": "ME"
+    },
+    {
+      "geoJsonKey": "ME-02",
+      "stateFips": "23",
+      "districtFips": "02",
+      "stateAbbr": "ME"
+    },
+    {
+      "geoJsonKey": "MD-03",
+      "stateFips": "24",
+      "districtFips": "03",
+      "stateAbbr": "MD"
+    },
+    {
+      "geoJsonKey": "MD-01",
+      "stateFips": "24",
+      "districtFips": "01",
+      "stateAbbr": "MD"
+    },
+    {
+      "geoJsonKey": "MD-08",
+      "stateFips": "24",
+      "districtFips": "08",
+      "stateAbbr": "MD"
+    },
+    {
+      "geoJsonKey": "MD-05",
+      "stateFips": "24",
+      "districtFips": "05",
+      "stateAbbr": "MD"
+    },
+    {
+      "geoJsonKey": "MD-06",
+      "stateFips": "24",
+      "districtFips": "06",
+      "stateAbbr": "MD"
+    },
+    {
+      "geoJsonKey": "MD-04",
+      "stateFips": "24",
+      "districtFips": "04",
+      "stateAbbr": "MD"
+    },
+    {
+      "geoJsonKey": "MD-02",
+      "stateFips": "24",
+      "districtFips": "02",
+      "stateAbbr": "MD"
+    },
+    {
+      "geoJsonKey": "MD-07",
+      "stateFips": "24",
+      "districtFips": "07",
+      "stateAbbr": "MD"
+    },
+    {
+      "geoJsonKey": "MA-03",
+      "stateFips": "25",
+      "districtFips": "03",
+      "stateAbbr": "MA"
+    },
+    {
+      "geoJsonKey": "MA-09",
+      "stateFips": "25",
+      "districtFips": "09",
+      "stateAbbr": "MA"
+    },
+    {
+      "geoJsonKey": "MA-01",
+      "stateFips": "25",
+      "districtFips": "01",
+      "stateAbbr": "MA"
+    },
+    {
+      "geoJsonKey": "MA-08",
+      "stateFips": "25",
+      "districtFips": "08",
+      "stateAbbr": "MA"
+    },
+    {
+      "geoJsonKey": "MA-05",
+      "stateFips": "25",
+      "districtFips": "05",
+      "stateAbbr": "MA"
+    },
+    {
+      "geoJsonKey": "MA-06",
+      "stateFips": "25",
+      "districtFips": "06",
+      "stateAbbr": "MA"
+    },
+    {
+      "geoJsonKey": "MA-04",
+      "stateFips": "25",
+      "districtFips": "04",
+      "stateAbbr": "MA"
+    },
+    {
+      "geoJsonKey": "MA-02",
+      "stateFips": "25",
+      "districtFips": "02",
+      "stateAbbr": "MA"
+    },
+    {
+      "geoJsonKey": "MA-07",
+      "stateFips": "25",
+      "districtFips": "07",
+      "stateAbbr": "MA"
+    },
+    {
+      "geoJsonKey": "MI-03",
+      "stateFips": "26",
+      "districtFips": "03",
+      "stateAbbr": "MI"
+    },
+    {
+      "geoJsonKey": "MI-09",
+      "stateFips": "26",
+      "districtFips": "09",
+      "stateAbbr": "MI"
+    },
+    {
+      "geoJsonKey": "MI-01",
+      "stateFips": "26",
+      "districtFips": "01",
+      "stateAbbr": "MI"
+    },
+    {
+      "geoJsonKey": "MI-08",
+      "stateFips": "26",
+      "districtFips": "08",
+      "stateAbbr": "MI"
+    },
+    {
+      "geoJsonKey": "MI-05",
+      "stateFips": "26",
+      "districtFips": "05",
+      "stateAbbr": "MI"
+    },
+    {
+      "geoJsonKey": "MI-06",
+      "stateFips": "26",
+      "districtFips": "06",
+      "stateAbbr": "MI"
+    },
+    {
+      "geoJsonKey": "MI-04",
+      "stateFips": "26",
+      "districtFips": "04",
+      "stateAbbr": "MI"
+    },
+    {
+      "geoJsonKey": "MI-02",
+      "stateFips": "26",
+      "districtFips": "02",
+      "stateAbbr": "MI"
+    },
+    {
+      "geoJsonKey": "MI-07",
+      "stateFips": "26",
+      "districtFips": "07",
+      "stateAbbr": "MI"
+    },
+    {
+      "geoJsonKey": "MN-03",
+      "stateFips": "27",
+      "districtFips": "03",
+      "stateAbbr": "MN"
+    },
+    {
+      "geoJsonKey": "MN-01",
+      "stateFips": "27",
+      "districtFips": "01",
+      "stateAbbr": "MN"
+    },
+    {
+      "geoJsonKey": "MN-08",
+      "stateFips": "27",
+      "districtFips": "08",
+      "stateAbbr": "MN"
+    },
+    {
+      "geoJsonKey": "MN-05",
+      "stateFips": "27",
+      "districtFips": "05",
+      "stateAbbr": "MN"
+    },
+    {
+      "geoJsonKey": "MN-06",
+      "stateFips": "27",
+      "districtFips": "06",
+      "stateAbbr": "MN"
+    },
+    {
+      "geoJsonKey": "MN-04",
+      "stateFips": "27",
+      "districtFips": "04",
+      "stateAbbr": "MN"
+    },
+    {
+      "geoJsonKey": "MN-02",
+      "stateFips": "27",
+      "districtFips": "02",
+      "stateAbbr": "MN"
+    },
+    {
+      "geoJsonKey": "MN-07",
+      "stateFips": "27",
+      "districtFips": "07",
+      "stateAbbr": "MN"
+    },
+    {
+      "geoJsonKey": "MS-03",
+      "stateFips": "28",
+      "districtFips": "03",
+      "stateAbbr": "MS"
+    },
+    {
+      "geoJsonKey": "MS-01",
+      "stateFips": "28",
+      "districtFips": "01",
+      "stateAbbr": "MS"
+    },
+    {
+      "geoJsonKey": "MS-04",
+      "stateFips": "28",
+      "districtFips": "04",
+      "stateAbbr": "MS"
+    },
+    {
+      "geoJsonKey": "MS-02",
+      "stateFips": "28",
+      "districtFips": "02",
+      "stateAbbr": "MS"
+    },
+    {
+      "geoJsonKey": "MO-03",
+      "stateFips": "29",
+      "districtFips": "03",
+      "stateAbbr": "MO"
+    },
+    {
+      "geoJsonKey": "MO-01",
+      "stateFips": "29",
+      "districtFips": "01",
+      "stateAbbr": "MO"
+    },
+    {
+      "geoJsonKey": "MO-08",
+      "stateFips": "29",
+      "districtFips": "08",
+      "stateAbbr": "MO"
+    },
+    {
+      "geoJsonKey": "MO-05",
+      "stateFips": "29",
+      "districtFips": "05",
+      "stateAbbr": "MO"
+    },
+    {
+      "geoJsonKey": "MO-06",
+      "stateFips": "29",
+      "districtFips": "06",
+      "stateAbbr": "MO"
+    },
+    {
+      "geoJsonKey": "MO-04",
+      "stateFips": "29",
+      "districtFips": "04",
+      "stateAbbr": "MO"
+    },
+    {
+      "geoJsonKey": "MO-02",
+      "stateFips": "29",
+      "districtFips": "02",
+      "stateAbbr": "MO"
+    },
+    {
+      "geoJsonKey": "MO-07",
+      "stateFips": "29",
+      "districtFips": "07",
+      "stateAbbr": "MO"
+    },
+    {
+      "geoJsonKey": "MT-01",
+      "stateFips": "30",
+      "districtFips": "01",
+      "stateAbbr": "MT"
+    },
+    {
+      "geoJsonKey": "MT-02",
+      "stateFips": "30",
+      "districtFips": "02",
+      "stateAbbr": "MT"
+    },
+    {
+      "geoJsonKey": "NE-03",
+      "stateFips": "31",
+      "districtFips": "03",
+      "stateAbbr": "NE"
+    },
+    {
+      "geoJsonKey": "NE-01",
+      "stateFips": "31",
+      "districtFips": "01",
+      "stateAbbr": "NE"
+    },
+    {
+      "geoJsonKey": "NE-02",
+      "stateFips": "31",
+      "districtFips": "02",
+      "stateAbbr": "NE"
+    },
+    {
+      "geoJsonKey": "NV-03",
+      "stateFips": "32",
+      "districtFips": "03",
+      "stateAbbr": "NV"
+    },
+    {
+      "geoJsonKey": "NV-01",
+      "stateFips": "32",
+      "districtFips": "01",
+      "stateAbbr": "NV"
+    },
+    {
+      "geoJsonKey": "NV-04",
+      "stateFips": "32",
+      "districtFips": "04",
+      "stateAbbr": "NV"
+    },
+    {
+      "geoJsonKey": "NV-02",
+      "stateFips": "32",
+      "districtFips": "02",
+      "stateAbbr": "NV"
+    },
+    {
+      "geoJsonKey": "NH-01",
+      "stateFips": "33",
+      "districtFips": "01",
+      "stateAbbr": "NH"
+    },
+    {
+      "geoJsonKey": "NH-02",
+      "stateFips": "33",
+      "districtFips": "02",
+      "stateAbbr": "NH"
+    },
+    {
+      "geoJsonKey": "NH-ZZ",
+      "stateFips": "33",
+      "districtFips": "ZZ",
+      "stateAbbr": "NH"
+    },
+    {
+      "geoJsonKey": "NJ-03",
+      "stateFips": "34",
+      "districtFips": "03",
+      "stateAbbr": "NJ"
+    },
+    {
+      "geoJsonKey": "NJ-09",
+      "stateFips": "34",
+      "districtFips": "09",
+      "stateAbbr": "NJ"
+    },
+    {
+      "geoJsonKey": "NJ-01",
+      "stateFips": "34",
+      "districtFips": "01",
+      "stateAbbr": "NJ"
+    },
+    {
+      "geoJsonKey": "NJ-08",
+      "stateFips": "34",
+      "districtFips": "08",
+      "stateAbbr": "NJ"
+    },
+    {
+      "geoJsonKey": "NJ-05",
+      "stateFips": "34",
+      "districtFips": "05",
+      "stateAbbr": "NJ"
+    },
+    {
+      "geoJsonKey": "NJ-06",
+      "stateFips": "34",
+      "districtFips": "06",
+      "stateAbbr": "NJ"
+    },
+    {
+      "geoJsonKey": "NJ-04",
+      "stateFips": "34",
+      "districtFips": "04",
+      "stateAbbr": "NJ"
+    },
+    {
+      "geoJsonKey": "NJ-02",
+      "stateFips": "34",
+      "districtFips": "02",
+      "stateAbbr": "NJ"
+    },
+    {
+      "geoJsonKey": "NJ-07",
+      "stateFips": "34",
+      "districtFips": "07",
+      "stateAbbr": "NJ"
+    },
+    {
+      "geoJsonKey": "NM-03",
+      "stateFips": "35",
+      "districtFips": "03",
+      "stateAbbr": "NM"
+    },
+    {
+      "geoJsonKey": "NM-01",
+      "stateFips": "35",
+      "districtFips": "01",
+      "stateAbbr": "NM"
+    },
+    {
+      "geoJsonKey": "NM-02",
+      "stateFips": "35",
+      "districtFips": "02",
+      "stateAbbr": "NM"
+    },
+    {
+      "geoJsonKey": "NY-01",
+      "stateFips": "36",
+      "districtFips": "01",
+      "stateAbbr": "NY"
+    },
+    {
+      "geoJsonKey": "NY-02",
+      "stateFips": "36",
+      "districtFips": "02",
+      "stateAbbr": "NY"
+    },
+    {
+      "geoJsonKey": "NY-03",
+      "stateFips": "36",
+      "districtFips": "03",
+      "stateAbbr": "NY"
+    },
+    {
+      "geoJsonKey": "NY-04",
+      "stateFips": "36",
+      "districtFips": "04",
+      "stateAbbr": "NY"
+    },
+    {
+      "geoJsonKey": "NY-05",
+      "stateFips": "36",
+      "districtFips": "05",
+      "stateAbbr": "NY"
+    },
+    {
+      "geoJsonKey": "NY-06",
+      "stateFips": "36",
+      "districtFips": "06",
+      "stateAbbr": "NY"
+    },
+    {
+      "geoJsonKey": "NY-07",
+      "stateFips": "36",
+      "districtFips": "07",
+      "stateAbbr": "NY"
+    },
+    {
+      "geoJsonKey": "NY-08",
+      "stateFips": "36",
+      "districtFips": "08",
+      "stateAbbr": "NY"
+    },
+    {
+      "geoJsonKey": "NY-09",
+      "stateFips": "36",
+      "districtFips": "09",
+      "stateAbbr": "NY"
+    },
+    {
+      "geoJsonKey": "NC-01",
+      "stateFips": "37",
+      "districtFips": "01",
+      "stateAbbr": "NC"
+    },
+    {
+      "geoJsonKey": "NC-02",
+      "stateFips": "37",
+      "districtFips": "02",
+      "stateAbbr": "NC"
+    },
+    {
+      "geoJsonKey": "NC-03",
+      "stateFips": "37",
+      "districtFips": "03",
+      "stateAbbr": "NC"
+    },
+    {
+      "geoJsonKey": "NC-04",
+      "stateFips": "37",
+      "districtFips": "04",
+      "stateAbbr": "NC"
+    },
+    {
+      "geoJsonKey": "NC-05",
+      "stateFips": "37",
+      "districtFips": "05",
+      "stateAbbr": "NC"
+    },
+    {
+      "geoJsonKey": "NC-06",
+      "stateFips": "37",
+      "districtFips": "06",
+      "stateAbbr": "NC"
+    },
+    {
+      "geoJsonKey": "NC-07",
+      "stateFips": "37",
+      "districtFips": "07",
+      "stateAbbr": "NC"
+    },
+    {
+      "geoJsonKey": "NC-08",
+      "stateFips": "37",
+      "districtFips": "08",
+      "stateAbbr": "NC"
+    },
+    {
+      "geoJsonKey": "NC-09",
+      "stateFips": "37",
+      "districtFips": "09",
+      "stateAbbr": "NC"
+    },
+    {
+      "geoJsonKey": "ND-00",
+      "stateFips": "38",
+      "districtFips": "00",
+      "stateAbbr": "ND"
+    },
+    {
+      "geoJsonKey": "OH-03",
+      "stateFips": "39",
+      "districtFips": "03",
+      "stateAbbr": "OH"
+    },
+    {
+      "geoJsonKey": "OH-09",
+      "stateFips": "39",
+      "districtFips": "09",
+      "stateAbbr": "OH"
+    },
+    {
+      "geoJsonKey": "OH-01",
+      "stateFips": "39",
+      "districtFips": "01",
+      "stateAbbr": "OH"
+    },
+    {
+      "geoJsonKey": "OH-08",
+      "stateFips": "39",
+      "districtFips": "08",
+      "stateAbbr": "OH"
+    },
+    {
+      "geoJsonKey": "OH-05",
+      "stateFips": "39",
+      "districtFips": "05",
+      "stateAbbr": "OH"
+    },
+    {
+      "geoJsonKey": "OH-06",
+      "stateFips": "39",
+      "districtFips": "06",
+      "stateAbbr": "OH"
+    },
+    {
+      "geoJsonKey": "OH-04",
+      "stateFips": "39",
+      "districtFips": "04",
+      "stateAbbr": "OH"
+    },
+    {
+      "geoJsonKey": "OH-02",
+      "stateFips": "39",
+      "districtFips": "02",
+      "stateAbbr": "OH"
+    },
+    {
+      "geoJsonKey": "OH-07",
+      "stateFips": "39",
+      "districtFips": "07",
+      "stateAbbr": "OH"
+    },
+    {
+      "geoJsonKey": "OK-03",
+      "stateFips": "40",
+      "districtFips": "03",
+      "stateAbbr": "OK"
+    },
+    {
+      "geoJsonKey": "OK-01",
+      "stateFips": "40",
+      "districtFips": "01",
+      "stateAbbr": "OK"
+    },
+    {
+      "geoJsonKey": "OK-05",
+      "stateFips": "40",
+      "districtFips": "05",
+      "stateAbbr": "OK"
+    },
+    {
+      "geoJsonKey": "OK-04",
+      "stateFips": "40",
+      "districtFips": "04",
+      "stateAbbr": "OK"
+    },
+    {
+      "geoJsonKey": "OK-02",
+      "stateFips": "40",
+      "districtFips": "02",
+      "stateAbbr": "OK"
+    },
+    {
+      "geoJsonKey": "OR-03",
+      "stateFips": "41",
+      "districtFips": "03",
+      "stateAbbr": "OR"
+    },
+    {
+      "geoJsonKey": "OR-01",
+      "stateFips": "41",
+      "districtFips": "01",
+      "stateAbbr": "OR"
+    },
+    {
+      "geoJsonKey": "OR-05",
+      "stateFips": "41",
+      "districtFips": "05",
+      "stateAbbr": "OR"
+    },
+    {
+      "geoJsonKey": "OR-06",
+      "stateFips": "41",
+      "districtFips": "06",
+      "stateAbbr": "OR"
+    },
+    {
+      "geoJsonKey": "OR-04",
+      "stateFips": "41",
+      "districtFips": "04",
+      "stateAbbr": "OR"
+    },
+    {
+      "geoJsonKey": "OR-02",
+      "stateFips": "41",
+      "districtFips": "02",
+      "stateAbbr": "OR"
+    },
+    {
+      "geoJsonKey": "PA-03",
+      "stateFips": "42",
+      "districtFips": "03",
+      "stateAbbr": "PA"
+    },
+    {
+      "geoJsonKey": "PA-09",
+      "stateFips": "42",
+      "districtFips": "09",
+      "stateAbbr": "PA"
+    },
+    {
+      "geoJsonKey": "PA-01",
+      "stateFips": "42",
+      "districtFips": "01",
+      "stateAbbr": "PA"
+    },
+    {
+      "geoJsonKey": "PA-08",
+      "stateFips": "42",
+      "districtFips": "08",
+      "stateAbbr": "PA"
+    },
+    {
+      "geoJsonKey": "PA-05",
+      "stateFips": "42",
+      "districtFips": "05",
+      "stateAbbr": "PA"
+    },
+    {
+      "geoJsonKey": "PA-06",
+      "stateFips": "42",
+      "districtFips": "06",
+      "stateAbbr": "PA"
+    },
+    {
+      "geoJsonKey": "PA-04",
+      "stateFips": "42",
+      "districtFips": "04",
+      "stateAbbr": "PA"
+    },
+    {
+      "geoJsonKey": "PA-02",
+      "stateFips": "42",
+      "districtFips": "02",
+      "stateAbbr": "PA"
+    },
+    {
+      "geoJsonKey": "PA-07",
+      "stateFips": "42",
+      "districtFips": "07",
+      "stateAbbr": "PA"
+    },
+    {
+      "geoJsonKey": "RI-01",
+      "stateFips": "44",
+      "districtFips": "01",
+      "stateAbbr": "RI"
+    },
+    {
+      "geoJsonKey": "RI-02",
+      "stateFips": "44",
+      "districtFips": "02",
+      "stateAbbr": "RI"
+    },
+    {
+      "geoJsonKey": "SC-03",
+      "stateFips": "45",
+      "districtFips": "03",
+      "stateAbbr": "SC"
+    },
+    {
+      "geoJsonKey": "SC-01",
+      "stateFips": "45",
+      "districtFips": "01",
+      "stateAbbr": "SC"
+    },
+    {
+      "geoJsonKey": "SC-05",
+      "stateFips": "45",
+      "districtFips": "05",
+      "stateAbbr": "SC"
+    },
+    {
+      "geoJsonKey": "SC-06",
+      "stateFips": "45",
+      "districtFips": "06",
+      "stateAbbr": "SC"
+    },
+    {
+      "geoJsonKey": "SC-04",
+      "stateFips": "45",
+      "districtFips": "04",
+      "stateAbbr": "SC"
+    },
+    {
+      "geoJsonKey": "SC-02",
+      "stateFips": "45",
+      "districtFips": "02",
+      "stateAbbr": "SC"
+    },
+    {
+      "geoJsonKey": "SC-07",
+      "stateFips": "45",
+      "districtFips": "07",
+      "stateAbbr": "SC"
+    },
+    {
+      "geoJsonKey": "SD-00",
+      "stateFips": "46",
+      "districtFips": "00",
+      "stateAbbr": "SD"
+    },
+    {
+      "geoJsonKey": "TN-03",
+      "stateFips": "47",
+      "districtFips": "03",
+      "stateAbbr": "TN"
+    },
+    {
+      "geoJsonKey": "TN-09",
+      "stateFips": "47",
+      "districtFips": "09",
+      "stateAbbr": "TN"
+    },
+    {
+      "geoJsonKey": "TN-01",
+      "stateFips": "47",
+      "districtFips": "01",
+      "stateAbbr": "TN"
+    },
+    {
+      "geoJsonKey": "TN-08",
+      "stateFips": "47",
+      "districtFips": "08",
+      "stateAbbr": "TN"
+    },
+    {
+      "geoJsonKey": "TN-05",
+      "stateFips": "47",
+      "districtFips": "05",
+      "stateAbbr": "TN"
+    },
+    {
+      "geoJsonKey": "TN-06",
+      "stateFips": "47",
+      "districtFips": "06",
+      "stateAbbr": "TN"
+    },
+    {
+      "geoJsonKey": "TN-04",
+      "stateFips": "47",
+      "districtFips": "04",
+      "stateAbbr": "TN"
+    },
+    {
+      "geoJsonKey": "TN-02",
+      "stateFips": "47",
+      "districtFips": "02",
+      "stateAbbr": "TN"
+    },
+    {
+      "geoJsonKey": "TN-07",
+      "stateFips": "47",
+      "districtFips": "07",
+      "stateAbbr": "TN"
+    },
+    {
+      "geoJsonKey": "TX-03",
+      "stateFips": "48",
+      "districtFips": "03",
+      "stateAbbr": "TX"
+    },
+    {
+      "geoJsonKey": "TX-09",
+      "stateFips": "48",
+      "districtFips": "09",
+      "stateAbbr": "TX"
+    },
+    {
+      "geoJsonKey": "TX-01",
+      "stateFips": "48",
+      "districtFips": "01",
+      "stateAbbr": "TX"
+    },
+    {
+      "geoJsonKey": "TX-08",
+      "stateFips": "48",
+      "districtFips": "08",
+      "stateAbbr": "TX"
+    },
+    {
+      "geoJsonKey": "TX-05",
+      "stateFips": "48",
+      "districtFips": "05",
+      "stateAbbr": "TX"
+    },
+    {
+      "geoJsonKey": "TX-06",
+      "stateFips": "48",
+      "districtFips": "06",
+      "stateAbbr": "TX"
+    },
+    {
+      "geoJsonKey": "TX-18",
+      "stateFips": "48",
+      "districtFips": "18",
+      "stateAbbr": "TX"
+    },
+    {
+      "geoJsonKey": "TX-04",
+      "stateFips": "48",
+      "districtFips": "04",
+      "stateAbbr": "TX"
+    },
+    {
+      "geoJsonKey": "TX-02",
+      "stateFips": "48",
+      "districtFips": "02",
+      "stateAbbr": "TX"
+    },
+    {
+      "geoJsonKey": "TX-07",
+      "stateFips": "48",
+      "districtFips": "07",
+      "stateAbbr": "TX"
+    },
+    {
+      "geoJsonKey": "UT-03",
+      "stateFips": "49",
+      "districtFips": "03",
+      "stateAbbr": "UT"
+    },
+    {
+      "geoJsonKey": "UT-01",
+      "stateFips": "49",
+      "districtFips": "01",
+      "stateAbbr": "UT"
+    },
+    {
+      "geoJsonKey": "UT-04",
+      "stateFips": "49",
+      "districtFips": "04",
+      "stateAbbr": "UT"
+    },
+    {
+      "geoJsonKey": "UT-02",
+      "stateFips": "49",
+      "districtFips": "02",
+      "stateAbbr": "UT"
+    },
+    {
+      "geoJsonKey": "VT-00",
+      "stateFips": "50",
+      "districtFips": "00",
+      "stateAbbr": "VT"
+    },
+    {
+      "geoJsonKey": "VA-03",
+      "stateFips": "51",
+      "districtFips": "03",
+      "stateAbbr": "VA"
+    },
+    {
+      "geoJsonKey": "VA-09",
+      "stateFips": "51",
+      "districtFips": "09",
+      "stateAbbr": "VA"
+    },
+    {
+      "geoJsonKey": "VA-01",
+      "stateFips": "51",
+      "districtFips": "01",
+      "stateAbbr": "VA"
+    },
+    {
+      "geoJsonKey": "VA-08",
+      "stateFips": "51",
+      "districtFips": "08",
+      "stateAbbr": "VA"
+    },
+    {
+      "geoJsonKey": "VA-05",
+      "stateFips": "51",
+      "districtFips": "05",
+      "stateAbbr": "VA"
+    },
+    {
+      "geoJsonKey": "VA-06",
+      "stateFips": "51",
+      "districtFips": "06",
+      "stateAbbr": "VA"
+    },
+    {
+      "geoJsonKey": "VA-04",
+      "stateFips": "51",
+      "districtFips": "04",
+      "stateAbbr": "VA"
+    },
+    {
+      "geoJsonKey": "VA-02",
+      "stateFips": "51",
+      "districtFips": "02",
+      "stateAbbr": "VA"
+    },
+    {
+      "geoJsonKey": "VA-07",
+      "stateFips": "51",
+      "districtFips": "07",
+      "stateAbbr": "VA"
+    },
+    {
+      "geoJsonKey": "VA-11",
+      "stateFips": "51",
+      "districtFips": "11",
+      "stateAbbr": "VA"
+    },
+    {
+      "geoJsonKey": "WA-03",
+      "stateFips": "53",
+      "districtFips": "03",
+      "stateAbbr": "WA"
+    },
+    {
+      "geoJsonKey": "WA-09",
+      "stateFips": "53",
+      "districtFips": "09",
+      "stateAbbr": "WA"
+    },
+    {
+      "geoJsonKey": "WA-01",
+      "stateFips": "53",
+      "districtFips": "01",
+      "stateAbbr": "WA"
+    },
+    {
+      "geoJsonKey": "WA-08",
+      "stateFips": "53",
+      "districtFips": "08",
+      "stateAbbr": "WA"
+    },
+    {
+      "geoJsonKey": "WA-05",
+      "stateFips": "53",
+      "districtFips": "05",
+      "stateAbbr": "WA"
+    },
+    {
+      "geoJsonKey": "WA-06",
+      "stateFips": "53",
+      "districtFips": "06",
+      "stateAbbr": "WA"
+    },
+    {
+      "geoJsonKey": "WA-04",
+      "stateFips": "53",
+      "districtFips": "04",
+      "stateAbbr": "WA"
+    },
+    {
+      "geoJsonKey": "WA-02",
+      "stateFips": "53",
+      "districtFips": "02",
+      "stateAbbr": "WA"
+    },
+    {
+      "geoJsonKey": "WA-07",
+      "stateFips": "53",
+      "districtFips": "07",
+      "stateAbbr": "WA"
+    },
+    {
+      "geoJsonKey": "WV-01",
+      "stateFips": "54",
+      "districtFips": "01",
+      "stateAbbr": "WV"
+    },
+    {
+      "geoJsonKey": "WV-02",
+      "stateFips": "54",
+      "districtFips": "02",
+      "stateAbbr": "WV"
+    },
+    {
+      "geoJsonKey": "WI-03",
+      "stateFips": "55",
+      "districtFips": "03",
+      "stateAbbr": "WI"
+    },
+    {
+      "geoJsonKey": "WI-01",
+      "stateFips": "55",
+      "districtFips": "01",
+      "stateAbbr": "WI"
+    },
+    {
+      "geoJsonKey": "WI-08",
+      "stateFips": "55",
+      "districtFips": "08",
+      "stateAbbr": "WI"
+    },
+    {
+      "geoJsonKey": "WI-05",
+      "stateFips": "55",
+      "districtFips": "05",
+      "stateAbbr": "WI"
+    },
+    {
+      "geoJsonKey": "WI-06",
+      "stateFips": "55",
+      "districtFips": "06",
+      "stateAbbr": "WI"
+    },
+    {
+      "geoJsonKey": "WI-04",
+      "stateFips": "55",
+      "districtFips": "04",
+      "stateAbbr": "WI"
+    },
+    {
+      "geoJsonKey": "WI-02",
+      "stateFips": "55",
+      "districtFips": "02",
+      "stateAbbr": "WI"
+    },
+    {
+      "geoJsonKey": "WI-07",
+      "stateFips": "55",
+      "districtFips": "07",
+      "stateAbbr": "WI"
+    },
+    {
+      "geoJsonKey": "WY-00",
+      "stateFips": "56",
+      "districtFips": "00",
+      "stateAbbr": "WY"
+    }
+  ],
+  "unmatchedApiDistricts": [
+    {
+      "apiKey": "AK-undefined",
+      "districtName": "AK At-Large",
+      "state": "AK",
+      "incumbentName": "BEGICH, NICHOLAS III"
+    },
+    {
+      "apiKey": "AL-1",
+      "districtName": "AL District 1",
+      "state": "AL",
+      "incumbentName": "MOORE, FELIX BARRY"
+    },
+    {
+      "apiKey": "AL-2",
+      "districtName": "AL District 2",
+      "state": "AL",
+      "incumbentName": "FIGURES, SHOMARI C."
+    },
+    {
+      "apiKey": "AL-3",
+      "districtName": "AL District 3",
+      "state": "AL",
+      "incumbentName": "ROGERS, MICHAEL"
+    },
+    {
+      "apiKey": "AL-4",
+      "districtName": "AL District 4",
+      "state": "AL",
+      "incumbentName": "ADERHOLT, ROBERT B. REP."
+    },
+    {
+      "apiKey": "AL-5",
+      "districtName": "AL District 5",
+      "state": "AL",
+      "incumbentName": "STRONG, DALE WHITNEY"
+    },
+    {
+      "apiKey": "AL-6",
+      "districtName": "AL District 6",
+      "state": "AL",
+      "incumbentName": "PALMER, GARY"
+    },
+    {
+      "apiKey": "AL-7",
+      "districtName": "AL District 7",
+      "state": "AL",
+      "incumbentName": "SEWELL, TERRI A."
+    },
+    {
+      "apiKey": "AR-1",
+      "districtName": "AR District 1",
+      "state": "AR",
+      "incumbentName": "CRAWFORD, ERIC ALAN RICK"
+    },
+    {
+      "apiKey": "AR-2",
+      "districtName": "AR District 2",
+      "state": "AR",
+      "incumbentName": "HILL, JAMES FRENCH"
+    },
+    {
+      "apiKey": "AR-3",
+      "districtName": "AR District 3",
+      "state": "AR",
+      "incumbentName": "WOMACK, STEPHEN A THE HON"
+    },
+    {
+      "apiKey": "AR-4",
+      "districtName": "AR District 4",
+      "state": "AR",
+      "incumbentName": "WESTERMAN, BRUCE"
+    },
+    {
+      "apiKey": "AS-undefined",
+      "districtName": "AS At-Large",
+      "state": "AS",
+      "incumbentName": "Aumua Amata Coleman Radewagen"
+    },
+    {
+      "apiKey": "AZ-1",
+      "districtName": "AZ District 1",
+      "state": "AZ",
+      "incumbentName": "SCHWEIKERT, DAVID S."
+    },
+    {
+      "apiKey": "AZ-2",
+      "districtName": "AZ District 2",
+      "state": "AZ",
+      "incumbentName": "CRANE, ELI"
+    },
+    {
+      "apiKey": "AZ-3",
+      "districtName": "AZ District 3",
+      "state": "AZ",
+      "incumbentName": "ANSARI, YASSAMIN"
+    },
+    {
+      "apiKey": "AZ-4",
+      "districtName": "AZ District 4",
+      "state": "AZ",
+      "incumbentName": "STANTON, GREG"
+    },
+    {
+      "apiKey": "AZ-5",
+      "districtName": "AZ District 5",
+      "state": "AZ",
+      "incumbentName": "BIGGS, ANDY"
+    },
+    {
+      "apiKey": "AZ-6",
+      "districtName": "AZ District 6",
+      "state": "AZ",
+      "incumbentName": "CISCOMANI, JUAN"
+    },
+    {
+      "apiKey": "AZ-8",
+      "districtName": "AZ District 8",
+      "state": "AZ",
+      "incumbentName": "HAMADEH, ABRAHAM"
+    },
+    {
+      "apiKey": "AZ-9",
+      "districtName": "AZ District 9",
+      "state": "AZ",
+      "incumbentName": "GOSAR, PAUL DR."
+    },
+    {
+      "apiKey": "CA-1",
+      "districtName": "CA District 1",
+      "state": "CA",
+      "incumbentName": "LAMALFA, DOUG"
+    },
+    {
+      "apiKey": "CA-2",
+      "districtName": "CA District 2",
+      "state": "CA",
+      "incumbentName": "HUFFMAN, JARED"
+    },
+    {
+      "apiKey": "CA-3",
+      "districtName": "CA District 3",
+      "state": "CA",
+      "incumbentName": "KILEY, KEVIN"
+    },
+    {
+      "apiKey": "CA-4",
+      "districtName": "CA District 4",
+      "state": "CA",
+      "incumbentName": "THOMPSON, MIKE MR."
+    },
+    {
+      "apiKey": "CA-5",
+      "districtName": "CA District 5",
+      "state": "CA",
+      "incumbentName": "MCCLINTOCK, THOMAS"
+    },
+    {
+      "apiKey": "CA-6",
+      "districtName": "CA District 6",
+      "state": "CA",
+      "incumbentName": "BERA, AMERISH"
+    },
+    {
+      "apiKey": "CA-7",
+      "districtName": "CA District 7",
+      "state": "CA",
+      "incumbentName": "MATSUI, DORIS"
+    },
+    {
+      "apiKey": "CA-8",
+      "districtName": "CA District 8",
+      "state": "CA",
+      "incumbentName": "GARAMENDI, JOHN"
+    },
+    {
+      "apiKey": "CA-9",
+      "districtName": "CA District 9",
+      "state": "CA",
+      "incumbentName": "HARDER, JOSH"
+    },
+    {
+      "apiKey": "CA-10",
+      "districtName": "CA District 10",
+      "state": "CA",
+      "incumbentName": "DESAULNIER, MARK"
+    },
+    {
+      "apiKey": "CA-11",
+      "districtName": "CA District 11",
+      "state": "CA",
+      "incumbentName": "PELOSI, NANCY"
+    },
+    {
+      "apiKey": "CA-12",
+      "districtName": "CA District 12",
+      "state": "CA",
+      "incumbentName": "SIMON, LATEEFAH"
+    },
+    {
+      "apiKey": "CA-13",
+      "districtName": "CA District 13",
+      "state": "CA",
+      "incumbentName": "GRAY, ADAM C."
+    },
+    {
+      "apiKey": "CA-14",
+      "districtName": "CA District 14",
+      "state": "CA",
+      "incumbentName": "SWALWELL, ERIC MICHAEL"
+    },
+    {
+      "apiKey": "CA-15",
+      "districtName": "CA District 15",
+      "state": "CA",
+      "incumbentName": "MULLIN, KEVIN"
+    },
+    {
+      "apiKey": "CA-16",
+      "districtName": "CA District 16",
+      "state": "CA",
+      "incumbentName": "LICCARDO, SAM T."
+    },
+    {
+      "apiKey": "CA-17",
+      "districtName": "CA District 17",
+      "state": "CA",
+      "incumbentName": "KHANNA, ROHIT"
+    },
+    {
+      "apiKey": "CA-18",
+      "districtName": "CA District 18",
+      "state": "CA",
+      "incumbentName": "LOFGREN, ZOE"
+    },
+    {
+      "apiKey": "CA-19",
+      "districtName": "CA District 19",
+      "state": "CA",
+      "incumbentName": "PANETTA, JIMMY"
+    },
+    {
+      "apiKey": "CA-20",
+      "districtName": "CA District 20",
+      "state": "CA",
+      "incumbentName": "FONG, VINCE"
+    },
+    {
+      "apiKey": "CA-21",
+      "districtName": "CA District 21",
+      "state": "CA",
+      "incumbentName": "COSTA, JIM"
+    },
+    {
+      "apiKey": "CA-22",
+      "districtName": "CA District 22",
+      "state": "CA",
+      "incumbentName": "VALADAO, DAVID"
+    },
+    {
+      "apiKey": "CA-23",
+      "districtName": "CA District 23",
+      "state": "CA",
+      "incumbentName": "OBERNOLTE, JAY"
+    },
+    {
+      "apiKey": "CA-24",
+      "districtName": "CA District 24",
+      "state": "CA",
+      "incumbentName": "CARBAJAL, SALUD O."
+    },
+    {
+      "apiKey": "CA-25",
+      "districtName": "CA District 25",
+      "state": "CA",
+      "incumbentName": "RUIZ, RAUL DR."
+    },
+    {
+      "apiKey": "CA-26",
+      "districtName": "CA District 26",
+      "state": "CA",
+      "incumbentName": "BROWNLEY, JULIA"
+    },
+    {
+      "apiKey": "CA-27",
+      "districtName": "CA District 27",
+      "state": "CA",
+      "incumbentName": "WHITESIDES, GEORGE"
+    },
+    {
+      "apiKey": "CA-28",
+      "districtName": "CA District 28",
+      "state": "CA",
+      "incumbentName": "CHU, JUDY"
+    },
+    {
+      "apiKey": "CA-29",
+      "districtName": "CA District 29",
+      "state": "CA",
+      "incumbentName": "RIVAS, LUZ"
+    },
+    {
+      "apiKey": "CA-30",
+      "districtName": "CA District 30",
+      "state": "CA",
+      "incumbentName": "FRIEDMAN, LAURA"
+    },
+    {
+      "apiKey": "CA-31",
+      "districtName": "CA District 31",
+      "state": "CA",
+      "incumbentName": "Gilbert Ray Cisneros, Jr."
+    },
+    {
+      "apiKey": "CA-32",
+      "districtName": "CA District 32",
+      "state": "CA",
+      "incumbentName": "SHERMAN, BRAD"
+    },
+    {
+      "apiKey": "CA-33",
+      "districtName": "CA District 33",
+      "state": "CA",
+      "incumbentName": "AGUILAR, PETE"
+    },
+    {
+      "apiKey": "CA-34",
+      "districtName": "CA District 34",
+      "state": "CA",
+      "incumbentName": "GOMEZ, JIMMY"
+    },
+    {
+      "apiKey": "CA-35",
+      "districtName": "CA District 35",
+      "state": "CA",
+      "incumbentName": "TORRES, NORMA"
+    },
+    {
+      "apiKey": "CA-36",
+      "districtName": "CA District 36",
+      "state": "CA",
+      "incumbentName": "LIEU, TED"
+    },
+    {
+      "apiKey": "CA-37",
+      "districtName": "CA District 37",
+      "state": "CA",
+      "incumbentName": "KAMLAGER-DOVE, SYDNEY"
+    },
+    {
+      "apiKey": "CA-38",
+      "districtName": "CA District 38",
+      "state": "CA",
+      "incumbentName": "Linda T. Sánchez"
+    },
+    {
+      "apiKey": "CA-39",
+      "districtName": "CA District 39",
+      "state": "CA",
+      "incumbentName": "TAKANO, MARK"
+    },
+    {
+      "apiKey": "CA-40",
+      "districtName": "CA District 40",
+      "state": "CA",
+      "incumbentName": "KIM, YOUNG"
+    },
+    {
+      "apiKey": "CA-41",
+      "districtName": "CA District 41",
+      "state": "CA",
+      "incumbentName": "CALVERT, KEN"
+    },
+    {
+      "apiKey": "CA-42",
+      "districtName": "CA District 42",
+      "state": "CA",
+      "incumbentName": "GARCIA, ROBERT"
+    },
+    {
+      "apiKey": "CA-43",
+      "districtName": "CA District 43",
+      "state": "CA",
+      "incumbentName": "WATERS, MAXINE MS"
+    },
+    {
+      "apiKey": "CA-44",
+      "districtName": "CA District 44",
+      "state": "CA",
+      "incumbentName": "Nanette Diaz Barragán"
+    },
+    {
+      "apiKey": "CA-45",
+      "districtName": "CA District 45",
+      "state": "CA",
+      "incumbentName": "TRAN, DEREK"
+    },
+    {
+      "apiKey": "CA-46",
+      "districtName": "CA District 46",
+      "state": "CA",
+      "incumbentName": "CORREA, LOU"
+    },
+    {
+      "apiKey": "CA-47",
+      "districtName": "CA District 47",
+      "state": "CA",
+      "incumbentName": "MIN, DAVE"
+    },
+    {
+      "apiKey": "CA-48",
+      "districtName": "CA District 48",
+      "state": "CA",
+      "incumbentName": "ISSA, DARRELL"
+    },
+    {
+      "apiKey": "CA-49",
+      "districtName": "CA District 49",
+      "state": "CA",
+      "incumbentName": "LEVIN, MIKE"
+    },
+    {
+      "apiKey": "CA-50",
+      "districtName": "CA District 50",
+      "state": "CA",
+      "incumbentName": "PETERS, SCOTT"
+    },
+    {
+      "apiKey": "CA-51",
+      "districtName": "CA District 51",
+      "state": "CA",
+      "incumbentName": "JACOBS, SARA"
+    },
+    {
+      "apiKey": "CA-52",
+      "districtName": "CA District 52",
+      "state": "CA",
+      "incumbentName": "VARGAS, JUAN C."
+    },
+    {
+      "apiKey": "CO-1",
+      "districtName": "CO District 1",
+      "state": "CO",
+      "incumbentName": "DEGETTE, DIANA L"
+    },
+    {
+      "apiKey": "CO-2",
+      "districtName": "CO District 2",
+      "state": "CO",
+      "incumbentName": "NEGUSE, JOSEPH"
+    },
+    {
+      "apiKey": "CO-3",
+      "districtName": "CO District 3",
+      "state": "CO",
+      "incumbentName": "HURD, JEFFREY"
+    },
+    {
+      "apiKey": "CO-4",
+      "districtName": "CO District 4",
+      "state": "CO",
+      "incumbentName": "BOEBERT, LAUREN"
+    },
+    {
+      "apiKey": "CO-5",
+      "districtName": "CO District 5",
+      "state": "CO",
+      "incumbentName": "CRANK, JEFF"
+    },
+    {
+      "apiKey": "CO-6",
+      "districtName": "CO District 6",
+      "state": "CO",
+      "incumbentName": "CROW, JASON"
+    },
+    {
+      "apiKey": "CO-7",
+      "districtName": "CO District 7",
+      "state": "CO",
+      "incumbentName": "PETTERSEN, BRITTANY LOUISE"
+    },
+    {
+      "apiKey": "CO-8",
+      "districtName": "CO District 8",
+      "state": "CO",
+      "incumbentName": "EVANS, TIMOTHY GABRIEL JOSEPH"
+    },
+    {
+      "apiKey": "CT-1",
+      "districtName": "CT District 1",
+      "state": "CT",
+      "incumbentName": "LARSON, JOHN B"
+    },
+    {
+      "apiKey": "CT-2",
+      "districtName": "CT District 2",
+      "state": "CT",
+      "incumbentName": "COURTNEY, JOSEPH"
+    },
+    {
+      "apiKey": "CT-3",
+      "districtName": "CT District 3",
+      "state": "CT",
+      "incumbentName": "DELAURO, ROSA L"
+    },
+    {
+      "apiKey": "CT-4",
+      "districtName": "CT District 4",
+      "state": "CT",
+      "incumbentName": "HIMES, JIM"
+    },
+    {
+      "apiKey": "CT-5",
+      "districtName": "CT District 5",
+      "state": "CT",
+      "incumbentName": "HAYES, JAHANA"
+    },
+    {
+      "apiKey": "DC-undefined",
+      "districtName": "DC At-Large",
+      "state": "DC",
+      "incumbentName": "NORTON, ELEANOR HOLMES"
+    },
+    {
+      "apiKey": "DE-undefined",
+      "districtName": "DE At-Large",
+      "state": "DE",
+      "incumbentName": "MCBRIDE, SARAH ELIZABETH"
+    },
+    {
+      "apiKey": "FL-1",
+      "districtName": "FL District 1",
+      "state": "FL",
+      "incumbentName": "Jimmy Patronis"
+    },
+    {
+      "apiKey": "FL-2",
+      "districtName": "FL District 2",
+      "state": "FL",
+      "incumbentName": "DUNN, NEAL PATRICK MD, FACS"
+    },
+    {
+      "apiKey": "FL-3",
+      "districtName": "FL District 3",
+      "state": "FL",
+      "incumbentName": "CAMMACK, KAT"
+    },
+    {
+      "apiKey": "FL-4",
+      "districtName": "FL District 4",
+      "state": "FL",
+      "incumbentName": "BEAN, AARON P."
+    },
+    {
+      "apiKey": "FL-5",
+      "districtName": "FL District 5",
+      "state": "FL",
+      "incumbentName": "RUTHERFORD, JOHN"
+    },
+    {
+      "apiKey": "FL-6",
+      "districtName": "FL District 6",
+      "state": "FL",
+      "incumbentName": "Randy Fine"
+    },
+    {
+      "apiKey": "FL-7",
+      "districtName": "FL District 7",
+      "state": "FL",
+      "incumbentName": "MILLS, CORY"
+    },
+    {
+      "apiKey": "FL-8",
+      "districtName": "FL District 8",
+      "state": "FL",
+      "incumbentName": "HARIDOPOLOS, MIKE"
+    },
+    {
+      "apiKey": "FL-9",
+      "districtName": "FL District 9",
+      "state": "FL",
+      "incumbentName": "SOTO, DARREN"
+    },
+    {
+      "apiKey": "FL-10",
+      "districtName": "FL District 10",
+      "state": "FL",
+      "incumbentName": "FROST, MAXWELL ALEJANDRO"
+    },
+    {
+      "apiKey": "FL-11",
+      "districtName": "FL District 11",
+      "state": "FL",
+      "incumbentName": "WEBSTER, DANIEL"
+    },
+    {
+      "apiKey": "FL-12",
+      "districtName": "FL District 12",
+      "state": "FL",
+      "incumbentName": "BILIRAKIS, GUS M"
+    },
+    {
+      "apiKey": "FL-13",
+      "districtName": "FL District 13",
+      "state": "FL",
+      "incumbentName": "PAULINA LUNA, ANNA"
+    },
+    {
+      "apiKey": "FL-14",
+      "districtName": "FL District 14",
+      "state": "FL",
+      "incumbentName": "CASTOR, KATHY"
+    },
+    {
+      "apiKey": "FL-15",
+      "districtName": "FL District 15",
+      "state": "FL",
+      "incumbentName": "LEE, LAUREL"
+    },
+    {
+      "apiKey": "FL-16",
+      "districtName": "FL District 16",
+      "state": "FL",
+      "incumbentName": "BUCHANAN, VERNON"
+    },
+    {
+      "apiKey": "FL-17",
+      "districtName": "FL District 17",
+      "state": "FL",
+      "incumbentName": "STEUBE, GREG"
+    },
+    {
+      "apiKey": "FL-18",
+      "districtName": "FL District 18",
+      "state": "FL",
+      "incumbentName": "FRANKLIN, SCOTT MR."
+    },
+    {
+      "apiKey": "FL-19",
+      "districtName": "FL District 19",
+      "state": "FL",
+      "incumbentName": "DONALDS, BYRON"
+    },
+    {
+      "apiKey": "FL-20",
+      "districtName": "FL District 20",
+      "state": "FL",
+      "incumbentName": "CHERFILUS-MCCORMICK, SHEILA"
+    },
+    {
+      "apiKey": "FL-21",
+      "districtName": "FL District 21",
+      "state": "FL",
+      "incumbentName": "MAST, BRIAN"
+    },
+    {
+      "apiKey": "FL-22",
+      "districtName": "FL District 22",
+      "state": "FL",
+      "incumbentName": "FRANKEL, LOIS J."
+    },
+    {
+      "apiKey": "FL-23",
+      "districtName": "FL District 23",
+      "state": "FL",
+      "incumbentName": "MOSKOWITZ, JARED"
+    },
+    {
+      "apiKey": "FL-24",
+      "districtName": "FL District 24",
+      "state": "FL",
+      "incumbentName": "WILSON, FREDERICA S."
+    },
+    {
+      "apiKey": "FL-25",
+      "districtName": "FL District 25",
+      "state": "FL",
+      "incumbentName": "WASSERMAN SCHULTZ, DEBBIE"
+    },
+    {
+      "apiKey": "FL-26",
+      "districtName": "FL District 26",
+      "state": "FL",
+      "incumbentName": "DIAZ-BALART, MARIO"
+    },
+    {
+      "apiKey": "FL-27",
+      "districtName": "FL District 27",
+      "state": "FL",
+      "incumbentName": "SALAZAR, MARIA ELVIRA"
+    },
+    {
+      "apiKey": "FL-28",
+      "districtName": "FL District 28",
+      "state": "FL",
+      "incumbentName": "GIMENEZ, CARLOS"
+    },
+    {
+      "apiKey": "GA-1",
+      "districtName": "GA District 1",
+      "state": "GA",
+      "incumbentName": "Earl L. \"Buddy\" Carter"
+    },
+    {
+      "apiKey": "GA-2",
+      "districtName": "GA District 2",
+      "state": "GA",
+      "incumbentName": "Sanford D. Bishop, Jr."
+    },
+    {
+      "apiKey": "GA-3",
+      "districtName": "GA District 3",
+      "state": "GA",
+      "incumbentName": "JACKSON, DANIEL LAFAVIEN"
+    },
+    {
+      "apiKey": "GA-4",
+      "districtName": "GA District 4",
+      "state": "GA",
+      "incumbentName": "Henry C. \"Hank\" Johnson, Jr."
+    },
+    {
+      "apiKey": "GA-5",
+      "districtName": "GA District 5",
+      "state": "GA",
+      "incumbentName": "WILLIAMS, NIKEMA N."
+    },
+    {
+      "apiKey": "GA-6",
+      "districtName": "GA District 6",
+      "state": "GA",
+      "incumbentName": "MCBATH, LUCIA KAY MS."
+    },
+    {
+      "apiKey": "GA-7",
+      "districtName": "GA District 7",
+      "state": "GA",
+      "incumbentName": "MCCORMICK, RICHARD DEAN DR."
+    },
+    {
+      "apiKey": "GA-8",
+      "districtName": "GA District 8",
+      "state": "GA",
+      "incumbentName": "SCOTT, DAVID ALBERT"
+    },
+    {
+      "apiKey": "GA-9",
+      "districtName": "GA District 9",
+      "state": "GA",
+      "incumbentName": "CLYDE, ANDREW"
+    },
+    {
+      "apiKey": "GA-10",
+      "districtName": "GA District 10",
+      "state": "GA",
+      "incumbentName": "Mike Collins"
+    },
+    {
+      "apiKey": "GA-11",
+      "districtName": "GA District 11",
+      "state": "GA",
+      "incumbentName": "LOUDERMILK, BARRY"
+    },
+    {
+      "apiKey": "GA-12",
+      "districtName": "GA District 12",
+      "state": "GA",
+      "incumbentName": "ALLEN, RICHARD W"
+    },
+    {
+      "apiKey": "GA-13",
+      "districtName": "GA District 13",
+      "state": "GA",
+      "incumbentName": "SCOTT, DAVID ALBERT"
+    },
+    {
+      "apiKey": "GA-14",
+      "districtName": "GA District 14",
+      "state": "GA",
+      "incumbentName": "GREENE, MARJORIE TAYLOR"
+    },
+    {
+      "apiKey": "GU-undefined",
+      "districtName": "GU At-Large",
+      "state": "GU",
+      "incumbentName": "MOYLAN, JAMES C."
+    },
+    {
+      "apiKey": "HI-1",
+      "districtName": "HI District 1",
+      "state": "HI",
+      "incumbentName": "CASE, EDWARD"
+    },
+    {
+      "apiKey": "HI-2",
+      "districtName": "HI District 2",
+      "state": "HI",
+      "incumbentName": "TOKUDA, JILL NAOMI"
+    },
+    {
+      "apiKey": "IA-1",
+      "districtName": "IA District 1",
+      "state": "IA",
+      "incumbentName": "MILLER-MEEKS, MARIANNETTE JANE"
+    },
+    {
+      "apiKey": "IA-2",
+      "districtName": "IA District 2",
+      "state": "IA",
+      "incumbentName": "ARENHOLZ, ASHLEY HINSON"
+    },
+    {
+      "apiKey": "IA-3",
+      "districtName": "IA District 3",
+      "state": "IA",
+      "incumbentName": "NUNN, ZACH"
+    },
+    {
+      "apiKey": "IA-4",
+      "districtName": "IA District 4",
+      "state": "IA",
+      "incumbentName": "FEENSTRA, RANDALL"
+    },
+    {
+      "apiKey": "ID-1",
+      "districtName": "ID District 1",
+      "state": "ID",
+      "incumbentName": "FULCHER, RUSSELL"
+    },
+    {
+      "apiKey": "ID-2",
+      "districtName": "ID District 2",
+      "state": "ID",
+      "incumbentName": "SIMPSON, MICHAEL"
+    },
+    {
+      "apiKey": "IL-1",
+      "districtName": "IL District 1",
+      "state": "IL",
+      "incumbentName": "JACKSON, JONATHAN"
+    },
+    {
+      "apiKey": "IL-2",
+      "districtName": "IL District 2",
+      "state": "IL",
+      "incumbentName": "Robin L. Kelly"
+    },
+    {
+      "apiKey": "IL-3",
+      "districtName": "IL District 3",
+      "state": "IL",
+      "incumbentName": "RAMIREZ, DELIA"
+    },
+    {
+      "apiKey": "IL-4",
+      "districtName": "IL District 4",
+      "state": "IL",
+      "incumbentName": "Jesús G. \"Chuy\" García"
+    },
+    {
+      "apiKey": "IL-5",
+      "districtName": "IL District 5",
+      "state": "IL",
+      "incumbentName": "QUIGLEY, MIKE"
+    },
+    {
+      "apiKey": "IL-6",
+      "districtName": "IL District 6",
+      "state": "IL",
+      "incumbentName": "CASTEN, SEAN"
+    },
+    {
+      "apiKey": "IL-7",
+      "districtName": "IL District 7",
+      "state": "IL",
+      "incumbentName": "DAVIS, DANNY K. MR."
+    },
+    {
+      "apiKey": "IL-8",
+      "districtName": "IL District 8",
+      "state": "IL",
+      "incumbentName": "KRISHNAMOORTHI, S. RAJA"
+    },
+    {
+      "apiKey": "IL-9",
+      "districtName": "IL District 9",
+      "state": "IL",
+      "incumbentName": "SCHAKOWSKY, JANICE D"
+    },
+    {
+      "apiKey": "IL-10",
+      "districtName": "IL District 10",
+      "state": "IL",
+      "incumbentName": "SCHNEIDER, BRADLEY S."
+    },
+    {
+      "apiKey": "IL-11",
+      "districtName": "IL District 11",
+      "state": "IL",
+      "incumbentName": "FOSTER, G. WILLIAM (BILL)"
+    },
+    {
+      "apiKey": "IL-12",
+      "districtName": "IL District 12",
+      "state": "IL",
+      "incumbentName": "BOST, MICHAEL"
+    },
+    {
+      "apiKey": "IL-13",
+      "districtName": "IL District 13",
+      "state": "IL",
+      "incumbentName": "BUDZINSKI, NIKKI"
+    },
+    {
+      "apiKey": "IL-14",
+      "districtName": "IL District 14",
+      "state": "IL",
+      "incumbentName": "UNDERWOOD, LAUREN"
+    },
+    {
+      "apiKey": "IL-15",
+      "districtName": "IL District 15",
+      "state": "IL",
+      "incumbentName": "MILLER, MARY"
+    },
+    {
+      "apiKey": "IL-16",
+      "districtName": "IL District 16",
+      "state": "IL",
+      "incumbentName": "LAHOOD, DARIN MCKAY"
+    },
+    {
+      "apiKey": "IL-17",
+      "districtName": "IL District 17",
+      "state": "IL",
+      "incumbentName": "SORENSEN, ERIC"
+    },
+    {
+      "apiKey": "IN-1",
+      "districtName": "IN District 1",
+      "state": "IN",
+      "incumbentName": "MRVAN, FRANK J."
+    },
+    {
+      "apiKey": "IN-2",
+      "districtName": "IN District 2",
+      "state": "IN",
+      "incumbentName": "DOTY, HUGH SCOTT MR III"
+    },
+    {
+      "apiKey": "IN-3",
+      "districtName": "IN District 3",
+      "state": "IN",
+      "incumbentName": "STUTZMAN, MARLIN"
+    },
+    {
+      "apiKey": "IN-4",
+      "districtName": "IN District 4",
+      "state": "IN",
+      "incumbentName": "BAIRD, JAMES R DR."
+    },
+    {
+      "apiKey": "IN-5",
+      "districtName": "IN District 5",
+      "state": "IN",
+      "incumbentName": "SPARTZ, VICTORIA"
+    },
+    {
+      "apiKey": "IN-6",
+      "districtName": "IN District 6",
+      "state": "IN",
+      "incumbentName": "SHREVE, JEFFERSON"
+    },
+    {
+      "apiKey": "IN-7",
+      "districtName": "IN District 7",
+      "state": "IN",
+      "incumbentName": "CARSON, ANDRE"
+    },
+    {
+      "apiKey": "IN-8",
+      "districtName": "IN District 8",
+      "state": "IN",
+      "incumbentName": "MESSMER, MARK MR."
+    },
+    {
+      "apiKey": "IN-9",
+      "districtName": "IN District 9",
+      "state": "IN",
+      "incumbentName": "HOUCHIN, ERIN"
+    },
+    {
+      "apiKey": "KS-1",
+      "districtName": "KS District 1",
+      "state": "KS",
+      "incumbentName": "KLEINMANN, MATTHEW RYAN"
+    },
+    {
+      "apiKey": "KS-2",
+      "districtName": "KS District 2",
+      "state": "KS",
+      "incumbentName": "SCHMIDT, DEREK"
+    },
+    {
+      "apiKey": "KS-3",
+      "districtName": "KS District 3",
+      "state": "KS",
+      "incumbentName": "DAVIDS, SHARICE"
+    },
+    {
+      "apiKey": "KS-4",
+      "districtName": "KS District 4",
+      "state": "KS",
+      "incumbentName": "ESTES, RON"
+    },
+    {
+      "apiKey": "KY-1",
+      "districtName": "KY District 1",
+      "state": "KY",
+      "incumbentName": "COMER, JAMES"
+    },
+    {
+      "apiKey": "KY-2",
+      "districtName": "KY District 2",
+      "state": "KY",
+      "incumbentName": "GUTHRIE, S. BRETT HON."
+    },
+    {
+      "apiKey": "KY-3",
+      "districtName": "KY District 3",
+      "state": "KY",
+      "incumbentName": "MCGARVEY, MORGAN"
+    },
+    {
+      "apiKey": "KY-4",
+      "districtName": "KY District 4",
+      "state": "KY",
+      "incumbentName": "MASSIE, THOMAS H."
+    },
+    {
+      "apiKey": "KY-5",
+      "districtName": "KY District 5",
+      "state": "KY",
+      "incumbentName": "ROGERS, HAROLD DALLAS"
+    },
+    {
+      "apiKey": "KY-6",
+      "districtName": "KY District 6",
+      "state": "KY",
+      "incumbentName": "Andy Barr"
+    },
+    {
+      "apiKey": "LA-1",
+      "districtName": "LA District 1",
+      "state": "LA",
+      "incumbentName": "SCALISE, STEVE MR"
+    },
+    {
+      "apiKey": "LA-2",
+      "districtName": "LA District 2",
+      "state": "LA",
+      "incumbentName": "CARTER, TROY A. SR."
+    },
+    {
+      "apiKey": "LA-3",
+      "districtName": "LA District 3",
+      "state": "LA",
+      "incumbentName": "HIGGINS, CLAY CAPTAIN"
+    },
+    {
+      "apiKey": "LA-4",
+      "districtName": "LA District 4",
+      "state": "LA",
+      "incumbentName": "JOHNSON, JAMES MICHAEL"
+    },
+    {
+      "apiKey": "LA-5",
+      "districtName": "LA District 5",
+      "state": "LA",
+      "incumbentName": "LETLOW, JULIA"
+    },
+    {
+      "apiKey": "LA-6",
+      "districtName": "LA District 6",
+      "state": "LA",
+      "incumbentName": "FIELDS, CLEO"
+    },
+    {
+      "apiKey": "MA-1",
+      "districtName": "MA District 1",
+      "state": "MA",
+      "incumbentName": "NEAL, RICHARD E"
+    },
+    {
+      "apiKey": "MA-2",
+      "districtName": "MA District 2",
+      "state": "MA",
+      "incumbentName": "MCGOVERN, JAMES P"
+    },
+    {
+      "apiKey": "MA-3",
+      "districtName": "MA District 3",
+      "state": "MA",
+      "incumbentName": "TRAHAN, LORI"
+    },
+    {
+      "apiKey": "MA-4",
+      "districtName": "MA District 4",
+      "state": "MA",
+      "incumbentName": "AUCHINCLOSS, JAKE"
+    },
+    {
+      "apiKey": "MA-5",
+      "districtName": "MA District 5",
+      "state": "MA",
+      "incumbentName": "CLARK, KATHERINE"
+    },
+    {
+      "apiKey": "MA-6",
+      "districtName": "MA District 6",
+      "state": "MA",
+      "incumbentName": "MOULTON, SETH"
+    },
+    {
+      "apiKey": "MA-7",
+      "districtName": "MA District 7",
+      "state": "MA",
+      "incumbentName": "PRESSLEY, AYANNA"
+    },
+    {
+      "apiKey": "MA-8",
+      "districtName": "MA District 8",
+      "state": "MA",
+      "incumbentName": "LYNCH, STEPHEN"
+    },
+    {
+      "apiKey": "MA-9",
+      "districtName": "MA District 9",
+      "state": "MA",
+      "incumbentName": "KEATING, WILLIAM R"
+    },
+    {
+      "apiKey": "MD-1",
+      "districtName": "MD District 1",
+      "state": "MD",
+      "incumbentName": "HARRIS, ANDREW P"
+    },
+    {
+      "apiKey": "MD-2",
+      "districtName": "MD District 2",
+      "state": "MD",
+      "incumbentName": "OLSZEWSKI, JOHN ANTHONY JR."
+    },
+    {
+      "apiKey": "MD-3",
+      "districtName": "MD District 3",
+      "state": "MD",
+      "incumbentName": "ELFRETH, SARAH KELLY"
+    },
+    {
+      "apiKey": "MD-4",
+      "districtName": "MD District 4",
+      "state": "MD",
+      "incumbentName": "IVEY, GLENN"
+    },
+    {
+      "apiKey": "MD-5",
+      "districtName": "MD District 5",
+      "state": "MD",
+      "incumbentName": "HOYER, STENY"
+    },
+    {
+      "apiKey": "MD-6",
+      "districtName": "MD District 6",
+      "state": "MD",
+      "incumbentName": "DELANEY, APRIL MCCLAIN"
+    },
+    {
+      "apiKey": "MD-7",
+      "districtName": "MD District 7",
+      "state": "MD",
+      "incumbentName": "MFUME, KWEISI"
+    },
+    {
+      "apiKey": "MD-8",
+      "districtName": "MD District 8",
+      "state": "MD",
+      "incumbentName": "RASKIN, JAMIE"
+    },
+    {
+      "apiKey": "ME-1",
+      "districtName": "ME District 1",
+      "state": "ME",
+      "incumbentName": "PINGREE, CHELLIE M"
+    },
+    {
+      "apiKey": "ME-2",
+      "districtName": "ME District 2",
+      "state": "ME",
+      "incumbentName": "GOLDEN, JARED"
+    },
+    {
+      "apiKey": "MI-1",
+      "districtName": "MI District 1",
+      "state": "MI",
+      "incumbentName": "BERGMAN, JOHN"
+    },
+    {
+      "apiKey": "MI-2",
+      "districtName": "MI District 2",
+      "state": "MI",
+      "incumbentName": "MOOLENAAR, JOHN MR."
+    },
+    {
+      "apiKey": "MI-3",
+      "districtName": "MI District 3",
+      "state": "MI",
+      "incumbentName": "SCHOLTEN, HILLARY"
+    },
+    {
+      "apiKey": "MI-4",
+      "districtName": "MI District 4",
+      "state": "MI",
+      "incumbentName": "HUIZENGA, WILLIAM P"
+    },
+    {
+      "apiKey": "MI-5",
+      "districtName": "MI District 5",
+      "state": "MI",
+      "incumbentName": "WALBERG, TIMOTHY L REP"
+    },
+    {
+      "apiKey": "MI-6",
+      "districtName": "MI District 6",
+      "state": "MI",
+      "incumbentName": "DINGELL, DEBBIE"
+    },
+    {
+      "apiKey": "MI-7",
+      "districtName": "MI District 7",
+      "state": "MI",
+      "incumbentName": "BARRETT, THOMAS MORE"
+    },
+    {
+      "apiKey": "MI-8",
+      "districtName": "MI District 8",
+      "state": "MI",
+      "incumbentName": "MCDONALD RIVET, KRISTEN"
+    },
+    {
+      "apiKey": "MI-9",
+      "districtName": "MI District 9",
+      "state": "MI",
+      "incumbentName": "MCCLAIN, LISA"
+    },
+    {
+      "apiKey": "MI-10",
+      "districtName": "MI District 10",
+      "state": "MI",
+      "incumbentName": "JAMES, JOHN"
+    },
+    {
+      "apiKey": "MI-11",
+      "districtName": "MI District 11",
+      "state": "MI",
+      "incumbentName": "Haley M. Stevens"
+    },
+    {
+      "apiKey": "MI-12",
+      "districtName": "MI District 12",
+      "state": "MI",
+      "incumbentName": "TLAIB, RASHIDA"
+    },
+    {
+      "apiKey": "MI-13",
+      "districtName": "MI District 13",
+      "state": "MI",
+      "incumbentName": "THANEDAR, SHRI"
+    },
+    {
+      "apiKey": "MN-1",
+      "districtName": "MN District 1",
+      "state": "MN",
+      "incumbentName": "FINSTAD, BRAD"
+    },
+    {
+      "apiKey": "MN-2",
+      "districtName": "MN District 2",
+      "state": "MN",
+      "incumbentName": "CRAIG, ANGELA DAWN"
+    },
+    {
+      "apiKey": "MN-3",
+      "districtName": "MN District 3",
+      "state": "MN",
+      "incumbentName": "MORRISON, KELLY LOUISE"
+    },
+    {
+      "apiKey": "MN-4",
+      "districtName": "MN District 4",
+      "state": "MN",
+      "incumbentName": "MCCOLLUM, BETTY"
+    },
+    {
+      "apiKey": "MN-5",
+      "districtName": "MN District 5",
+      "state": "MN",
+      "incumbentName": "OMAR, ILHAN"
+    },
+    {
+      "apiKey": "MN-6",
+      "districtName": "MN District 6",
+      "state": "MN",
+      "incumbentName": "EMMER, THOMAS EARL JR."
+    },
+    {
+      "apiKey": "MN-7",
+      "districtName": "MN District 7",
+      "state": "MN",
+      "incumbentName": "FISCHBACH, MICHELLE"
+    },
+    {
+      "apiKey": "MN-8",
+      "districtName": "MN District 8",
+      "state": "MN",
+      "incumbentName": "STAUBER, PETER ALLEN"
+    },
+    {
+      "apiKey": "MO-1",
+      "districtName": "MO District 1",
+      "state": "MO",
+      "incumbentName": "BELL, WESLEY"
+    },
+    {
+      "apiKey": "MO-2",
+      "districtName": "MO District 2",
+      "state": "MO",
+      "incumbentName": "WAGNER, ANN L."
+    },
+    {
+      "apiKey": "MO-3",
+      "districtName": "MO District 3",
+      "state": "MO",
+      "incumbentName": "GRAVES, SAMUEL B. JR."
+    },
+    {
+      "apiKey": "MO-4",
+      "districtName": "MO District 4",
+      "state": "MO",
+      "incumbentName": "ALFORD, MARK"
+    },
+    {
+      "apiKey": "MO-5",
+      "districtName": "MO District 5",
+      "state": "MO",
+      "incumbentName": "CLEAVER, EMANUEL II"
+    },
+    {
+      "apiKey": "MO-6",
+      "districtName": "MO District 6",
+      "state": "MO",
+      "incumbentName": "GRAVES, SAMUEL B. JR."
+    },
+    {
+      "apiKey": "MO-7",
+      "districtName": "MO District 7",
+      "state": "MO",
+      "incumbentName": "BURLISON, ERIC"
+    },
+    {
+      "apiKey": "MO-8",
+      "districtName": "MO District 8",
+      "state": "MO",
+      "incumbentName": "SMITH, WESLEY"
+    },
+    {
+      "apiKey": "MP-undefined",
+      "districtName": "MP At-Large",
+      "state": "MP",
+      "incumbentName": "KING-HINDS, KIMBERLYN KAY"
+    },
+    {
+      "apiKey": "MS-1",
+      "districtName": "MS District 1",
+      "state": "MS",
+      "incumbentName": "KELLY, JOHN TRENT"
+    },
+    {
+      "apiKey": "MS-2",
+      "districtName": "MS District 2",
+      "state": "MS",
+      "incumbentName": "THOMPSON, BENNIE G."
+    },
+    {
+      "apiKey": "MS-3",
+      "districtName": "MS District 3",
+      "state": "MS",
+      "incumbentName": "GUEST, MICHAEL PATRICK"
+    },
+    {
+      "apiKey": "MS-4",
+      "districtName": "MS District 4",
+      "state": "MS",
+      "incumbentName": "EZELL, WALTER MICHAEL"
+    },
+    {
+      "apiKey": "MT-1",
+      "districtName": "MT District 1",
+      "state": "MT",
+      "incumbentName": "ZINKE, RYAN K"
+    },
+    {
+      "apiKey": "MT-2",
+      "districtName": "MT District 2",
+      "state": "MT",
+      "incumbentName": "DOWNING, TROY"
+    },
+    {
+      "apiKey": "NC-1",
+      "districtName": "NC District 1",
+      "state": "NC",
+      "incumbentName": "DAVIS, DON"
+    },
+    {
+      "apiKey": "NC-2",
+      "districtName": "NC District 2",
+      "state": "NC",
+      "incumbentName": "ROSS, DEBORAH"
+    },
+    {
+      "apiKey": "NC-3",
+      "districtName": "NC District 3",
+      "state": "NC",
+      "incumbentName": "MURPHY, GREGORY FRANCIS DR."
+    },
+    {
+      "apiKey": "NC-4",
+      "districtName": "NC District 4",
+      "state": "NC",
+      "incumbentName": "FOUSHEE, VALERIE"
+    },
+    {
+      "apiKey": "NC-5",
+      "districtName": "NC District 5",
+      "state": "NC",
+      "incumbentName": "FOXX, VIRGINIA ANN"
+    },
+    {
+      "apiKey": "NC-6",
+      "districtName": "NC District 6",
+      "state": "NC",
+      "incumbentName": "MCDOWELL, ADDISON"
+    },
+    {
+      "apiKey": "NC-7",
+      "districtName": "NC District 7",
+      "state": "NC",
+      "incumbentName": "ROUZER, DAVID"
+    },
+    {
+      "apiKey": "NC-8",
+      "districtName": "NC District 8",
+      "state": "NC",
+      "incumbentName": "HARRIS, MARK E"
+    },
+    {
+      "apiKey": "NC-9",
+      "districtName": "NC District 9",
+      "state": "NC",
+      "incumbentName": "HUDSON, RICHARD L. JR."
+    },
+    {
+      "apiKey": "NC-10",
+      "districtName": "NC District 10",
+      "state": "NC",
+      "incumbentName": "HARRIGAN, PAT"
+    },
+    {
+      "apiKey": "NC-11",
+      "districtName": "NC District 11",
+      "state": "NC",
+      "incumbentName": "EDWARDS, CHUCK"
+    },
+    {
+      "apiKey": "NC-12",
+      "districtName": "NC District 12",
+      "state": "NC",
+      "incumbentName": "ADAMS, ALMA SHEALEY"
+    },
+    {
+      "apiKey": "NC-13",
+      "districtName": "NC District 13",
+      "state": "NC",
+      "incumbentName": "KNOTT, BRAD"
+    },
+    {
+      "apiKey": "NC-14",
+      "districtName": "NC District 14",
+      "state": "NC",
+      "incumbentName": "MOORE, TIM"
+    },
+    {
+      "apiKey": "ND-undefined",
+      "districtName": "ND At-Large",
+      "state": "ND",
+      "incumbentName": "FEDORCHAK, JULIE"
+    },
+    {
+      "apiKey": "NE-1",
+      "districtName": "NE District 1",
+      "state": "NE",
+      "incumbentName": "FLOOD, MIKE"
+    },
+    {
+      "apiKey": "NE-2",
+      "districtName": "NE District 2",
+      "state": "NE",
+      "incumbentName": "BACON, DONALD J"
+    },
+    {
+      "apiKey": "NE-3",
+      "districtName": "NE District 3",
+      "state": "NE",
+      "incumbentName": "SMITH, ADRIAN"
+    },
+    {
+      "apiKey": "NH-1",
+      "districtName": "NH District 1",
+      "state": "NH",
+      "incumbentName": "Chris Pappas"
+    },
+    {
+      "apiKey": "NH-2",
+      "districtName": "NH District 2",
+      "state": "NH",
+      "incumbentName": "GOODLANDER, MAGGIE"
+    },
+    {
+      "apiKey": "NJ-1",
+      "districtName": "NJ District 1",
+      "state": "NJ",
+      "incumbentName": "NORCROSS, DONALD W"
+    },
+    {
+      "apiKey": "NJ-2",
+      "districtName": "NJ District 2",
+      "state": "NJ",
+      "incumbentName": "BLACK, ANDREW"
+    },
+    {
+      "apiKey": "NJ-3",
+      "districtName": "NJ District 3",
+      "state": "NJ",
+      "incumbentName": "PASCRELL, WILLIAM J. JR."
+    },
+    {
+      "apiKey": "NJ-4",
+      "districtName": "NJ District 4",
+      "state": "NJ",
+      "incumbentName": "SMITH, CHRISTOPHER H"
+    },
+    {
+      "apiKey": "NJ-5",
+      "districtName": "NJ District 5",
+      "state": "NJ",
+      "incumbentName": "GOTTHEIMER, JOSH"
+    },
+    {
+      "apiKey": "NJ-6",
+      "districtName": "NJ District 6",
+      "state": "NJ",
+      "incumbentName": "PASCRELL, WILLIAM J. JR."
+    },
+    {
+      "apiKey": "NJ-7",
+      "districtName": "NJ District 7",
+      "state": "NJ",
+      "incumbentName": "PASCRELL, WILLIAM J. JR."
+    },
+    {
+      "apiKey": "NJ-8",
+      "districtName": "NJ District 8",
+      "state": "NJ",
+      "incumbentName": "MENENDEZ, ROBERT J."
+    },
+    {
+      "apiKey": "NJ-9",
+      "districtName": "NJ District 9",
+      "state": "NJ",
+      "incumbentName": "POU, NELIDA"
+    },
+    {
+      "apiKey": "NJ-10",
+      "districtName": "NJ District 10",
+      "state": "NJ",
+      "incumbentName": "MCIVER, LAMONICA"
+    },
+    {
+      "apiKey": "NJ-11",
+      "districtName": "NJ District 11",
+      "state": "NJ",
+      "incumbentName": "SHERRILL, MIKIE"
+    },
+    {
+      "apiKey": "NJ-12",
+      "districtName": "NJ District 12",
+      "state": "NJ",
+      "incumbentName": "COLEMAN, BONNIE WATSON"
+    },
+    {
+      "apiKey": "NM-1",
+      "districtName": "NM District 1",
+      "state": "NM",
+      "incumbentName": "STANSBURY, MELANIE"
+    },
+    {
+      "apiKey": "NM-2",
+      "districtName": "NM District 2",
+      "state": "NM",
+      "incumbentName": "VASQUEZ, GABRIEL"
+    },
+    {
+      "apiKey": "NM-3",
+      "districtName": "NM District 3",
+      "state": "NM",
+      "incumbentName": "LEGER FERNANDEZ, TERESA"
+    },
+    {
+      "apiKey": "NV-1",
+      "districtName": "NV District 1",
+      "state": "NV",
+      "incumbentName": "TITUS, DINA"
+    },
+    {
+      "apiKey": "NV-2",
+      "districtName": "NV District 2",
+      "state": "NV",
+      "incumbentName": "AMODEI, MARK EUGENE"
+    },
+    {
+      "apiKey": "NV-3",
+      "districtName": "NV District 3",
+      "state": "NV",
+      "incumbentName": "LEE, SUSIE"
+    },
+    {
+      "apiKey": "NV-4",
+      "districtName": "NV District 4",
+      "state": "NV",
+      "incumbentName": "HORSFORD, STEVEN ALEXZANDER"
+    },
+    {
+      "apiKey": "NY-1",
+      "districtName": "NY District 1",
+      "state": "NY",
+      "incumbentName": "NICK, LALOTA"
+    },
+    {
+      "apiKey": "NY-2",
+      "districtName": "NY District 2",
+      "state": "NY",
+      "incumbentName": "GARBARINO, ANDREW"
+    },
+    {
+      "apiKey": "NY-3",
+      "districtName": "NY District 3",
+      "state": "NY",
+      "incumbentName": "SUOZZI, THOMAS"
+    },
+    {
+      "apiKey": "NY-4",
+      "districtName": "NY District 4",
+      "state": "NY",
+      "incumbentName": "GILLEN, LAURA"
+    },
+    {
+      "apiKey": "NY-5",
+      "districtName": "NY District 5",
+      "state": "NY",
+      "incumbentName": "MEEKS, GREGORY W."
+    },
+    {
+      "apiKey": "NY-6",
+      "districtName": "NY District 6",
+      "state": "NY",
+      "incumbentName": "MENG, GRACE"
+    },
+    {
+      "apiKey": "NY-7",
+      "districtName": "NY District 7",
+      "state": "NY",
+      "incumbentName": "Nydia M. Velázquez"
+    },
+    {
+      "apiKey": "NY-8",
+      "districtName": "NY District 8",
+      "state": "NY",
+      "incumbentName": "JEFFRIES, HAKEEM"
+    },
+    {
+      "apiKey": "NY-9",
+      "districtName": "NY District 9",
+      "state": "NY",
+      "incumbentName": "CLARKE, YVETTE D"
+    },
+    {
+      "apiKey": "NY-10",
+      "districtName": "NY District 10",
+      "state": "NY",
+      "incumbentName": "GOLDMAN, DANIEL"
+    },
+    {
+      "apiKey": "NY-11",
+      "districtName": "NY District 11",
+      "state": "NY",
+      "incumbentName": "MALLIOTAKIS, NICOLE"
+    },
+    {
+      "apiKey": "NY-12",
+      "districtName": "NY District 12",
+      "state": "NY",
+      "incumbentName": "NADLER, JERROLD L"
+    },
+    {
+      "apiKey": "NY-13",
+      "districtName": "NY District 13",
+      "state": "NY",
+      "incumbentName": "ESPAILLAT, ADRIANO"
+    },
+    {
+      "apiKey": "NY-14",
+      "districtName": "NY District 14",
+      "state": "NY",
+      "incumbentName": "OCASIO-CORTEZ, ALEXANDRIA"
+    },
+    {
+      "apiKey": "NY-15",
+      "districtName": "NY District 15",
+      "state": "NY",
+      "incumbentName": "TORRES, RITCHIE JOHN"
+    },
+    {
+      "apiKey": "NY-16",
+      "districtName": "NY District 16",
+      "state": "NY",
+      "incumbentName": "LATIMER, GEORGE"
+    },
+    {
+      "apiKey": "NY-17",
+      "districtName": "NY District 17",
+      "state": "NY",
+      "incumbentName": "LAWLER, MICHAEL VINCENT"
+    },
+    {
+      "apiKey": "NY-18",
+      "districtName": "NY District 18",
+      "state": "NY",
+      "incumbentName": "RYAN, PATRICK"
+    },
+    {
+      "apiKey": "NY-19",
+      "districtName": "NY District 19",
+      "state": "NY",
+      "incumbentName": "RILEY, JOSH"
+    },
+    {
+      "apiKey": "NY-20",
+      "districtName": "NY District 20",
+      "state": "NY",
+      "incumbentName": "TONKO, PAUL DAVID"
+    },
+    {
+      "apiKey": "NY-21",
+      "districtName": "NY District 21",
+      "state": "NY",
+      "incumbentName": "STEFANIK, ELISE M."
+    },
+    {
+      "apiKey": "NY-22",
+      "districtName": "NY District 22",
+      "state": "NY",
+      "incumbentName": "MANNION, JOHN W"
+    },
+    {
+      "apiKey": "NY-23",
+      "districtName": "NY District 23",
+      "state": "NY",
+      "incumbentName": "LANGWORTHY, NICK"
+    },
+    {
+      "apiKey": "NY-24",
+      "districtName": "NY District 24",
+      "state": "NY",
+      "incumbentName": "TENNEY, CLAUDIA"
+    },
+    {
+      "apiKey": "NY-25",
+      "districtName": "NY District 25",
+      "state": "NY",
+      "incumbentName": "MORELLE, JOSEPH D"
+    },
+    {
+      "apiKey": "NY-26",
+      "districtName": "NY District 26",
+      "state": "NY",
+      "incumbentName": "KENNEDY, TIMOTHY"
+    },
+    {
+      "apiKey": "OH-1",
+      "districtName": "OH District 1",
+      "state": "OH",
+      "incumbentName": "LANDSMAN, GREG"
+    },
+    {
+      "apiKey": "OH-2",
+      "districtName": "OH District 2",
+      "state": "OH",
+      "incumbentName": "TAYLOR, DAVID"
+    },
+    {
+      "apiKey": "OH-3",
+      "districtName": "OH District 3",
+      "state": "OH",
+      "incumbentName": "BEATTY, JOYCE"
+    },
+    {
+      "apiKey": "OH-4",
+      "districtName": "OH District 4",
+      "state": "OH",
+      "incumbentName": "JORDAN, JAMES D."
+    },
+    {
+      "apiKey": "OH-5",
+      "districtName": "OH District 5",
+      "state": "OH",
+      "incumbentName": "LATTA, ROBERT EDWARD"
+    },
+    {
+      "apiKey": "OH-6",
+      "districtName": "OH District 6",
+      "state": "OH",
+      "incumbentName": "RULLI, MICHAEL"
+    },
+    {
+      "apiKey": "OH-7",
+      "districtName": "OH District 7",
+      "state": "OH",
+      "incumbentName": "MILLER, ADAM CLAY"
+    },
+    {
+      "apiKey": "OH-8",
+      "districtName": "OH District 8",
+      "state": "OH",
+      "incumbentName": "DAVIDSON, WARREN"
+    },
+    {
+      "apiKey": "OH-9",
+      "districtName": "OH District 9",
+      "state": "OH",
+      "incumbentName": "KAPTUR, MARCY HON. M.C."
+    },
+    {
+      "apiKey": "OH-10",
+      "districtName": "OH District 10",
+      "state": "OH",
+      "incumbentName": "TURNER, MICHAEL R REP."
+    },
+    {
+      "apiKey": "OH-11",
+      "districtName": "OH District 11",
+      "state": "OH",
+      "incumbentName": "BROWN, M SHONTEL"
+    },
+    {
+      "apiKey": "OH-12",
+      "districtName": "OH District 12",
+      "state": "OH",
+      "incumbentName": "BALDERSON, WILLIAM TROY"
+    },
+    {
+      "apiKey": "OH-13",
+      "districtName": "OH District 13",
+      "state": "OH",
+      "incumbentName": "SYKES, EMILIA"
+    },
+    {
+      "apiKey": "OH-14",
+      "districtName": "OH District 14",
+      "state": "OH",
+      "incumbentName": "JOYCE, DAVID P."
+    },
+    {
+      "apiKey": "OH-15",
+      "districtName": "OH District 15",
+      "state": "OH",
+      "incumbentName": "CAREY, MIKE"
+    },
+    {
+      "apiKey": "OK-1",
+      "districtName": "OK District 1",
+      "state": "OK",
+      "incumbentName": "HERN, KEVIN"
+    },
+    {
+      "apiKey": "OK-2",
+      "districtName": "OK District 2",
+      "state": "OK",
+      "incumbentName": "BRECHEEN, JOSH"
+    },
+    {
+      "apiKey": "OK-3",
+      "districtName": "OK District 3",
+      "state": "OK",
+      "incumbentName": "LUCAS, FRANK D."
+    },
+    {
+      "apiKey": "OK-4",
+      "districtName": "OK District 4",
+      "state": "OK",
+      "incumbentName": "COLE, TOM"
+    },
+    {
+      "apiKey": "OK-5",
+      "districtName": "OK District 5",
+      "state": "OK",
+      "incumbentName": "BICE, STEPHANIE"
+    },
+    {
+      "apiKey": "OR-1",
+      "districtName": "OR District 1",
+      "state": "OR",
+      "incumbentName": "BONAMICI, SUZANNE MS."
+    },
+    {
+      "apiKey": "OR-2",
+      "districtName": "OR District 2",
+      "state": "OR",
+      "incumbentName": "BENTZ, CLIFF"
+    },
+    {
+      "apiKey": "OR-3",
+      "districtName": "OR District 3",
+      "state": "OR",
+      "incumbentName": "DEXTER, MAXINE"
+    },
+    {
+      "apiKey": "OR-4",
+      "districtName": "OR District 4",
+      "state": "OR",
+      "incumbentName": "HOYLE, VALERIE"
+    },
+    {
+      "apiKey": "OR-5",
+      "districtName": "OR District 5",
+      "state": "OR",
+      "incumbentName": "BYNUM, JANELLE"
+    },
+    {
+      "apiKey": "OR-6",
+      "districtName": "OR District 6",
+      "state": "OR",
+      "incumbentName": "SALINAS, ANDREA"
+    },
+    {
+      "apiKey": "PA-1",
+      "districtName": "PA District 1",
+      "state": "PA",
+      "incumbentName": "FITZPATRICK, BRIAN"
+    },
+    {
+      "apiKey": "PA-2",
+      "districtName": "PA District 2",
+      "state": "PA",
+      "incumbentName": "BOYLE, BRENDAN F"
+    },
+    {
+      "apiKey": "PA-3",
+      "districtName": "PA District 3",
+      "state": "PA",
+      "incumbentName": "EVANS, DWIGHT"
+    },
+    {
+      "apiKey": "PA-4",
+      "districtName": "PA District 4",
+      "state": "PA",
+      "incumbentName": "DEAN, MADELEINE"
+    },
+    {
+      "apiKey": "PA-5",
+      "districtName": "PA District 5",
+      "state": "PA",
+      "incumbentName": "SCANLON, MARY GAY"
+    },
+    {
+      "apiKey": "PA-6",
+      "districtName": "PA District 6",
+      "state": "PA",
+      "incumbentName": "HOULAHAN, CHRISSY"
+    },
+    {
+      "apiKey": "PA-7",
+      "districtName": "PA District 7",
+      "state": "PA",
+      "incumbentName": "MACKENZIE, RYAN EDWARD"
+    },
+    {
+      "apiKey": "PA-8",
+      "districtName": "PA District 8",
+      "state": "PA",
+      "incumbentName": "YOUNG, NEIL CARLIN MR. JR."
+    },
+    {
+      "apiKey": "PA-9",
+      "districtName": "PA District 9",
+      "state": "PA",
+      "incumbentName": "MEUSER, DANIEL"
+    },
+    {
+      "apiKey": "PA-10",
+      "districtName": "PA District 10",
+      "state": "PA",
+      "incumbentName": "PERRY, SCOTT"
+    },
+    {
+      "apiKey": "PA-11",
+      "districtName": "PA District 11",
+      "state": "PA",
+      "incumbentName": "SMUCKER, LLOYD K."
+    },
+    {
+      "apiKey": "PA-12",
+      "districtName": "PA District 12",
+      "state": "PA",
+      "incumbentName": "LEE, SUMMER"
+    },
+    {
+      "apiKey": "PA-13",
+      "districtName": "PA District 13",
+      "state": "PA",
+      "incumbentName": "JOYCE, JOHN"
+    },
+    {
+      "apiKey": "PA-14",
+      "districtName": "PA District 14",
+      "state": "PA",
+      "incumbentName": "RESCHENTHALER, GUY MR."
+    },
+    {
+      "apiKey": "PA-15",
+      "districtName": "PA District 15",
+      "state": "PA",
+      "incumbentName": "THOMPSON, GLENN MR."
+    },
+    {
+      "apiKey": "PA-16",
+      "districtName": "PA District 16",
+      "state": "PA",
+      "incumbentName": "KELLY, GEORGE J JR"
+    },
+    {
+      "apiKey": "PA-17",
+      "districtName": "PA District 17",
+      "state": "PA",
+      "incumbentName": "DELUZIO, CHRISTOPHER"
+    },
+    {
+      "apiKey": "PR-undefined",
+      "districtName": "PR At-Large",
+      "state": "PR",
+      "incumbentName": "Pablo José Hernández"
+    },
+    {
+      "apiKey": "RI-1",
+      "districtName": "RI District 1",
+      "state": "RI",
+      "incumbentName": "AMO, GABRIEL F"
+    },
+    {
+      "apiKey": "RI-2",
+      "districtName": "RI District 2",
+      "state": "RI",
+      "incumbentName": "MAGAZINER, SETH"
+    },
+    {
+      "apiKey": "SC-1",
+      "districtName": "SC District 1",
+      "state": "SC",
+      "incumbentName": "MACE, NANCY"
+    },
+    {
+      "apiKey": "SC-2",
+      "districtName": "SC District 2",
+      "state": "SC",
+      "incumbentName": "WILSON, JOE THE HON."
+    },
+    {
+      "apiKey": "SC-3",
+      "districtName": "SC District 3",
+      "state": "SC",
+      "incumbentName": "BIGGS, SHERI"
+    },
+    {
+      "apiKey": "SC-4",
+      "districtName": "SC District 4",
+      "state": "SC",
+      "incumbentName": "TIMMONS, WILLIAM R IV"
+    },
+    {
+      "apiKey": "SC-5",
+      "districtName": "SC District 5",
+      "state": "SC",
+      "incumbentName": "NORMAN, RALPH W. JR."
+    },
+    {
+      "apiKey": "SC-6",
+      "districtName": "SC District 6",
+      "state": "SC",
+      "incumbentName": "CLYBURN, JAMES E."
+    },
+    {
+      "apiKey": "SC-7",
+      "districtName": "SC District 7",
+      "state": "SC",
+      "incumbentName": "FRY, RUSSELL"
+    },
+    {
+      "apiKey": "SD-undefined",
+      "districtName": "SD At-Large",
+      "state": "SD",
+      "incumbentName": "JOHNSON, SHERYL"
+    },
+    {
+      "apiKey": "TN-1",
+      "districtName": "TN District 1",
+      "state": "TN",
+      "incumbentName": "HARSHBARGER, DIANA"
+    },
+    {
+      "apiKey": "TN-2",
+      "districtName": "TN District 2",
+      "state": "TN",
+      "incumbentName": "BURCHETT, TIM"
+    },
+    {
+      "apiKey": "TN-3",
+      "districtName": "TN District 3",
+      "state": "TN",
+      "incumbentName": "FLEISCHMANN, CHARLES J"
+    },
+    {
+      "apiKey": "TN-4",
+      "districtName": "TN District 4",
+      "state": "TN",
+      "incumbentName": "DESJARLAIS, SCOTT HON."
+    },
+    {
+      "apiKey": "TN-5",
+      "districtName": "TN District 5",
+      "state": "TN",
+      "incumbentName": "OGLES, ANDY"
+    },
+    {
+      "apiKey": "TN-6",
+      "districtName": "TN District 6",
+      "state": "TN",
+      "incumbentName": "ROSE, JOHN W."
+    },
+    {
+      "apiKey": "TN-8",
+      "districtName": "TN District 8",
+      "state": "TN",
+      "incumbentName": "KUSTOFF, DAVID"
+    },
+    {
+      "apiKey": "TN-9",
+      "districtName": "TN District 9",
+      "state": "TN",
+      "incumbentName": "COHEN, STEVE I MR."
+    },
+    {
+      "apiKey": "TX-1",
+      "districtName": "TX District 1",
+      "state": "TX",
+      "incumbentName": "MORAN, NATHANIEL QUENTIN"
+    },
+    {
+      "apiKey": "TX-2",
+      "districtName": "TX District 2",
+      "state": "TX",
+      "incumbentName": "CRENSHAW, DANIEL"
+    },
+    {
+      "apiKey": "TX-3",
+      "districtName": "TX District 3",
+      "state": "TX",
+      "incumbentName": "SELF, KEITH ALAN MR"
+    },
+    {
+      "apiKey": "TX-4",
+      "districtName": "TX District 4",
+      "state": "TX",
+      "incumbentName": "FALLON, PATRICK"
+    },
+    {
+      "apiKey": "TX-5",
+      "districtName": "TX District 5",
+      "state": "TX",
+      "incumbentName": "GOODEN, LANCE"
+    },
+    {
+      "apiKey": "TX-6",
+      "districtName": "TX District 6",
+      "state": "TX",
+      "incumbentName": "ELLZEY, JOHN KEVIN SR."
+    },
+    {
+      "apiKey": "TX-7",
+      "districtName": "TX District 7",
+      "state": "TX",
+      "incumbentName": "FLETCHER, ELIZABETH"
+    },
+    {
+      "apiKey": "TX-8",
+      "districtName": "TX District 8",
+      "state": "TX",
+      "incumbentName": "LUTTRELL, MORGAN JOE"
+    },
+    {
+      "apiKey": "TX-9",
+      "districtName": "TX District 9",
+      "state": "TX",
+      "incumbentName": "GREEN, ALEXANDER"
+    },
+    {
+      "apiKey": "TX-10",
+      "districtName": "TX District 10",
+      "state": "TX",
+      "incumbentName": "MCCAUL, MICHAEL"
+    },
+    {
+      "apiKey": "TX-11",
+      "districtName": "TX District 11",
+      "state": "TX",
+      "incumbentName": "PFLUGER, AUGUST LEE II"
+    },
+    {
+      "apiKey": "TX-12",
+      "districtName": "TX District 12",
+      "state": "TX",
+      "incumbentName": "GOLDMAN, CRAIG"
+    },
+    {
+      "apiKey": "TX-13",
+      "districtName": "TX District 13",
+      "state": "TX",
+      "incumbentName": "JACKSON, RONNY LYNN"
+    },
+    {
+      "apiKey": "TX-14",
+      "districtName": "TX District 14",
+      "state": "TX",
+      "incumbentName": "ELLZEY, JOHN KEVIN SR."
+    },
+    {
+      "apiKey": "TX-15",
+      "districtName": "TX District 15",
+      "state": "TX",
+      "incumbentName": "DE LA CRUZ, MONICA"
+    },
+    {
+      "apiKey": "TX-16",
+      "districtName": "TX District 16",
+      "state": "TX",
+      "incumbentName": "ESCOBAR, VERONICA"
+    },
+    {
+      "apiKey": "TX-17",
+      "districtName": "TX District 17",
+      "state": "TX",
+      "incumbentName": "SESSIONS, PETE"
+    },
+    {
+      "apiKey": "TX-19",
+      "districtName": "TX District 19",
+      "state": "TX",
+      "incumbentName": "ARRINGTON, JODEY"
+    },
+    {
+      "apiKey": "TX-20",
+      "districtName": "TX District 20",
+      "state": "TX",
+      "incumbentName": "CASTRO, JOAQUIN"
+    },
+    {
+      "apiKey": "TX-21",
+      "districtName": "TX District 21",
+      "state": "TX",
+      "incumbentName": "ROY, CHIP"
+    },
+    {
+      "apiKey": "TX-22",
+      "districtName": "TX District 22",
+      "state": "TX",
+      "incumbentName": "NEHLS, TROY"
+    },
+    {
+      "apiKey": "TX-23",
+      "districtName": "TX District 23",
+      "state": "TX",
+      "incumbentName": "GONZALES, ERNEST ANTHONY TONY II"
+    },
+    {
+      "apiKey": "TX-24",
+      "districtName": "TX District 24",
+      "state": "TX",
+      "incumbentName": "VAN DUYNE, ELIZABETH ANN"
+    },
+    {
+      "apiKey": "TX-25",
+      "districtName": "TX District 25",
+      "state": "TX",
+      "incumbentName": "WILLIAMS, ROGER"
+    },
+    {
+      "apiKey": "TX-26",
+      "districtName": "TX District 26",
+      "state": "TX",
+      "incumbentName": "GILL, BRANDON"
+    },
+    {
+      "apiKey": "TX-27",
+      "districtName": "TX District 27",
+      "state": "TX",
+      "incumbentName": "CLOUD, MICHAEL"
+    },
+    {
+      "apiKey": "TX-28",
+      "districtName": "TX District 28",
+      "state": "TX",
+      "incumbentName": "CUELLAR, HENRY R."
+    },
+    {
+      "apiKey": "TX-29",
+      "districtName": "TX District 29",
+      "state": "TX",
+      "incumbentName": "GARCIA, SYLVIA R"
+    },
+    {
+      "apiKey": "TX-30",
+      "districtName": "TX District 30",
+      "state": "TX",
+      "incumbentName": "CROCKETT, JASMINE"
+    },
+    {
+      "apiKey": "TX-31",
+      "districtName": "TX District 31",
+      "state": "TX",
+      "incumbentName": "CARTER, JOHN R REP."
+    },
+    {
+      "apiKey": "TX-32",
+      "districtName": "TX District 32",
+      "state": "TX",
+      "incumbentName": "JOHNSON, JULIE"
+    },
+    {
+      "apiKey": "TX-33",
+      "districtName": "TX District 33",
+      "state": "TX",
+      "incumbentName": "VEASEY, MARC ALLISON"
+    },
+    {
+      "apiKey": "TX-34",
+      "districtName": "TX District 34",
+      "state": "TX",
+      "incumbentName": "GONZALEZ, VICENTE"
+    },
+    {
+      "apiKey": "TX-35",
+      "districtName": "TX District 35",
+      "state": "TX",
+      "incumbentName": "CASAR, GREG"
+    },
+    {
+      "apiKey": "TX-36",
+      "districtName": "TX District 36",
+      "state": "TX",
+      "incumbentName": "BABIN, BRIAN"
+    },
+    {
+      "apiKey": "TX-37",
+      "districtName": "TX District 37",
+      "state": "TX",
+      "incumbentName": "DOGGETT, LLOYD"
+    },
+    {
+      "apiKey": "TX-38",
+      "districtName": "TX District 38",
+      "state": "TX",
+      "incumbentName": "HUNT, WESLEY"
+    },
+    {
+      "apiKey": "UT-1",
+      "districtName": "UT District 1",
+      "state": "UT",
+      "incumbentName": "MOORE, BLAKE"
+    },
+    {
+      "apiKey": "UT-2",
+      "districtName": "UT District 2",
+      "state": "UT",
+      "incumbentName": "MALOY, CELESTE"
+    },
+    {
+      "apiKey": "UT-3",
+      "districtName": "UT District 3",
+      "state": "UT",
+      "incumbentName": "KENNEDY, MIKE"
+    },
+    {
+      "apiKey": "UT-4",
+      "districtName": "UT District 4",
+      "state": "UT",
+      "incumbentName": "OWENS, BURGESS"
+    },
+    {
+      "apiKey": "VA-1",
+      "districtName": "VA District 1",
+      "state": "VA",
+      "incumbentName": "WITTMAN, ROBERT J. MR."
+    },
+    {
+      "apiKey": "VA-2",
+      "districtName": "VA District 2",
+      "state": "VA",
+      "incumbentName": "KIGGANS, JENNIFER"
+    },
+    {
+      "apiKey": "VA-3",
+      "districtName": "VA District 3",
+      "state": "VA",
+      "incumbentName": "SCOTT, ROBERT C"
+    },
+    {
+      "apiKey": "VA-4",
+      "districtName": "VA District 4",
+      "state": "VA",
+      "incumbentName": "MCCLELLAN, JENNIFER"
+    },
+    {
+      "apiKey": "VA-5",
+      "districtName": "VA District 5",
+      "state": "VA",
+      "incumbentName": "SITKA, JOHN DR. III"
+    },
+    {
+      "apiKey": "VA-6",
+      "districtName": "VA District 6",
+      "state": "VA",
+      "incumbentName": "CLINE, BENJAMIN LEE"
+    },
+    {
+      "apiKey": "VA-7",
+      "districtName": "VA District 7",
+      "state": "VA",
+      "incumbentName": "VINDMAN, YEVGENY 'EUGENE'"
+    },
+    {
+      "apiKey": "VA-8",
+      "districtName": "VA District 8",
+      "state": "VA",
+      "incumbentName": "BEYER, DONALD STERNOFF JR."
+    },
+    {
+      "apiKey": "VA-9",
+      "districtName": "VA District 9",
+      "state": "VA",
+      "incumbentName": "GRIFFITH, H MORGAN"
+    },
+    {
+      "apiKey": "VA-10",
+      "districtName": "VA District 10",
+      "state": "VA",
+      "incumbentName": "SUBRAMANYAM, SUHAS"
+    },
+    {
+      "apiKey": "VI-undefined",
+      "districtName": "VI At-Large",
+      "state": "VI",
+      "incumbentName": "PLASKETT, STACEY"
+    },
+    {
+      "apiKey": "VT-undefined",
+      "districtName": "VT At-Large",
+      "state": "VT",
+      "incumbentName": "BALINT, REBECCA 'BECCA'"
+    },
+    {
+      "apiKey": "WA-1",
+      "districtName": "WA District 1",
+      "state": "WA",
+      "incumbentName": "DELBENE, SUZAN K"
+    },
+    {
+      "apiKey": "WA-2",
+      "districtName": "WA District 2",
+      "state": "WA",
+      "incumbentName": "LARSEN, RICK"
+    },
+    {
+      "apiKey": "WA-3",
+      "districtName": "WA District 3",
+      "state": "WA",
+      "incumbentName": "GLUESENKAMP PEREZ, MARIE"
+    },
+    {
+      "apiKey": "WA-4",
+      "districtName": "WA District 4",
+      "state": "WA",
+      "incumbentName": "NEWHOUSE, DAN"
+    },
+    {
+      "apiKey": "WA-5",
+      "districtName": "WA District 5",
+      "state": "WA",
+      "incumbentName": "BAUMGARTNER, MICHAEL JAMES"
+    },
+    {
+      "apiKey": "WA-6",
+      "districtName": "WA District 6",
+      "state": "WA",
+      "incumbentName": "RANDALL, EMILY"
+    },
+    {
+      "apiKey": "WA-7",
+      "districtName": "WA District 7",
+      "state": "WA",
+      "incumbentName": "JAYAPAL, PRAMILA"
+    },
+    {
+      "apiKey": "WA-8",
+      "districtName": "WA District 8",
+      "state": "WA",
+      "incumbentName": "SCHRIER, KIM DR."
+    },
+    {
+      "apiKey": "WA-9",
+      "districtName": "WA District 9",
+      "state": "WA",
+      "incumbentName": "SMITH, D. ADAM"
+    },
+    {
+      "apiKey": "WA-10",
+      "districtName": "WA District 10",
+      "state": "WA",
+      "incumbentName": "STRICKLAND, MARILYN"
+    },
+    {
+      "apiKey": "WI-1",
+      "districtName": "WI District 1",
+      "state": "WI",
+      "incumbentName": "STEIL, BRYAN GEORGE"
+    },
+    {
+      "apiKey": "WI-2",
+      "districtName": "WI District 2",
+      "state": "WI",
+      "incumbentName": "POCAN, MARK"
+    },
+    {
+      "apiKey": "WI-3",
+      "districtName": "WI District 3",
+      "state": "WI",
+      "incumbentName": "VAN ORDEN, DERRICK F. MR."
+    },
+    {
+      "apiKey": "WI-4",
+      "districtName": "WI District 4",
+      "state": "WI",
+      "incumbentName": "MOORE, GWEN S"
+    },
+    {
+      "apiKey": "WI-5",
+      "districtName": "WI District 5",
+      "state": "WI",
+      "incumbentName": "FITZGERALD, SCOTT"
+    },
+    {
+      "apiKey": "WI-6",
+      "districtName": "WI District 6",
+      "state": "WI",
+      "incumbentName": "GROTHMAN, GLENN S."
+    },
+    {
+      "apiKey": "WI-7",
+      "districtName": "WI District 7",
+      "state": "WI",
+      "incumbentName": "TIFFANY, TOM"
+    },
+    {
+      "apiKey": "WI-8",
+      "districtName": "WI District 8",
+      "state": "WI",
+      "incumbentName": "WIED, TONY"
+    },
+    {
+      "apiKey": "WV-1",
+      "districtName": "WV District 1",
+      "state": "WV",
+      "incumbentName": "MILLER, CAROL DEVINE"
+    },
+    {
+      "apiKey": "WV-2",
+      "districtName": "WV District 2",
+      "state": "WV",
+      "incumbentName": "MOORE, RILEY"
+    },
+    {
+      "apiKey": "WY-undefined",
+      "districtName": "WY At-Large",
+      "state": "WY",
+      "incumbentName": "HAGEMAN, HARRIET"
+    }
+  ],
+  "summary": {
+    "totalGeoJsonDistricts": 439,
+    "totalApiDistricts": 437,
+    "matchedDistricts": 148,
+    "unmatchedGeoJson": 291,
+    "unmatchedApi": 437,
+    "matchRate": 34
+  },
+  "created_at": "2025-08-07T17:18:52.049Z"
+}

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentCongressMembers } from '@/lib/database';
+import { getIsraelLobbySummary } from '@/lib/israel-lobby';
 
 export async function GET(request: NextRequest) {
   try {
@@ -32,9 +33,43 @@ export async function GET(request: NextRequest) {
     const paginatedData = result.data?.slice(offset, offset + limit) || [];
     const total = result.data?.length || 0;
 
+    // Fetch Israel scores for each member
+    const membersWithIsraelScores = await Promise.all(
+      paginatedData.map(async (member: any) => {
+        try {
+          const personId = member.person_id;
+          if (personId) {
+            const israelResult = await getIsraelLobbySummary(personId);
+            if (israelResult.success && israelResult.data) {
+              return {
+                ...member,
+                israel_score: israelResult.data.humanity_score,
+                israel_grade: israelResult.data.lobby_grade,
+                israel_total: israelResult.data.total_pro_israel_contributions
+              };
+            }
+          }
+          return {
+            ...member,
+            israel_score: null,
+            israel_grade: null,
+            israel_total: null
+          };
+        } catch (error) {
+          console.error('Error fetching Israel score for', personId, ':', error);
+          return {
+            ...member,
+            israel_score: null,
+            israel_grade: null,
+            israel_total: null
+          };
+        }
+      })
+    );
+
     return NextResponse.json({
       success: true,
-      data: paginatedData,
+      data: membersWithIsraelScores,
       pagination: {
         page,
         limit,

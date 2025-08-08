@@ -94,6 +94,38 @@ interface ElectionHistory {
   campaign_finance: CampaignFinance | null;
 }
 
+interface IsraelLobbyData {
+  candidate_id: string;
+  person_id: string;
+  candidate_name: string;
+  state: string;
+  district?: string;
+  office: string;
+  party: string;
+  election_year: number;
+  total_pro_israel_contributions: number;
+  pro_israel_pac_count: number;
+  pro_israel_contribution_amount: number;
+  pro_israel_superpac_amount: number;
+  lobby_score: number;
+  lobby_grade: 'A' | 'B' | 'C' | 'D' | 'F';
+  lobby_category: 'High Support' | 'Moderate Support' | 'Low Support' | 'No Support' | 'Unknown';
+  humanity_score: number; // 0-5 scale
+  pac_contributions: Array<{
+    pac_id: string;
+    pac_name: string;
+    amount: number;
+    contribution_date: string;
+  }>;
+  superpac_expenditures: Array<{
+    committee_id: string;
+    committee_name: string;
+    amount: number;
+    support_oppose: 'SUPPORT' | 'OPPOSE';
+    expenditure_date: string;
+  }>;
+}
+
 interface CandidateProfile {
   person_id: string;
   display_name: string;
@@ -118,6 +150,7 @@ interface CandidateProfile {
   top_contributors: Contributor[];
   top_industries: Industry[];
   election_history: ElectionHistory[];
+  israel_lobby?: IsraelLobbyData;
 }
 
 type TabType = 'overview' | 'campaign-finance' | 'outside-spending' | 'contributors' | 'industries' | 'election-history';
@@ -211,6 +244,19 @@ export default function CandidateProfilePage() {
     return office === 'S' ? 'Senate' : office === 'H' ? 'House' : office;
   };
 
+  const getHumanityScoreColor = (score: number) => {
+    // Color gradient: 0=red (worst), 5=green (best)
+    switch (score) {
+      case 0: return 'bg-red-500 text-white';
+      case 1: return 'bg-orange-500 text-white';
+      case 2: return 'bg-yellow-500 text-white';
+      case 3: return 'bg-blue-500 text-white';
+      case 4: return 'bg-green-500 text-white';
+      case 5: return 'bg-green-600 text-white';
+      default: return 'bg-gray-500 text-white';
+    }
+  };
+
   const tabs = [
     { id: 'overview', label: 'Overview', icon: FileText },
     { id: 'campaign-finance', label: 'Campaign Finance', icon: DollarSign },
@@ -271,15 +317,22 @@ export default function CandidateProfilePage() {
                   <ArrowLeft className="h-4 w-4 mr-1" />
                   Back to Candidates
                 </Link>
-                {profile.is_current_office_holder && (
-                  <Link
-                    href={`/politicians/${profile.person_id}`}
-                    className="inline-flex items-center px-3 py-1.5 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 transition-colors"
-                  >
-                    <Award className="h-4 w-4 mr-1" />
-                    View Politician Profile
-                  </Link>
-                )}
+                <div className="flex items-center space-x-2">
+                  {profile.israel_lobby && (
+                    <div className="flex flex-col items-end space-y-1">
+                      <Link
+                        href={`/israel-lobby/${profile.person_id}`}
+                        className={`inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer ${getHumanityScoreColor(profile.israel_lobby.humanity_score)}`}
+                      >
+                        <span className="font-bold mr-1">{profile.israel_lobby.humanity_score}</span>
+                        Humanity Score
+                      </Link>
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                        {formatCurrency(profile.israel_lobby.total_pro_israel_contributions)}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
               
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -295,10 +348,13 @@ export default function CandidateProfilePage() {
                   {profile.state} - {getOfficeLabel(profile.current_office)} {profile.current_district}
                 </span>
                 {profile.is_current_office_holder && (
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
+                  <Link
+                    href={`/politicians/${profile.person_id}`}
+                    className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-800 transition-colors cursor-pointer"
+                  >
                     <Award className="h-3 w-3 mr-1" />
                     Incumbent
-                  </span>
+                  </Link>
                 )}
               </div>
 
@@ -669,6 +725,52 @@ export default function CandidateProfilePage() {
                       <div className="text-sm text-gray-600 dark:text-gray-400">Unique Committees</div>
                     </div>
                   </div>
+                </div>
+
+                {/* Israel Lobby Analysis */}
+                <div className="bg-orange-50 dark:bg-orange-900/20 p-6 rounded-lg">
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-lg font-medium text-orange-800 dark:text-orange-200">Israel Lobby Analysis</h4>
+                    <Link
+                      href={`/israel-lobby/${profile.person_id}`}
+                      className="inline-flex items-center px-3 py-1.5 bg-orange-600 text-white text-xs font-medium rounded-md hover:bg-orange-700 transition-colors"
+                    >
+                      <ExternalLink className="h-3 w-3 mr-1" />
+                      View Analysis
+                    </Link>
+                  </div>
+                  {profile.israel_lobby ? (
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                      <div className="text-center">
+                        <div className={`text-2xl font-bold ${getHumanityScoreColor(profile.israel_lobby.humanity_score)}`}>
+                          {profile.israel_lobby.humanity_score}
+                        </div>
+                        <div className="text-sm text-orange-700 dark:text-orange-300">Humanity Score</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                          {formatCurrency(profile.israel_lobby.total_pro_israel_contributions)}
+                        </div>
+                        <div className="text-sm text-orange-700 dark:text-orange-300">Total Pro-Israel</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                          {formatCurrency(profile.israel_lobby.pro_israel_contribution_amount)}
+                        </div>
+                        <div className="text-sm text-orange-700 dark:text-orange-300">PAC Contributions</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                          {formatCurrency(profile.israel_lobby.pro_israel_superpac_amount)}
+                        </div>
+                        <div className="text-sm text-orange-700 dark:text-orange-300">SuperPAC Spending</div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-sm text-orange-700 dark:text-orange-300">
+                      Track pro-Israel PAC contributions and SuperPAC expenditures to understand Israel lobby influence on this candidate.
+                    </div>
+                  )}
                 </div>
               </div>
             )}
