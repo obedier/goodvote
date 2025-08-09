@@ -13,7 +13,9 @@ const stateFipsToAbbr = {
   '39': 'OH', '40': 'OK', '41': 'OR', '42': 'PA', '44': 'RI',
   '45': 'SC', '46': 'SD', '47': 'TN', '48': 'TX', '49': 'UT',
   '50': 'VT', '51': 'VA', '53': 'WA', '54': 'WV', '55': 'WI',
-  '56': 'WY'
+  '56': 'WY',
+  // Territories (these don't have GeoJSON files but we need to handle them)
+  '60': 'AS', '66': 'GU', '69': 'MP', '72': 'PR', '78': 'VI'
 };
 
 // Path to the GeoJSON files in our project

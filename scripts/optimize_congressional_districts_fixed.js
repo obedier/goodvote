@@ -85,7 +85,7 @@ async function optimizeCongressionalDistrictsFixed() {
     console.log('🗺️ Optimizing congressional districts file (FIXED VERSION)...');
     
     // Load the original file
-    const originalPath = path.join(__dirname, '../public/districts/congressional-districts.json');
+    const originalPath = path.join(__dirname, '../public/districts/congressional-districts-fixed.json');
     const originalData = JSON.parse(fs.readFileSync(originalPath, 'utf8'));
     
     console.log(`📊 Original file: ${originalData.features.length} features`);

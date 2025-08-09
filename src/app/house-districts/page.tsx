@@ -40,15 +40,16 @@ export default function HouseDistrictsPage() {
   const [stateFilter, setStateFilter] = useState('');
   const [sortConfig, setSortConfig] = useState<SortConfig>({ field: 'state', direction: 'asc' });
   const [visibleCount, setVisibleCount] = useState(50);
+  const [selectedCycle, setSelectedCycle] = useState('2024');
 
   useEffect(() => {
     fetchDistricts();
-  }, []);
+  }, [selectedCycle]);
 
   const fetchDistricts = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/house-districts');
+      const response = await fetch(`/api/house-districts?cycle=${selectedCycle}`);
       const result = await response.json();
       
       if (result.success) {
@@ -290,12 +291,37 @@ export default function HouseDistrictsPage() {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">House Districts</h1>
               <p className="text-gray-600">All 437 congressional districts with incumbent information and Israel funding data</p>
             </div>
-            <Link 
-              href="/congressional-map"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium"
-            >
-              View Map
-            </Link>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-gray-700">Cycle:</label>
+                <select 
+                  value={selectedCycle} 
+                  onChange={(e) => setSelectedCycle(e.target.value)}
+                  className="border border-gray-300 rounded px-3 py-1 text-sm"
+                >
+                  <option value="2020">2020</option>
+                  <option value="2022">2022</option>
+                  <option value="2024">2024</option>
+                  <option value="2026">2026</option>
+                  <option value="last3">Last 3 Cycles (2020-2024)</option>
+                  <option value="all">All Cycles</option>
+                </select>
+              </div>
+                          <div className="flex gap-3">
+              <Link 
+                href="/congressional-map"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium"
+              >
+                View House Map
+              </Link>
+              <Link 
+                href="/senate-districts"
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium"
+              >
+                Senate Districts
+              </Link>
+            </div>
+            </div>
           </div>
         </div>
 

@@ -1,5 +1,6 @@
 import { executeQuery } from './database';
 import { getIsraelLobbyScore } from './israel-lobby';
+import { getSharedIsraelFunding } from './shared-israel-funding';
 
 export interface HouseDistrict {
   state: string;
@@ -125,7 +126,7 @@ async function getCachedIsraelLobbyData(personId: string): Promise<{
   }
 }
 
-export async function getHouseDistrictsData(): Promise<{ success: boolean; data?: HouseDistrict[]; error?: string }> {
+export async function getHouseDistrictsData(cycle: string = '2024'): Promise<{ success: boolean; data?: HouseDistrict[]; error?: string }> {
   try {
     console.log('=== STARTING WORKING FINAL HOUSE DISTRICTS ===');
     
@@ -295,10 +296,13 @@ export async function getHouseDistrictsData(): Promise<{ success: boolean; data?
               ? cashOnHandResult.data[0].cash_on_hand 
               : null;
             
-            // Get cached Israel lobby data
+            // Get Israel lobby data using shared function for consistency
+            const sharedFundingResult = await getSharedIsraelFunding(incumbentPersonId, cycle);
+            incumbentTotalIsraelFunding = sharedFundingResult.success ? sharedFundingResult.data?.total_amount || 0 : 0;
+            
+            // Still use cached data for humanity score (which is more complex)
             const israelLobbyData = await getCachedIsraelLobbyData(incumbentPersonId);
             incumbentIsraelScore = israelLobbyData.humanity_score;
-            incumbentTotalIsraelFunding = israelLobbyData.total_israel_funding;
           }
         }
         
