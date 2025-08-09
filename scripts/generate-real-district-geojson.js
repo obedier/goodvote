@@ -4,6 +4,17 @@ const path = require('path');
 // Path to the GeoJSON files in our project
 const GEOJSON_SOURCE_PATH = path.join(__dirname, '../public/district_data/geojson');
 
+// FIPS to state abbreviation mapping
+const FIPS_TO_STATE = {
+  '01': 'AL', '02': 'AK', '04': 'AZ', '05': 'AR', '06': 'CA', '08': 'CO', '09': 'CT', '10': 'DE',
+  '11': 'DC', '12': 'FL', '13': 'GA', '15': 'HI', '16': 'ID', '17': 'IL', '18': 'IN', '19': 'IA',
+  '20': 'KS', '21': 'KY', '22': 'LA', '23': 'ME', '24': 'MD', '25': 'MA', '26': 'MI', '27': 'MN',
+  '28': 'MS', '29': 'MO', '30': 'MT', '31': 'NE', '32': 'NV', '33': 'NH', '34': 'NJ', '35': 'NM',
+  '36': 'NY', '37': 'NC', '38': 'ND', '39': 'OH', '40': 'OK', '41': 'OR', '42': 'PA', '44': 'RI',
+  '45': 'SC', '46': 'SD', '47': 'TN', '48': 'TX', '49': 'UT', '50': 'VT', '51': 'VA', '53': 'WA',
+  '54': 'WV', '55': 'WI', '56': 'WY', '60': 'AS', '66': 'GU', '69': 'MP', '72': 'PR', '78': 'VI'
+};
+
 async function generateRealDistrictGeojson() {
   try {
     console.log('🗺️ Generating real congressional district boundaries with API data...');
@@ -65,8 +76,13 @@ async function generateRealDistrictGeojson() {
           const properties = feature.properties;
           
           // Extract state and district from various possible field names
-          const state = properties.STUSPS || properties.STATE || properties.STATEFP;
+          let state = properties.STUSPS || properties.STATE;
           const district = properties.CD119FP || properties.CD116FP || properties.CD || '1';
+
+          // If we have a FIPS code instead of state abbreviation, convert it
+          if (!state && properties.STATEFP) {
+            state = FIPS_TO_STATE[properties.STATEFP];
+          }
 
           if (!state) {
             console.log(`⚠️ No state found for feature in ${file}, skipping`);
