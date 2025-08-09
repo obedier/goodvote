@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
 import { getHouseDistrictsData } from '@/lib/house-districts-working-final';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const districtsData = await getHouseDistrictsData();
+    const { searchParams } = new URL(request.url);
+    const cycle = searchParams.get('cycle') || '2024';
+    
+    const districtsData = await getHouseDistrictsData(cycle);
     if (!districtsData.success) {
       return NextResponse.json(
         { error: districtsData.error },

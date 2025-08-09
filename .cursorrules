@@ -14,7 +14,7 @@ Things to remember:
 ## Key Technical Concepts
 
 ### Database Architecture
-- **fec_complete**: Read-only FEC data database (candidates, committees, contributions, expenditures)
+- **fec_complete**: Read-only FEC data database (candidates, committees, contributions, expenditures) except for admin pages, they should be able to read all data but write to "cfg_" prefixed tables
 - **goodvote**: Application database with views and person-based mapping system
 - **Views**: Bridge between fec_complete and application (fec_contributions, fec_committees, etc.)
 - **Person-based mapping**: Unifies multiple FEC candidate IDs for same person across election cycles

@@ -1,33 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Pool } from 'pg';
-
-const fecCompleteConfig = {
-  host: process.env.FEC_DB_HOST || process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.FEC_DB_PORT || process.env.DB_PORT || '5432'),
-  database: process.env.FEC_DB_NAME || 'fec_gold',
-  user: process.env.FEC_DB_USER || process.env.DB_USER || 'osamabedier',
-  password: process.env.FEC_DB_PASSWORD || process.env.DB_PASSWORD || '',
-  max: 3,
-  min: 0,
-  idleTimeoutMillis: 10000,
-  connectionTimeoutMillis: 3000,
-  acquireTimeoutMillis: 3000,
-};
-
-const fecCompletePool = new Pool(fecCompleteConfig);
-
-async function executeQuery(query: string, params: any[] = []) {
-  const client = await fecCompletePool.connect();
-  try {
-    const result = await client.query(query, params);
-    return { success: true, data: result.rows };
-  } catch (error) {
-    console.error('Database query error:', error);
-    return { success: false, error: error };
-  } finally {
-    client.release();
-  }
-}
+import { executeQuery } from '@/lib/database';
 
 export async function GET(request: NextRequest) {
   try {
@@ -49,7 +21,7 @@ export async function GET(request: NextRequest) {
       WHERE person_id = $1 AND election_year = $2
     `;
     
-    const candidateResult = await executeQuery(candidateQuery, [candidateId, electionYear]);
+    const candidateResult = await executeQuery(candidateQuery, [candidateId, electionYear], false);
     
     if (!candidateResult.success || !candidateResult.data || candidateResult.data.length === 0) {
       return NextResponse.json({ 
@@ -84,7 +56,7 @@ export async function GET(request: NextRequest) {
       LIMIT 50
     `;
     
-    const individualResult = await executeQuery(individualQuery, [candId, electionYear]);
+    const individualResult = await executeQuery(individualQuery, [candId, electionYear], true);
     
     // Get committee contributors (including PACs, parties, and other committees)
     const committeeQuery = `
@@ -110,7 +82,7 @@ export async function GET(request: NextRequest) {
       LIMIT 50
     `;
     
-    const committeeResult = await executeQuery(committeeQuery, [candId, electionYear]);
+    const committeeResult = await executeQuery(committeeQuery, [candId, electionYear], true);
     
     // Combine and format results
     const individualContributors = individualResult.success ? individualResult.data.map((contributor: any) => ({

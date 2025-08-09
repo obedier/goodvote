@@ -1,194 +1,116 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Users, Calendar, MapPin, Building, Tag } from 'lucide-react';
 
-interface IsraelLobbyScore {
-  candidate_id: string;
+interface Contribution {
+  source_table: string;
+  unique_identifier?: string;
+  image_num?: string;
+  fec_document_url?: string;
+  election_cycle_year?: number;
+  transaction_type?: string;
+  transaction_type_code?: string;
+  category?: string;
+  contribution_receipt_amount: string;
+  contributor_name?: string;
+  contributor_employer?: string;
+  contributor_occupation?: string;
+  contribution_receipt_date: string;
+  committee_name: string;
+  committee_id: string;
+  committee_type: string;
+  committee_designation: string;
+  other_committee_id?: string;
+  link_id?: string;
+  sub_id?: string;
+  file_num?: string;
+  transaction_id?: string;
+  memo_code?: string;
+  memo_text?: string;
+  entity_type?: string;
+}
+
+interface FundingBreakdown {
+  total_amount: number;
+  total_count: number;
+  totals_by_category: Record<string, { count: number; amount: number }>;
+  contributions: Contribution[];
+}
+
+interface SummaryGroup {
+  committee_name: string;
+  committee_id: string;
+  transaction_type: string;
+  election_cycle_year: number;
+  total_amount: number;
+  record_count: number;
+}
+
+interface DebugInfo {
+  sql: string;
   person_id: string;
-  candidate_name: string;
-  state: string;
-  district?: string;
-  office: string;
+  cycle_param: string;
+  total_records: number;
+  note?: string;
+}
+
+interface Candidate {
+  person_id: string;
+  fec_id: string;
+  name: string;
   party: string;
   election_year: number;
-  
-  total_pro_israel_contributions: number;
-  pro_israel_pac_count: number;
-  pro_israel_contribution_amount: number;
-  pro_israel_superpac_amount: number;
-  
-  lobby_score: number;
-  lobby_grade: 'A' | 'B' | 'C' | 'D' | 'F';
-  lobby_category: 'High Support' | 'Moderate Support' | 'Low Support' | 'No Support' | 'Unknown';
-  humanity_score: number; // 0-5 scale
-  
-  pac_contributions: Array<{
-    pac_id: string;
-    pac_name: string;
-    amount: number;
-    contribution_date: string;
-  }>;
-  
-  superpac_expenditures: Array<{
-    committee_id: string;
-    committee_name: string;
-    amount: number;
-    support_oppose: 'SUPPORT' | 'OPPOSE';
-    expenditure_date: string;
-  }>;
-  
-  operating_expenditures: Array<{
-    committee_id: string;
-    committee_name: string;
-    amount: number;
-    purpose: string;
-    category: string;
-    category_desc: string;
-    expenditure_date: string;
-  }>;
-  
-  other_transactions: Array<{
-    committee_id: string;
-    committee_name: string;
-    amount: number;
-    transaction_type: string;
-    transaction_date: string;
-  }>;
-  
-  // New: Cycle breakdown data
-  cycle_breakdown?: Array<{
-    election_year: number;
-    total_support: number;
-    total_oppose: number;
-    net_amount: number;
-    pac_count: number;
-    superpac_count: number;
-    pac_contributions: Array<{
-      pac_id: string;
-      pac_name: string;
-      amount: number;
-      support_oppose: 'SUPPORT' | 'OPPOSE';
-    }>;
-    superpac_expenditures: Array<{
-      committee_id: string;
-      committee_name: string;
-      amount: number;
-      support_oppose: 'SUPPORT' | 'OPPOSE';
-    }>;
-  }>;
 }
 
-interface BreadcrumbItem {
-  label: string;
-  href: string;
-}
-
-export default function IsraelLobbyPage() {
-  const params = useParams();
-  const searchParams = useSearchParams();
-  const personId = params.personId as string;
-  const electionYear = searchParams.get('election_year') ? parseInt(searchParams.get('election_year')!) : 2024;
-  
-  const [israelLobbyData, setIsraelLobbyData] = useState<IsraelLobbyScore | null>(null);
+export default function IsraelLobbyPage({ 
+  params 
+}: { 
+  params: Promise<{ personId: string }> 
+}) {
+  const [personId, setPersonId] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [candidate, setCandidate] = useState<Candidate | null>(null);
+  const [fundingBreakdown, setFundingBreakdown] = useState<FundingBreakdown | null>(null);
+  const [debugInfo, setDebugInfo] = useState<DebugInfo | null>(null);
+  const [activeTab, setActiveTab] = useState<'summary' | 'detailed'>('summary');
+  const [filteredContributions, setFilteredContributions] = useState<Contribution[]>([]);
+  const [showFiltered, setShowFiltered] = useState(false);
+  const [selectedCycle, setSelectedCycle] = useState('2024');
 
-  const breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Candidates', href: '/candidates' },
-    { label: 'Israel Lobby Analysis', href: '/israel-lobby' },
-    { label: israelLobbyData?.candidate_name || 'Candidate', href: '#' }
-  ];
+    useEffect(() => {
+    async function loadData() {
+      try {
+        const { personId: id } = await params;
+        setPersonId(id);
+        
+        const response = await fetch(`/api/israel-lobby/${id}?cycle=${selectedCycle}`);
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to load Israel lobby funding');
+        }
 
-  const fetchIsraelLobbyData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const url = `/api/israel-lobby/${personId}?election_year=${electionYear}`;
-      const response = await fetch(url);
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch Israel lobby data');
+        setCandidate(data.candidate);
+        setFundingBreakdown(data.funding_breakdown);
+        setDebugInfo(data.debug);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setLoading(false);
       }
-      
-      const data = await response.json();
-      
-      if (!data.success) {
-        throw new Error(data.error || 'Failed to fetch Israel lobby data');
-      }
-      
-      console.log('Received Israel lobby data:', data.data);
-      console.log('Cycle breakdown:', data.data.cycle_breakdown);
-      console.log('Cycle breakdown length:', data.data.cycle_breakdown?.length);
-      setIsraelLobbyData(data.data);
-    } catch (err) {
-      console.error('Error fetching Israel lobby data:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch Israel lobby data');
-    } finally {
-      setLoading(false);
     }
-  };
 
-  useEffect(() => {
-    if (personId) {
-      fetchIsraelLobbyData();
-    }
-  }, [personId, electionYear]);
-
-  const getGradeColor = (grade: string) => {
-    switch (grade) {
-      case 'A': return 'bg-red-100 text-red-800 border-red-200';
-      case 'B': return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'C': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'D': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'F': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
-
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'High Support': return 'bg-red-100 text-red-800';
-      case 'Moderate Support': return 'bg-orange-100 text-orange-800';
-      case 'Low Support': return 'bg-yellow-100 text-yellow-800';
-      case 'No Support': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getHumanityScoreColor = (score: number) => {
-    // Color gradient: 0=red (worst), 5=green (best)
-    switch (score) {
-      case 0: return 'bg-red-500 text-white';
-      case 1: return 'bg-orange-500 text-white';
-      case 2: return 'bg-yellow-500 text-white';
-      case 3: return 'bg-blue-500 text-white';
-      case 4: return 'bg-green-500 text-white';
-      case 5: return 'bg-green-600 text-white';
-      default: return 'bg-gray-500 text-white';
-    }
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
+    loadData();
+  }, [params, selectedCycle]);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading Israel lobby analysis...</p>
-          </div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-800">Loading Israel lobby funding data...</p>
         </div>
       </div>
     );
@@ -196,424 +118,477 @@ export default function IsraelLobbyPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center">
-            <div className="text-red-600 text-xl font-semibold mb-4">Error</div>
-            <p className="text-gray-600">{error}</p>
-            <button
-              onClick={fetchIsraelLobbyData}
-              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              Try Again
-            </button>
-          </div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md">
+          <h2 className="text-xl font-bold text-red-800 mb-2">Error</h2>
+          <p className="text-red-600 mb-4">{error}</p>
+          <Link href="/congressional-map" className="text-blue-600 hover:text-blue-800">
+            ← Back to Map
+          </Link>
         </div>
       </div>
     );
   }
 
-  if (!israelLobbyData) {
+  if (!candidate || !fundingBreakdown) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center">
-            <p className="text-gray-600">No Israel lobby data found</p>
-          </div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 max-w-md">
+          <h2 className="text-xl font-bold text-yellow-800 mb-2">No Data Found</h2>
+          <p className="text-yellow-600 mb-4">No Israel lobby funding data available for this candidate.</p>
+          <Link href="/congressional-map" className="text-blue-600 hover:text-blue-800">
+            ← Back to Map
+          </Link>
         </div>
       </div>
     );
   }
+
+  const categoryColors = {
+    'Individual': 'bg-blue-100 text-blue-800',
+    'PAC': 'bg-green-100 text-green-800',
+    'Super PAC': 'bg-purple-100 text-purple-800',
+    'Other Committee': 'bg-gray-100 text-gray-800',
+    'Party': 'bg-red-100 text-red-800',
+    'Other Candidate': 'bg-orange-100 text-orange-800'
+  };
+
+  // Function to export contributions to CSV
+  const exportToCSV = (contributions: Contribution[], filename: string) => {
+    const headers = [
+      'Record #',
+      'Amount',
+      'Election Cycle',
+      'Transaction Type',
+      'Transaction Type Code',
+      'Committee Name',
+      'Committee ID',
+      'Committee Type',
+      'Committee Designation',
+      'Date',
+      'Sub ID',
+      'Image Num',
+      'FEC Document URL',
+      'Source Table'
+    ];
+
+    const csvContent = [
+      headers.join(','),
+      ...contributions.map((contribution, index) => [
+        index + 1,
+        parseFloat(contribution.contribution_receipt_amount).toFixed(2),
+        contribution.election_cycle_year || 'N/A',
+        `"${contribution.transaction_type || contribution.category || 'N/A'}"`,
+        contribution.transaction_type_code || 'N/A',
+        `"${contribution.committee_name}"`,
+        contribution.committee_id,
+        contribution.committee_type,
+        contribution.committee_designation,
+        contribution.contribution_receipt_date || 'N/A',
+        contribution.unique_identifier || 'N/A',
+        contribution.image_num || 'N/A',
+        contribution.fec_document_url || 'N/A',
+        contribution.source_table
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Function to filter contributions by summary group
+  const filterBySummaryGroup = (committeeName: string, transactionType: string, electionCycle: number) => {
+    const filtered = fundingBreakdown.contributions.filter(contribution => 
+      contribution.committee_name === committeeName &&
+      contribution.transaction_type === transactionType &&
+      contribution.election_cycle_year === electionCycle
+    );
+    setFilteredContributions(filtered);
+    setShowFiltered(true);
+    setActiveTab('detailed');
+  };
+
+  // Create summary data grouped by committee, transaction type, and cycle
+  const summaryData: SummaryGroup[] = fundingBreakdown.contributions.reduce((acc: SummaryGroup[], contribution) => {
+    const key = `${contribution.committee_name}-${contribution.transaction_type}-${contribution.election_cycle_year}`;
+    const existing = acc.find(item => 
+      item.committee_name === contribution.committee_name &&
+      item.transaction_type === contribution.transaction_type &&
+      item.election_cycle_year === contribution.election_cycle_year
+    );
+    
+    if (existing) {
+      existing.total_amount += parseFloat(contribution.contribution_receipt_amount);
+      existing.record_count += 1;
+    } else {
+      acc.push({
+        committee_name: contribution.committee_name,
+        committee_id: contribution.committee_id,
+        transaction_type: contribution.transaction_type || 'Unknown',
+        election_cycle_year: contribution.election_cycle_year || 0,
+        total_amount: parseFloat(contribution.contribution_receipt_amount),
+        record_count: 1
+      });
+    }
+    
+    return acc;
+  }, []).sort((a, b) => b.total_amount - a.total_amount);
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          {/* Breadcrumbs */}
-          <nav className="flex mb-4" aria-label="Breadcrumb">
-            <ol className="flex items-center space-x-4">
-              {breadcrumbs.map((item, index) => (
-                <li key={index}>
-                  {index === breadcrumbs.length - 1 ? (
-                    <span className="text-gray-500">{item.label}</span>
-                  ) : (
-                    <Link href={item.href} className="text-blue-600 hover:text-blue-800">
-                      {item.label}
-                    </Link>
-                  )}
-                  {index < breadcrumbs.length - 1 && (
-                    <span className="mx-2 text-gray-400">/</span>
-                  )}
-                </li>
-              ))}
-            </ol>
-          </nav>
-
-          {/* Title */}
+      <div className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Israel Lobby Analysis
-              </h1>
-              <p className="mt-2 text-gray-600">
-                {israelLobbyData.candidate_name} • {israelLobbyData.state}
-                {israelLobbyData.district && ` • District ${israelLobbyData.district}`}
-              </p>
+              <h1 className="text-2xl font-bold text-gray-900">Israel Lobby Funding</h1>
+              <p className="text-gray-800">Detailed pro-Israel funding analysis</p>
             </div>
-            <div className="flex items-center space-x-4">
-              <Link
-                href={`/debug/${personId}`}
-                className="flex items-center text-orange-600 hover:text-orange-800 text-sm font-medium"
-              >
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                Debug Data
-              </Link>
-              <Link
-                href={`/candidates/${personId}?election_year=${electionYear}`}
-                className="flex items-center text-blue-600 hover:text-blue-800"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Candidate
-              </Link>
-            </div>
+            <Link 
+              href="/congressional-map"
+              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+            >
+              ← Back to Map
+            </Link>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Score Summary */}
-        <div className="bg-white rounded-lg shadow mb-8">
-          <div className="px-6 py-8">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {/* Humanity Score - Prominent Display */}
-              <div className="text-center">
-                <div className={`text-5xl font-bold mb-2 inline-flex items-center justify-center w-20 h-20 rounded-full ${getHumanityScoreColor(israelLobbyData.humanity_score)}`}>
-                  {israelLobbyData.humanity_score}
-                </div>
-                <div className="text-lg font-semibold text-gray-900 mb-1">Humanity Score</div>
-                <div className="text-sm text-gray-600">0=Worst, 5=Best</div>
-                <div className="mt-2 text-sm text-gray-500">
-                  {israelLobbyData.humanity_score === 0 ? 'High Pro-Israel Support' :
-                   israelLobbyData.humanity_score === 5 ? 'No Pro-Israel Support' :
-                   `${5 - israelLobbyData.humanity_score}/5 Pro-Israel Support`}
-                </div>
-              </div>
-
-              {/* Lobby Score */}
-              <div className="text-center">
-                <div className="text-4xl font-bold text-gray-900 mb-2">
-                  {israelLobbyData.lobby_score}
-                </div>
-                <div className="text-sm text-gray-600">Lobby Score (0-100)</div>
-                <div className={`mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getGradeColor(israelLobbyData.lobby_grade)}`}>
-                  Grade {israelLobbyData.lobby_grade}
-                </div>
-              </div>
-
-              {/* Category */}
-              <div className="text-center">
-                <div className="text-2xl font-semibold text-gray-900 mb-2">
-                  {israelLobbyData.lobby_category}
-                </div>
-                <div className="text-sm text-gray-600">Support Level</div>
-                <div className={`mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getCategoryColor(israelLobbyData.lobby_category)}`}>
-                  {israelLobbyData.lobby_category}
-                </div>
-              </div>
-
-              {/* Total Contributions */}
-              <div className="text-center">
-                <div className="text-2xl font-bold text-gray-900 mb-2">
-                  {formatCurrency(israelLobbyData.total_pro_israel_contributions)}
-                </div>
-                <div className="text-sm text-gray-600">Total Pro-Israel Contributions</div>
-                <div className="mt-2 text-sm text-gray-500">
-                  {israelLobbyData.pro_israel_pac_count} PACs
-                </div>
-              </div>
+        {/* Candidate Info */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-gray-900">Candidate Information</h2>
+            <div className="flex items-center gap-2">
+              <label className="text-sm font-medium text-gray-700">Election Cycle:</label>
+              <select 
+                value={selectedCycle} 
+                onChange={(e) => setSelectedCycle(e.target.value)}
+                className="border border-gray-300 rounded px-3 py-1 text-sm"
+              >
+                <option value="2020">2020</option>
+                <option value="2022">2022</option>
+                <option value="2024">2024</option>
+                <option value="2026">2026</option>
+                <option value="last3">Last 3 Cycles (2020-2024)</option>
+                <option value="all">All Cycles</option>
+              </select>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Name</label>
+              <p className="mt-1 text-sm text-gray-900">{candidate.name}</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">FEC ID</label>
+              <p className="mt-1 text-sm text-gray-900 font-mono">{candidate.fec_id}</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Party</label>
+              <p className="mt-1 text-sm text-gray-900">{candidate.party}</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Election Year</label>
+              <p className="mt-1 text-sm text-gray-900">{candidate.election_year}</p>
             </div>
           </div>
         </div>
 
-        {/* Cycle Breakdown */}
-        {israelLobbyData.cycle_breakdown && israelLobbyData.cycle_breakdown.length > 0 && (
-          <div className="bg-white rounded-lg shadow mb-8">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                <Calendar className="w-5 h-5 mr-2" />
-                Support by Election Cycle
-              </h3>
+        {/* Summary Stats */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Funding Summary</h2>
+          
+          {/* Data Source Information */}
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+            <h3 className="text-lg font-semibold text-yellow-800 mb-2">Data Source Information</h3>
+            <p className="text-sm text-yellow-700 mb-2">
+              <strong>Total Amount:</strong> ${fundingBreakdown.total_amount.toLocaleString()} 
+              (calculated from <code className="bg-yellow-100 px-1 rounded">committee_candidate_contributions</code> table)
+            </p>
+            <p className="text-sm text-yellow-700 mb-2">
+              <strong>Breakdown:</strong> Real individual contribution records with unique identifiers (<code className="bg-yellow-100 px-1 rounded">sub_id</code>), 
+              election cycle years, and transaction types. Each record includes the source table name, committee details, and links to FEC documents.
+            </p>
+            <p className="text-sm text-yellow-700">
+              <strong>Note:</strong> This total matches the amount shown in the congressional map and admin pages.
+              Showing all records with unique identifiers to ensure data quality.
+            </p>
+          </div>
+
+          {/* Debug Information */}
+          {debugInfo && (
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Debug Information</h3>
+              <div className="space-y-2 text-sm text-gray-900">
+                <p><strong>Total Records:</strong> {debugInfo.total_records}</p>
+                <p><strong>Person ID:</strong> {debugInfo.person_id}</p>
+                <p><strong>Cycle:</strong> {debugInfo.cycle_param}</p>
+                {debugInfo.note && <p><strong>Note:</strong> {debugInfo.note}</p>}
+                <details className="mt-2">
+                  <summary className="cursor-pointer text-blue-600 hover:text-blue-800 font-medium">
+                    View SQL Query
+                  </summary>
+                  <textarea 
+                    className="mt-2 p-3 bg-white border border-gray-300 rounded text-xs w-full min-h-[120px] font-mono text-gray-900"
+                    readOnly
+                    value={debugInfo.sql}
+                    rows={5}
+                  />
+                </details>
+              </div>
             </div>
+          )}
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div className="bg-blue-50 rounded-lg p-4">
+              <div className="text-2xl font-bold text-blue-900">
+                ${fundingBreakdown.total_amount.toLocaleString()}
+              </div>
+              <div className="text-sm text-blue-700">Total Israel Lobby Funding</div>
+            </div>
+            <div className="bg-green-50 rounded-lg p-4">
+              <div className="text-2xl font-bold text-green-900">
+                {fundingBreakdown.total_count}
+              </div>
+              <div className="text-sm text-green-700">Total Contributions</div>
+            </div>
+          </div>
+
+          {/* Category Breakdown */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {fundingBreakdown.totals_by_category && Object.entries(fundingBreakdown.totals_by_category).map(([category, data]) => (
+              <div key={category} className="bg-gray-50 rounded-lg p-4">
+                <div className="text-lg font-bold text-gray-900">
+                  ${data.amount?.toLocaleString() || '0'}
+                </div>
+                <div className="text-sm text-gray-800">{category}</div>
+                <div className="text-xs text-gray-500">{data.count || 0} contributions</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Contributions Tabs */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div className="border-b border-gray-200">
+            <nav className="flex space-x-8 px-6">
+              <button
+                onClick={() => setActiveTab('summary')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'summary'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Summary View
+              </button>
+              <button
+                onClick={() => setActiveTab('detailed')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'detailed'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Detailed Contributions ({fundingBreakdown.total_count} records)
+              </button>
+            </nav>
+          </div>
+
+          {/* Summary Tab Content */}
+          {activeTab === 'summary' && (
             <div className="p-6">
-              <div className="space-y-6">
-                {israelLobbyData.cycle_breakdown.map((cycle, index) => (
-                  <div key={index} className="border border-gray-200 rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-4">
-                      <h4 className="text-lg font-semibold text-gray-900">
-                        {cycle.election_year} Election Cycle
-                      </h4>
-                      <div className="text-right">
-                        <div className="text-2xl font-bold text-gray-900">
-                          {formatCurrency(cycle.net_amount)}
-                        </div>
-                        <div className="text-sm text-gray-600">Net Amount</div>
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                      <div className="text-center p-3 bg-green-50 rounded-lg">
-                        <div className="text-lg font-semibold text-green-800">
-                          {formatCurrency(cycle.total_support)}
-                        </div>
-                        <div className="text-sm text-green-600">Support</div>
-                      </div>
-                      <div className="text-center p-3 bg-red-50 rounded-lg">
-                        <div className="text-lg font-semibold text-red-800">
-                          {formatCurrency(cycle.total_oppose)}
-                        </div>
-                        <div className="text-sm text-red-600">Oppose</div>
-                      </div>
-                      <div className="text-center p-3 bg-blue-50 rounded-lg">
-                        <div className="text-lg font-semibold text-blue-800">
-                          {cycle.pac_count + cycle.superpac_count}
-                        </div>
-                        <div className="text-sm text-blue-600">Total Committees</div>
-                      </div>
-                    </div>
-                    
-                    {/* PAC Contributions for this cycle */}
-                    {cycle.pac_contributions.length > 0 && (
-                      <div className="mb-4">
-                        <h5 className="font-medium text-gray-900 mb-2">PAC Contributions</h5>
-                        <div className="space-y-2">
-                          {cycle.pac_contributions.map((pac, pacIndex) => (
-                            <div key={pacIndex} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-                              <div>
-                                <div className="font-medium text-gray-900">{pac.pac_name}</div>
-                                <div className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                                  pac.support_oppose === 'SUPPORT' 
-                                    ? 'bg-green-100 text-green-800' 
-                                    : 'bg-red-100 text-red-800'
-                                }`}>
-                                  {pac.support_oppose}
-                                </div>
-                              </div>
-                              <div className="font-semibold text-gray-900">
-                                {formatCurrency(pac.amount)}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* SuperPAC Expenditures for this cycle */}
-                    {cycle.superpac_expenditures.length > 0 && (
-                      <div>
-                        <h5 className="font-medium text-gray-900 mb-2">SuperPAC Expenditures</h5>
-                        <div className="space-y-2">
-                          {cycle.superpac_expenditures.map((exp, expIndex) => (
-                            <div key={expIndex} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-                              <div>
-                                <div className="font-medium text-gray-900">{exp.committee_name}</div>
-                                <div className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                                  exp.support_oppose === 'SUPPORT' 
-                                    ? 'bg-green-100 text-green-800' 
-                                    : 'bg-red-100 text-red-800'
-                                }`}>
-                                  {exp.support_oppose}
-                                </div>
-                              </div>
-                              <div className="font-semibold text-gray-900">
-                                {formatCurrency(exp.amount)}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Summary by Committee, Transaction Type, and Cycle</h2>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Committee
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Transaction Type
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Election Cycle
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Total Amount
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Record Count
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {summaryData.map((group, index) => (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <div>
+                            <div className="font-medium">{group.committee_name}</div>
+                            <div className="text-gray-500">{group.committee_id}</div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {group.transaction_type}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {group.election_cycle_year}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          ${group.total_amount.toLocaleString()}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <button
+                            onClick={() => filterBySummaryGroup(group.committee_name, group.transaction_type, group.election_cycle_year)}
+                            className="text-blue-600 hover:text-blue-800 underline cursor-pointer"
+                          >
+                            {group.record_count} records
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* Detailed Tab Content */}
+          {activeTab === 'detailed' && (
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-4">
+                                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">
+                      {showFiltered ? 'Filtered' : 'Detailed'} Contributions
+                    </h2>
+                    <p className="text-sm text-gray-800 mt-1">
+                      {showFiltered 
+                        ? `Showing ${filteredContributions.length} filtered records from ${fundingBreakdown.total_count} total records`
+                        : `Showing all pro-Israel contributions from ${fundingBreakdown.total_count} records`
+                      }
+                    </p>
                   </div>
-                ))}
+                <div className="flex space-x-2">
+                  {showFiltered && (
+                    <button
+                      onClick={() => {
+                        setShowFiltered(false);
+                        setFilteredContributions([]);
+                      }}
+                      className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                    >
+                      Clear Filter
+                    </button>
+                  )}
+                  <button
+                    onClick={() => exportToCSV(
+                      showFiltered ? filteredContributions : fundingBreakdown.contributions,
+                      `israel-lobby-${candidate.name.replace(/\s+/g, '-')}-${showFiltered ? 'filtered' : 'all'}.csv`
+                    )}
+                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                  >
+                    Export to CSV
+                  </button>
+                </div>
               </div>
-            </div>
-          </div>
-        )}
-
-        {/* Detailed Breakdown */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* PAC Contributions */}
-          <div className="bg-white rounded-lg shadow">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                <DollarSign className="w-5 h-5 mr-2" />
-                PAC Contributions
-              </h3>
-            </div>
-            <div className="p-6">
-              {israelLobbyData.pac_contributions.length > 0 ? (
-                <div className="space-y-4">
-                  {israelLobbyData.pac_contributions.map((pac, index) => (
-                    <div key={index} className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+          
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    #
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Amount
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Election Cycle
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Transaction Type
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Committee
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Date
+                  </th>
+                                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Sub ID
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      FEC Document
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Source Table
+                    </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {(showFiltered ? filteredContributions : fundingBreakdown.contributions).map((contribution, index) => (
+                  <tr key={index} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono font-bold">
+                      #{index + 1}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      ${parseFloat(contribution.contribution_receipt_amount).toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {contribution.election_cycle_year || 'N/A'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <div>
-                        <div className="font-medium text-gray-900">{pac.pac_name}</div>
-                        <div className="text-sm text-gray-500">{pac.contribution_date}</div>
+                        <div className="font-medium">{contribution.transaction_type || contribution.category}</div>
+                        {contribution.transaction_type_code && (
+                          <div className="text-xs text-gray-500">Code: {contribution.transaction_type_code}</div>
+                        )}
                       </div>
-                      <div className="text-right">
-                        <div className="font-semibold text-gray-900">
-                          {formatCurrency(pac.amount)}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  No PAC contributions found
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* SuperPAC Expenditures */}
-          <div className="bg-white rounded-lg shadow">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                <TrendingUp className="w-5 h-5 mr-2" />
-                SuperPAC Expenditures
-              </h3>
-            </div>
-            <div className="p-6">
-              {israelLobbyData.superpac_expenditures.length > 0 ? (
-                <div className="space-y-4">
-                  {israelLobbyData.superpac_expenditures.map((exp, index) => (
-                    <div key={index} className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <div>
-                        <div className="font-medium text-gray-900">{exp.committee_name}</div>
-                        <div className="text-sm text-gray-500">{exp.expenditure_date}</div>
-                        <div className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                          exp.support_oppose === 'SUPPORT' 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-red-100 text-red-800'
-                        }`}>
-                          {exp.support_oppose}
-                        </div>
+                        <div className="font-medium">{contribution.committee_name}</div>
+                        <div className="text-xs text-gray-500">{contribution.committee_id}</div>
+                        <div className="text-xs text-gray-500">Type: {contribution.committee_type}+{contribution.committee_designation}</div>
                       </div>
-                      <div className="text-right">
-                        <div className="font-semibold text-gray-900">
-                          {formatCurrency(exp.amount)}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  No SuperPAC expenditures found
-                </div>
-              )}
-            </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {contribution.contribution_receipt_date ? new Date(contribution.contribution_receipt_date).toLocaleDateString() : 'N/A'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono text-xs">
+                      {contribution.unique_identifier || 'N/A'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {contribution.fec_document_url ? (
+                        <a 
+                          href={contribution.fec_document_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 underline"
+                        >
+                          View Document
+                        </a>
+                      ) : 'N/A'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono text-xs">
+                      {contribution.source_table}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        </div>
-
-        {/* Additional Spending Details */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-          {/* Operating Expenditures */}
-          <div className="bg-white rounded-lg shadow">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                <Building className="w-5 h-5 mr-2" />
-                Operating Expenditures
-              </h3>
             </div>
-            <div className="p-6">
-              {israelLobbyData.operating_expenditures && israelLobbyData.operating_expenditures.length > 0 ? (
-                <div className="space-y-4">
-                  {israelLobbyData.operating_expenditures.map((exp, index) => (
-                    <div key={index} className="flex justify-between items-start p-4 bg-gray-50 rounded-lg">
-                      <div className="flex-1">
-                        <div className="font-medium text-gray-900">{exp.committee_name}</div>
-                        <div className="text-sm text-gray-600 mt-1">{exp.purpose}</div>
-                        <div className="text-xs text-gray-500 mt-1">{exp.category_desc}</div>
-                        <div className="text-xs text-gray-400 mt-1">{exp.expenditure_date}</div>
-                      </div>
-                      <div className="text-right ml-4">
-                        <div className="font-semibold text-gray-900">
-                          {formatCurrency(exp.amount)}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  No operating expenditures found
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Other Transactions */}
-          <div className="bg-white rounded-lg shadow">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                <Tag className="w-5 h-5 mr-2" />
-                Other Transactions
-              </h3>
-            </div>
-            <div className="p-6">
-              {israelLobbyData.other_transactions && israelLobbyData.other_transactions.length > 0 ? (
-                <div className="space-y-4">
-                  {israelLobbyData.other_transactions.map((trans, index) => (
-                    <div key={index} className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-                      <div>
-                        <div className="font-medium text-gray-900">{trans.committee_name}</div>
-                        <div className="text-sm text-gray-500">Type: {trans.transaction_type}</div>
-                        <div className="text-xs text-gray-400">{trans.transaction_date}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-semibold text-gray-900">
-                          {formatCurrency(trans.amount)}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  No other transactions found
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Methodology */}
-        <div className="mt-8 bg-white rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">Methodology</h3>
-          </div>
-          <div className="p-6">
-            <div className="prose max-w-none">
-              <p className="text-gray-600 mb-4">
-                This analysis tracks contributions from pro-Israel organizations including:
-              </p>
-              <ul className="list-disc list-inside text-gray-600 mb-4">
-                <li>AIPAC PAC and affiliated organizations</li>
-                <li>United Democracy Project (UDP)</li>
-                <li>DMFI PAC and other pro-Israel committees</li>
-                <li>Republican Jewish Coalition PAC</li>
-                <li>NORPAC and other Jewish community PACs</li>
-              </ul>
-              <p className="text-gray-600">
-                <strong>Scoring:</strong> Higher scores indicate more pro-Israel support. 
-                Grade A (80-100): High Support, Grade F (0): No Support.
-              </p>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
