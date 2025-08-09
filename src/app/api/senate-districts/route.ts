@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getHouseDistrictsData } from '@/lib/house-districts-optimized';
+import { getSenateDistrictsData } from '@/lib/senate-districts';
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const cycle = searchParams.get('cycle') || '2024';
     
-    const districtsData = await getHouseDistrictsData(cycle);
+    const districtsData = await getSenateDistrictsData(cycle);
     if (!districtsData.success) {
       return NextResponse.json(
         { error: districtsData.error },
@@ -15,10 +15,10 @@ export async function GET(request: Request) {
     }
     return NextResponse.json(districtsData);
   } catch (error) {
-    console.error('Error in house-districts API:', error);
+    console.error('Error in senate-districts API:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
     );
   }
-} 
+}

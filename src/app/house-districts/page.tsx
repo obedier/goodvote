@@ -307,12 +307,20 @@ export default function HouseDistrictsPage() {
                   <option value="all">All Cycles</option>
                 </select>
               </div>
+                          <div className="flex gap-3">
               <Link 
                 href="/congressional-map"
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium"
               >
-                View Map
+                View House Map
               </Link>
+              <Link 
+                href="/senate-districts"
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium"
+              >
+                Senate Districts
+              </Link>
+            </div>
             </div>
           </div>
         </div>

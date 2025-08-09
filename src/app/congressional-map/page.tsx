@@ -26,6 +26,7 @@ export default function CongressionalMap() {
     orange: { count: number; percentage: number; districts: any[] };
     red: { count: number; percentage: number; districts: any[] };
   } | null>(null);
+  const [selectedDistrict, setSelectedDistrict] = useState<any>(null);
 
   // Load Leaflet (OpenStreetMap) - Free mapping solution
   useEffect(() => {
@@ -67,12 +68,12 @@ export default function CongressionalMap() {
     if (!mapContainer.current || !leafletLoaded) return;
 
     try {
-      // Initialize Leaflet map
+      // Initialize Leaflet map focused on continental US
       map.current = window.L.map(mapContainer.current, {
-        center: [39.8283, -98.5795], // Center of US (lat, lng)
-        zoom: 4,
+        center: [39.0, -95.0], // Continental US center
+        zoom: 5, // Zoom to show continental US
         maxZoom: 10,
-        minZoom: 2,
+        minZoom: 3,
         zoomControl: true,
         attributionControl: true
       });
@@ -521,28 +522,27 @@ export default function CongressionalMap() {
               fillOpacity: 0.7
             }),
             onEachFeature: (feature: any, layer: any) => {
-              // Add popup with district information
-              const props = feature.properties;
-              const popupContent = `
-                <div style="font-family: Arial, sans-serif; max-width: 250px; background: rgba(255, 255, 255, 0.95); padding: 12px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);">
-                  <h3 style="margin: 0 0 8px 0; color: #333; font-size: 16px; font-weight: bold;">
-                    ${props.state || 'Unknown'}-${props.district || 'Unknown'}
-                  </h3>
-                  <p style="margin: 4px 0; color: #555;"><strong>Incumbent:</strong> 
-                    ${(props.incumbent_person_id || props.fec_id) ? 
-                      `<a href="/candidates/${props.incumbent_person_id || props.fec_id}/funding-breakdown" 
-                          style="color: #0066cc; text-decoration: underline; cursor: pointer;" 
-                          target="_blank">
-                        ${props.incumbent_name || 'Unknown'}
-                      </a>` : 
-                      `${props.incumbent_name || 'Unknown'}`
-                    }
-                  </p>
-                  <p style="margin: 4px 0; color: #555;"><strong>Party:</strong> ${props.incumbent_party || 'Unknown'}</p>
-                  <p style="margin: 4px 0; color: #555;"><strong>Pro-Israel Funding:</strong> $${(props.incumbent_total_israel_funding || 0).toLocaleString()}</p>
-                </div>
-              `;
-              layer.bindPopup(popupContent);
+              // Add click event to update selected district
+              layer.on('click', () => {
+                setSelectedDistrict(feature.properties);
+              });
+              
+              // Add hover effects
+              layer.on('mouseover', () => {
+                layer.setStyle({
+                  weight: 3,
+                  color: '#000',
+                  fillOpacity: 0.9
+                });
+              });
+              
+              layer.on('mouseout', () => {
+                layer.setStyle({
+                  weight: 1,
+                  color: '#ffffff',
+                  fillOpacity: 0.7
+                });
+              });
             }
           }).addTo(map.current);
           
@@ -589,28 +589,27 @@ export default function CongressionalMap() {
               fillOpacity: 0.7
             }),
             onEachFeature: (feature: any, layer: any) => {
-              // Add popup with district information
-              const props = feature.properties;
-              const popupContent = `
-                <div style="font-family: Arial, sans-serif; max-width: 250px; background: rgba(255, 255, 255, 0.95); padding: 12px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);">
-                  <h3 style="margin: 0 0 8px 0; color: #333; font-size: 16px; font-weight: bold;">
-                    ${props.state || 'Unknown'}-${props.district || 'Unknown'}
-                  </h3>
-                  <p style="margin: 4px 0; color: #555;"><strong>Incumbent:</strong> 
-                    ${(props.incumbent_person_id || props.fec_id) ? 
-                      `<a href="/candidates/${props.incumbent_person_id || props.fec_id}/funding-breakdown" 
-                          style="color: #0066cc; text-decoration: underline; cursor: pointer;" 
-                          target="_blank">
-                        ${props.incumbent_name || 'Unknown'}
-                      </a>` : 
-                      `${props.incumbent_name || 'Unknown'}`
-                    }
-                  </p>
-                  <p style="margin: 4px 0; color: #555;"><strong>Party:</strong> ${props.incumbent_party || 'Unknown'}</p>
-                  <p style="margin: 4px 0; color: #555;"><strong>Pro-Israel Funding:</strong> $${(props.incumbent_total_israel_funding || 0).toLocaleString()}</p>
-                </div>
-              `;
-              layer.bindPopup(popupContent);
+              // Add click event to update selected district
+              layer.on('click', () => {
+                setSelectedDistrict(feature.properties);
+              });
+              
+              // Add hover effects
+              layer.on('mouseover', () => {
+                layer.setStyle({
+                  weight: 3,
+                  color: '#000',
+                  fillOpacity: 0.9
+                });
+              });
+              
+              layer.on('mouseout', () => {
+                layer.setStyle({
+                  weight: 1,
+                  color: '#ffffff',
+                  fillOpacity: 0.7
+                });
+              });
             }
           }).addTo(map.current);
           
@@ -886,6 +885,69 @@ export default function CongressionalMap() {
             <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
               <div className="text-white text-center mb-4">Loading Map Library...</div>
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+            </div>
+          </div>
+        )}
+
+        {/* Fixed District Details Popup */}
+        {selectedDistrict && (
+          <div className="absolute top-4 left-4 bg-white p-6 rounded-lg shadow-xl z-20 max-w-md">
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="text-xl font-bold text-gray-900">
+                {selectedDistrict.state || 'Unknown'}-{selectedDistrict.district || 'Unknown'}
+              </h3>
+              <button 
+                onClick={() => setSelectedDistrict(null)}
+                className="text-gray-500 hover:text-gray-700 text-xl font-bold"
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="space-y-2">
+              <p className="text-gray-700">
+                <strong>Representative:</strong>{' '}
+                {(selectedDistrict.incumbent_person_id || selectedDistrict.fec_id) ? 
+                  <Link 
+                    href={`/candidates/${selectedDistrict.incumbent_person_id || selectedDistrict.fec_id}/funding-breakdown`}
+                    className="text-blue-600 hover:text-blue-800 underline"
+                    target="_blank"
+                  >
+                    {selectedDistrict.incumbent_name || 'Unknown'}
+                  </Link> : 
+                  <span>{selectedDistrict.incumbent_name || 'Unknown'}</span>
+                }
+              </p>
+              
+              <p className="text-gray-700">
+                <strong>Party:</strong> {selectedDistrict.incumbent_party || 'Unknown'}
+              </p>
+              
+              <p className="text-gray-700">
+                <strong>First Elected:</strong> {selectedDistrict.first_elected_year || 'Unknown'}
+              </p>
+              
+              <p className="text-gray-700">
+                <strong>Cash on Hand:</strong> ${(selectedDistrict.incumbent_cash_on_hand || 0).toLocaleString()}
+              </p>
+              
+              <p className="text-gray-700">
+                <strong>Israel Score:</strong> {selectedDistrict.incumbent_israel_score || 'N/A'}
+              </p>
+              
+              <p className="text-gray-700">
+                <strong>Pro-Israel Funding:</strong>{' '}
+                {selectedDistrict.incumbent_person_id ? 
+                  <Link 
+                    href={`/israel-lobby/${selectedDistrict.incumbent_person_id}`}
+                    className="text-blue-600 hover:text-blue-800 underline font-semibold"
+                    target="_blank"
+                  >
+                    ${(selectedDistrict.incumbent_total_israel_funding || 0).toLocaleString()}
+                  </Link> : 
+                  <span className="font-semibold">${(selectedDistrict.incumbent_total_israel_funding || 0).toLocaleString()}</span>
+                }
+              </p>
             </div>
           </div>
         )}
