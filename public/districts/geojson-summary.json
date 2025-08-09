@@ -1,8 +1,0 @@
-{
-  "total_districts": 439,
-  "districts_with_real_data": 0,
-  "districts_with_sample_data": 439,
-  "success_rate": 0,
-  "created_at": "2025-08-07T16:53:37.916Z",
-  "note": "Combined real API data with Census boundaries"
-}
