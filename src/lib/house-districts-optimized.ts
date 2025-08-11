@@ -210,9 +210,10 @@ export async function getHouseDistrictsData(cycle: string = '2024'): Promise<{ s
         // Get funding from bulk results
         incumbentTotalIsraelFunding = fundingMap?.get(incumbentPersonId) || 0;
         
-        // Get humanity score from cache (this could also be optimized later)
-        const israelLobbyData = await getCachedIsraelLobbyData(incumbentPersonId);
-        incumbentIsraelScore = israelLobbyData.humanity_score;
+        // Get humanity score from candidate info (already fetched in bulk)
+        if (candidateInfo) {
+          incumbentIsraelScore = candidateInfo.israel_score;
+        }
       }
       
       // For now, set challenger data to defaults (could be optimized separately)

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { executeQuery } from '@/lib/database';
+import { SQL_QUERIES, substituteParams } from '@/config/sql-queries';
 
 export async function GET(
   request: NextRequest,
@@ -31,19 +32,19 @@ export async function GET(
       candidateParams.push(year);
     }
 
-    // Get candidate info
+    // Get candidate info using centralized query
+    let candidateQuery = SQL_QUERIES.CANDIDATE_INFO_BY_PERSON;
+    
+    // Add year condition if needed
+    if (yearCondition) {
+      candidateQuery = candidateQuery.replace(
+        'WHERE pc.person_id = $1',
+        `WHERE pc.person_id = $1 ${yearCondition}`
+      );
+    }
+    
     const candidateResult = await executeQuery(
-      `SELECT 
-        pc.person_id,
-        pc.cand_id,
-        pc.display_name,
-        pc.current_party,
-        pc.election_year
-      FROM person_candidates pc
-      WHERE pc.person_id = $1 
-        ${yearCondition}
-      ORDER BY pc.election_year DESC
-      LIMIT 1`,
+      candidateQuery,
       candidateParams,
       true
     );
@@ -57,78 +58,10 @@ export async function GET(
 
     const candidate = candidateResult.data[0];
 
-    // Build the complete query with year filtering
-    const realContributionsQuery = `
-WITH config_committees AS (
-  SELECT fec_committee_id 
-  FROM cfg_israel_committee_ids 
-  WHERE is_active = true
-),
-config_keywords AS (
-  SELECT keyword 
-  FROM cfg_israel_keywords 
-  WHERE is_active = true
-),
-name_patterns AS (
-  SELECT DISTINCT cm.cmte_id
-  FROM committee_master cm
-  CROSS JOIN config_keywords ck
-  WHERE cm.cmte_nm ILIKE '%' || ck.keyword || '%'
-),
-filtered AS (
-  SELECT
-    cc.sub_id,
-    cc.image_num,
-    cc.file_year,
-    cc.transaction_tp,
-    cc.transaction_amt,
-    cc.transaction_dt,
-    cc.cmte_id,
-    cm.cmte_nm,
-    cm.cmte_tp,
-    cm.cmte_dsgn,
-    ROW_NUMBER() OVER (
-      PARTITION BY cc.sub_id
-      ORDER BY cc.transaction_dt DESC, cc.transaction_amt DESC
-    ) AS rn
-  FROM committee_candidate_contributions cc
-  JOIN committee_master cm
-    ON cc.cmte_id = cm.cmte_id
-  JOIN person_candidates pc
-    ON cc.cand_id = pc.cand_id
-  WHERE pc.person_id = $1
-    AND cc.transaction_amt > 0
-    AND cc.transaction_tp IN ('24A','24K','24N','24F','24E','24C')
-    AND (
-      cc.cmte_id IN (SELECT fec_committee_id FROM config_committees)
-      OR
-      cc.cmte_id IN (SELECT cmte_id FROM name_patterns)
-    )
-)
-SELECT
-  'committee_candidate_contributions' AS source_table,
-  f.sub_id           AS unique_identifier,
-  f.image_num        AS image_num,
-  f.file_year        AS election_cycle_year,
-  CASE f.transaction_tp
-    WHEN '24E' THEN 'Independent Expenditure (unspecified S/O in PAS2)'
-    WHEN '24A' THEN 'Direct Contribution (cash)'
-    WHEN '24N' THEN 'Direct Contribution (in-kind)'
-    WHEN '24K' THEN 'Earmarked via Conduit'
-    WHEN '24F' THEN 'Party Coordinated Expenditure'
-    ELSE 'Other Transaction'
-  END               AS transaction_type,
-  f.transaction_amt AS contribution_receipt_amount,
-  f.cmte_nm         AS committee_name,
-  f.cmte_id         AS committee_id,
-  f.cmte_tp         AS committee_type,
-  f.cmte_dsgn       AS committee_designation,
-  f.transaction_dt  AS contribution_receipt_date,
-  f.transaction_tp  AS transaction_type_code
-FROM filtered f
-WHERE f.rn = 1
-ORDER BY f.sub_id, f.transaction_dt DESC, f.transaction_amt DESC`;
+    // Use centralized SQL query for contributions
+    let realContributionsQuery = SQL_QUERIES.ISRAEL_LOBBY_CONTRIBUTIONS_BY_PERSON;
 
+    // Add cycle filtering to the centralized query
     let completeQuery = realContributionsQuery;
     let queryParams: any[] = [personId];
     
@@ -147,6 +80,11 @@ ORDER BY f.sub_id, f.transaction_dt DESC, f.transaction_amt DESC`;
       );
       queryParams.push(year);
     }
+    
+    // Generate debug SQL for logging
+    const debugSql = substituteParams(completeQuery, queryParams);
+    console.log(`🔍 Israel Lobby Detail Query for ${personId} (cycle: ${cycleParam})`);
+    console.log(`📝 SQL Preview: ${debugSql.substring(0, 200)}...`);
 
     const realContributionsResult = await executeQuery(
       completeQuery,
@@ -155,13 +93,16 @@ ORDER BY f.sub_id, f.transaction_dt DESC, f.transaction_amt DESC`;
     );
 
     if (!realContributionsResult.success || !realContributionsResult.data) {
+      console.error('🚨 Failed to fetch contributions data:', realContributionsResult.error);
       return NextResponse.json(
-        { error: 'Failed to fetch contributions data' },
+        { error: 'Failed to fetch contributions data', details: realContributionsResult.error },
         { status: 500 }
       );
     }
 
-    // Map the results to include FEC document URLs
+    console.log(`📊 Found ${realContributionsResult.data.length} contribution records`);
+
+    // The centralized query already includes FEC document URLs and proper field mapping
     const allContributions = realContributionsResult.data.map((record: any) => ({
       source_table: record.source_table,
       unique_identifier: record.unique_identifier,
@@ -175,7 +116,7 @@ ORDER BY f.sub_id, f.transaction_dt DESC, f.transaction_amt DESC`;
       committee_designation: record.committee_designation,
       contribution_receipt_date: record.contribution_receipt_date,
       transaction_type_code: record.transaction_type_code,
-      fec_document_url: `https://docquery.fec.gov/cgi-bin/fecimg/?${record.image_num}`
+      fec_document_url: record.fec_document_url
     }));
 
     // Calculate totals
@@ -247,11 +188,15 @@ ORDER BY f.sub_id, f.transaction_dt DESC, f.transaction_amt DESC`;
         contributions: allContributions
       },
       debug: {
-        sql: completeQuery,
+        sql_query: debugSql, // The actual SQL query with substituted parameters
+        raw_sql_template: completeQuery, // The template with placeholders
+        query_source: "Centralized SQL config: SQL_QUERIES.ISRAEL_LOBBY_CONTRIBUTIONS_BY_PERSON",
         person_id: personId,
         cycle_param: cycleParam,
         total_records: allContributions.length,
-        note: "Committee IDs and keywords are loaded directly from cfg_israel_committee_ids and cfg_israel_keywords tables within the SQL query"
+        total_amount: totalAmount,
+        query_params: queryParams,
+        note: "🔧 UPDATED: Now using centralized SQL config with corrected deduplication logic"
       }
     });
 

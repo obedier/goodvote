@@ -6,7 +6,7 @@ export async function GET() {
     const result = await executeQuery(
       `SELECT * FROM (
         SELECT DISTINCT ON (c.fec_committee_id)
-          c.committee_id,
+          c.id,
           c.fec_committee_id,
           c.category,
           c.is_active,

@@ -1,4 +1,5 @@
 import { executeQuery } from './database';
+import { SQL_QUERIES, addCycleFilter, substituteParams } from '@/config/sql-queries';
 
 /**
  * Bulk fetch Israel lobby funding for multiple person IDs in a single query
@@ -13,65 +14,39 @@ export async function getBulkIsraelFunding(
       return { success: true, data: new Map() };
     }
 
-    // Build year filter condition based on cycle parameter
-    let yearFilter = '';
+    // Use centralized SQL query with proper cycle filtering
+    let bulkQuery = SQL_QUERIES.ISRAEL_LOBBY_BULK_FUNDING;
+    
+    // Add cycle filtering
     if (cycleParam === 'last3') {
-      yearFilter = 'AND cc.file_year IN (2020, 2022, 2024)';
+      bulkQuery = bulkQuery.replace(
+        'WHERE pc.person_id = ANY($1::text[])',
+        'WHERE pc.person_id = ANY($1::text[]) AND cc.file_year IN (2020, 2022, 2024)'
+      );
     } else if (cycleParam === 'all') {
-      yearFilter = ''; // No year restriction
+      // No additional filter needed
     } else {
       const year = parseInt(cycleParam);
-      yearFilter = `AND cc.file_year = ${year}`;
+      bulkQuery = bulkQuery.replace(
+        'WHERE pc.person_id = ANY($1::text[])',
+        `WHERE pc.person_id = ANY($1::text[]) AND cc.file_year = ${year}`
+      );
     }
-
-    // Optimized bulk query - fetch all funding amounts in one go
-    const bulkQuery = `
-WITH config_committees AS (
-  SELECT fec_committee_id 
-  FROM cfg_israel_committee_ids 
-  WHERE is_active = true
-),
-config_keywords AS (
-  SELECT keyword 
-  FROM cfg_israel_keywords 
-  WHERE is_active = true
-),
-name_patterns AS (
-  SELECT DISTINCT cm.cmte_id
-  FROM committee_master cm
-  CROSS JOIN config_keywords ck
-  WHERE cm.cmte_nm ILIKE '%' || ck.keyword || '%'
-),
-person_funding AS (
-  SELECT
-    pc.person_id,
-    SUM(DISTINCT cc.transaction_amt) as total_funding
-  FROM person_candidates pc
-  JOIN committee_candidate_contributions cc ON cc.cand_id = pc.cand_id
-  JOIN committee_master cm ON cc.cmte_id = cm.cmte_id
-  WHERE pc.person_id = ANY($1)
-    ${yearFilter}
-    AND cc.transaction_amt > 0
-    AND cc.transaction_tp IN ('24A','24K','24N','24F','24E','24C')
-    AND COALESCE(cc.memo_cd,'') <> 'X'
-    AND (
-      cc.cmte_id IN (SELECT fec_committee_id FROM config_committees)
-      OR
-      cc.cmte_id IN (SELECT cmte_id FROM name_patterns)
-    )
-  GROUP BY pc.person_id
-)
-SELECT 
-  person_id,
-  COALESCE(total_funding, 0) as funding_amount
-FROM person_funding`;
+    
+    // Generate debug SQL for logging
+    const debugSql = substituteParams(bulkQuery, [personIds]);
 
     const result = await executeQuery(bulkQuery, [personIds], true);
     
     if (!result.success) {
-      console.error('Bulk Israel funding query failed:', result.error);
+      console.error('🚨 Bulk Israel funding query failed:', result.error);
+      console.error('📝 Debug SQL:', debugSql);
       return { success: false, error: result.error };
     }
+
+    // Log query info for debugging
+    console.log(`✅ Bulk Israel funding query completed for ${personIds.length} people (cycle: ${cycleParam})`);
+    console.log(`📊 Found funding data for ${result.data?.length || 0} candidates`);
 
     // Convert to Map for fast lookups
     const fundingMap = new Map<string, number>();
@@ -83,7 +58,11 @@ FROM person_funding`;
     
     // Update with actual values
     result.data.forEach((row: any) => {
-      fundingMap.set(row.person_id, parseFloat(row.funding_amount) || 0);
+      const amount = parseFloat(row.total_amount) || 0;
+      fundingMap.set(row.person_id, amount);
+      if (amount > 0) {
+        console.log(`💰 ${row.person_id}: $${amount.toLocaleString()}`);
+      }
     });
 
     return { success: true, data: fundingMap };
@@ -115,17 +94,19 @@ export async function getBulkCandidateInfo(
         pc.state,
         pc.current_district,
         MIN(first_pc.election_year) as first_elected_year,
-        COALESCE(cs.coh_cop, 0) as cash_on_hand
+        COALESCE(cs.coh_cop, 0) as cash_on_hand,
+        COALESCE(cmr.humanity_score, 0) as israel_score
       FROM person_candidates pc
       LEFT JOIN person_candidates first_pc ON first_pc.person_id = pc.person_id 
         AND first_pc.current_office = 'H'
       LEFT JOIN candidate_summary cs ON cs.cand_id = pc.cand_id 
         AND cs.file_year = pc.election_year
+      LEFT JOIN congress_member_pro_israel_report cmr ON cmr.person_id = pc.person_id
       WHERE pc.person_id = ANY($1)
         AND pc.current_office = 'H'
         AND pc.election_year = $2
       GROUP BY pc.person_id, pc.display_name, pc.current_party, pc.election_year, 
-               pc.state, pc.current_district, cs.coh_cop
+               pc.state, pc.current_district, cs.coh_cop, cmr.humanity_score
     `;
 
     const result = await executeQuery(query, [personIds, parseInt(cycle)], true);
@@ -143,7 +124,8 @@ export async function getBulkCandidateInfo(
         state: row.state,
         current_district: row.current_district,
         first_elected_year: row.first_elected_year,
-        cash_on_hand: parseFloat(row.cash_on_hand) || 0
+        cash_on_hand: parseFloat(row.cash_on_hand) || 0,
+        israel_score: row.israel_score
       });
     });
 

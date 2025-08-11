@@ -9,7 +9,7 @@ export async function GET(
     const { id } = await params;
     const result = await executeQuery(
       `SELECT 
-        c.committee_id,
+        c.id,
         c.fec_committee_id,
         c.category,
         c.is_active,
@@ -20,7 +20,7 @@ export async function GET(
         cm.cmte_tp as committee_type
       FROM cfg_israel_committee_ids c
       LEFT JOIN committee_master cm ON c.fec_committee_id = cm.cmte_id
-      WHERE c.committee_id = $1`,
+      WHERE c.id = $1`,
       [id],
       true
     );
@@ -79,7 +79,7 @@ export async function PATCH(
       paramCount++;
     }
 
-    query += ` WHERE committee_id = $${paramCount} RETURNING *`;
+    query += ` WHERE id = $${paramCount} RETURNING *`;
     values.push(id);
 
     const result = await executeQuery(query, values, true);
@@ -108,7 +108,7 @@ export async function DELETE(
   try {
     const { id } = await params;
     const result = await executeQuery(
-      'DELETE FROM cfg_israel_committee_ids WHERE committee_id = $1 RETURNING *',
+      'DELETE FROM cfg_israel_committee_ids WHERE id = $1 RETURNING *',
       [id],
       true
     );

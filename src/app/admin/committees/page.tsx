@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 
 interface Committee {
-  committee_id: number;
+  id: number;
   fec_committee_id: string;
   committee_name: string;
   committee_designation: string;
@@ -323,7 +323,7 @@ export default function CommitteesPage() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {committees.map((committee) => (
-                <tr key={committee.committee_id}>
+                <tr key={committee.id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {committee.fec_committee_id}
                   </td>
@@ -354,13 +354,13 @@ export default function CommitteesPage() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex space-x-2">
                       <Link
-                        href={`/admin/committees/${committee.committee_id}/edit`}
+                        href={`/admin/committees/${committee.id}/edit`}
                         className="text-blue-600 hover:text-blue-900"
                       >
                         Edit
                       </Link>
                       <button
-                        onClick={() => toggleCommitteeStatus(committee.committee_id, committee.is_active)}
+                        onClick={() => toggleCommitteeStatus(committee.id, committee.is_active)}
                         className={`${
                           committee.is_active 
                             ? 'text-red-600 hover:text-red-900' 
@@ -370,7 +370,7 @@ export default function CommitteesPage() {
                         {committee.is_active ? 'Deactivate' : 'Activate'}
                       </button>
                       <button
-                        onClick={() => deleteCommittee(committee.committee_id, committee.committee_name)}
+                        onClick={() => deleteCommittee(committee.id, committee.committee_name)}
                         className="text-red-600 hover:text-red-900 font-medium"
                         title="Delete committee"
                       >

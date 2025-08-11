@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface Committee {
-  committee_id: number;
+  id: number;
   fec_committee_id: string;
   category: string;
   is_active: boolean;
@@ -99,7 +99,7 @@ export default function EditCommittee({ params }: { params: { id: string } }) {
             </label>
             <input
               type="text"
-              value={committee.committee_id}
+              value={committee.id}
               disabled
               className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50"
             />
