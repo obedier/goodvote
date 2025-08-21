@@ -32,10 +32,11 @@
     "dotenv": "^17.2.1",
     "lucide-react": "^0.535.0",
     "mapbox-gl": "^3.14.0",
+    "mapshaper": "^0.6.109",
     "next": "15.4.5",
     "node-fetch": "^2.7.0",
     "pg": "^8.16.3",
-    "puppeteer": "^21.5.2",
+    "puppeteer": "^24.16.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "recharts": "^3.1.0"

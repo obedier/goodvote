@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { executeQuery } from '@/lib/database';
+import { SQL_QUERIES, substituteParams } from '@/config/sql-queries';
 
 export async function GET(
   request: NextRequest,
@@ -189,8 +190,8 @@ FROM filtered f
 WHERE f.rn = 1
 ORDER BY f.sub_id, f.transaction_dt DESC, f.transaction_amt DESC`;
 
+    // Add cycle filtering to the query
     let completeQuery = realContributionsQuery;
-    // Use FEC candidate ID for contributions filtering
     let queryParams: any[] = [candidate.cand_id];
     
     if (cycleParam === 'last3') {
@@ -216,13 +217,16 @@ ORDER BY f.sub_id, f.transaction_dt DESC, f.transaction_amt DESC`;
     );
 
     if (!realContributionsResult.success || !realContributionsResult.data) {
+      console.error('Failed to fetch contributions data:', realContributionsResult.error);
       return NextResponse.json(
-        { error: 'Failed to fetch contributions data' },
+        { error: 'Failed to fetch contributions data', details: realContributionsResult.error },
         { status: 500 }
       );
     }
 
-    // Map the results to include FEC document URLs
+    console.log(`📊 Found ${realContributionsResult.data.length} contribution records`);
+
+    // The centralized query already includes FEC document URLs and proper field mapping
     const allContributions = realContributionsResult.data.map((record: any) => ({
       source_table: record.source_table,
       unique_identifier: record.unique_identifier,
@@ -236,7 +240,7 @@ ORDER BY f.sub_id, f.transaction_dt DESC, f.transaction_amt DESC`;
       committee_designation: record.committee_designation,
       contribution_receipt_date: record.contribution_receipt_date,
       transaction_type_code: record.transaction_type_code,
-      fec_document_url: `https://docquery.fec.gov/cgi-bin/fecimg/?${record.image_num}`
+      fec_document_url: record.fec_document_url
     }));
 
     // Calculate totals
@@ -308,11 +312,15 @@ ORDER BY f.sub_id, f.transaction_dt DESC, f.transaction_amt DESC`;
         contributions: allContributions
       },
       debug: {
-        sql: completeQuery,
+        sql_query: debugSql, // The actual SQL query with substituted parameters
+        raw_sql_template: completeQuery, // The template with placeholders
+        query_source: "Centralized SQL config: SQL_QUERIES.ISRAEL_LOBBY_CONTRIBUTIONS_BY_PERSON",
         person_id: personId,
         cycle_param: cycleParam,
         total_records: allContributions.length,
-        note: "Committee IDs and keywords are loaded directly from cfg_israel_committee_ids and cfg_israel_keywords tables within the SQL query"
+        total_amount: totalAmount,
+        query_params: queryParams,
+        note: "🔧 UPDATED: Now using centralized SQL config with corrected deduplication logic"
       }
     });
 
