@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { formatCurrency, formatNumber } from '@/lib/utils';
 import Link from 'next/link';
+import PageHeader from '@/components/ui/PageHeader';
 
 export interface HouseDistrict {
   state: string;
@@ -38,7 +39,7 @@ export default function HouseDistrictsPage() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [stateFilter, setStateFilter] = useState('');
-  const [sortConfig, setSortConfig] = useState<SortConfig>({ field: 'state', direction: 'asc' });
+  const [sortConfig, setSortConfig] = useState<SortConfig>({ field: 'incumbent_total_israel_funding', direction: 'desc' });
   const [visibleCount, setVisibleCount] = useState(50);
   const [selectedCycle, setSelectedCycle] = useState('2024');
 
@@ -128,31 +129,11 @@ export default function HouseDistrictsPage() {
     return () => window.removeEventListener('scroll', handleWindowScroll);
   }, [sortedAndFilteredDistricts.length]);
 
-  const getIsraelScoreColor = (score: number | null) => {
-    if (score === null) return 'bg-gray-200';
-    if (score === 0) return 'bg-red-600';
-    if (score === 1) return 'bg-red-500';
-    if (score === 2) return 'bg-orange-500';
-    if (score === 3) return 'bg-yellow-500';
-    if (score === 4) return 'bg-green-400';
-    if (score === 5) return 'bg-green-500';
-    return 'bg-gray-500';
-  };
-
-  const getHumanityScoreLabel = (score: number | null) => {
-    if (score === null) return 'N/A';
-    if (score === 0) return '0';
-    if (score === 1) return '1';
-    if (score === 2) return '2';
-    if (score === 3) return '3';
-    if (score === 4) return '4';
-    if (score === 5) return '5';
-    return '?';
-  };
+  // Humanity-specific UI removed for a compact funding-focused page
 
   const getSortIcon = (field: SortField) => {
-    if (sortConfig.field !== field) return '↕️';
-    return sortConfig.direction === 'asc' ? '↑' : '↓';
+    if (sortConfig.field !== field) return '<>'; // neutral
+    return sortConfig.direction === 'asc' ? '^' : 'v';
   };
 
   const states = useMemo(() => {
@@ -162,90 +143,58 @@ export default function HouseDistrictsPage() {
 
   const stats = useMemo(() => {
     const totalFunding = districts.reduce((sum, d) => sum + (d.incumbent_total_israel_funding || 0), 0);
-    const avgFunding = totalFunding / districts.length;
-    const humanitarianCount = districts.filter(d => d.incumbent_israel_score === 5).length;
-    const hardlineCount = districts.filter(d => d.incumbent_israel_score === 0).length;
+    const avgFunding = totalFunding / (districts.length || 1);
     const totalDistricts = districts.length;
+
+    // Funding buckets to match map categories
+    const zeroFunding = districts.filter(d => (d.incumbent_total_israel_funding || 0) === 0).length;
+    const under10k = districts.filter(d => {
+      const v = d.incumbent_total_israel_funding || 0;
+      return v > 0 && v < 10000;
+    }).length;
+    const between10k50k = districts.filter(d => {
+      const v = d.incumbent_total_israel_funding || 0;
+      return v >= 10000 && v < 50000;
+    }).length;
+    const gte50k = districts.filter(d => (d.incumbent_total_israel_funding || 0) >= 50000).length;
     
-    // Party breakdowns
-    const democrats = districts.filter(d => d.incumbent_party === 'DEM');
-    const republicans = districts.filter(d => d.incumbent_party === 'REP');
-    
-    // Gender breakdowns (simple name-based detection)
-    const maleReps = districts.filter(d => {
-      const name = d.incumbent_name.toLowerCase();
-      return name.includes('mr.') || name.includes('mr ') || 
-             (name.includes('senator') && !name.includes('ms.')) ||
-             (name.includes('representative') && !name.includes('ms.'));
-    });
-    const femaleReps = districts.filter(d => {
-      const name = d.incumbent_name.toLowerCase();
-      return name.includes('ms.') || name.includes('mrs.') || name.includes('dr.') ||
-             name.includes('senator') && (name.includes('ms.') || name.includes('mrs.'));
-    });
-    
-    // State breakdowns
+    // Party funding totals
+    const partyFunding = districts.reduce((acc: Record<string, { count: number; total: number }>, d) => {
+      const p = d.incumbent_party || 'OTHER';
+      if (!acc[p]) acc[p] = { count: 0, total: 0 };
+      acc[p].count += 1;
+      acc[p].total += d.incumbent_total_israel_funding || 0;
+      return acc;
+    }, {} as Record<string, { count: number; total: number }>);
+
+    // State funding totals
     const stateBreakdown = districts.reduce((acc, d) => {
       if (!acc[d.state]) {
         acc[d.state] = {
           total: 0,
-          humanitarian: 0,
-          hardline: 0,
           democrats: 0,
           republicans: 0,
+          others: 0,
           funding: 0
         };
       }
       acc[d.state].total++;
-      if (d.incumbent_israel_score === 5) acc[d.state].humanitarian++;
-      if (d.incumbent_israel_score === 0) acc[d.state].hardline++;
       if (d.incumbent_party === 'DEM') acc[d.state].democrats++;
-      if (d.incumbent_party === 'REP') acc[d.state].republicans++;
+      else if (d.incumbent_party === 'REP') acc[d.state].republicans++;
+      else acc[d.state].others++;
       acc[d.state].funding += d.incumbent_total_israel_funding || 0;
       return acc;
     }, {} as Record<string, any>);
     
-    // Humanity score breakdowns
-    const humanityByParty = {
-      democrats: {
-        total: democrats.length,
-        humanitarian: democrats.filter(d => d.incumbent_israel_score === 5).length,
-        hardline: democrats.filter(d => d.incumbent_israel_score === 0).length,
-        funding: democrats.reduce((sum, d) => sum + (d.incumbent_total_israel_funding || 0), 0)
-      },
-      republicans: {
-        total: republicans.length,
-        humanitarian: republicans.filter(d => d.incumbent_israel_score === 5).length,
-        hardline: republicans.filter(d => d.incumbent_israel_score === 0).length,
-        funding: republicans.reduce((sum, d) => sum + (d.incumbent_total_israel_funding || 0), 0)
-      }
-    };
-    
-    const humanityByGender = {
-      male: {
-        total: maleReps.length,
-        humanitarian: maleReps.filter(d => d.incumbent_israel_score === 5).length,
-        hardline: maleReps.filter(d => d.incumbent_israel_score === 0).length,
-        funding: maleReps.reduce((sum, d) => sum + (d.incumbent_total_israel_funding || 0), 0)
-      },
-      female: {
-        total: femaleReps.length,
-        humanitarian: femaleReps.filter(d => d.incumbent_israel_score === 5).length,
-        hardline: femaleReps.filter(d => d.incumbent_israel_score === 0).length,
-        funding: femaleReps.reduce((sum, d) => sum + (d.incumbent_total_israel_funding || 0), 0)
-      }
-    };
-    
     return {
       totalFunding,
       avgFunding,
-      humanitarianCount,
-      hardlineCount,
       totalDistricts,
-      humanitarianPercent: ((humanitarianCount / totalDistricts) * 100).toFixed(1),
-      hardlinePercent: ((hardlineCount / totalDistricts) * 100).toFixed(1),
-      humanityByParty,
-      humanityByGender,
+      zeroFunding,
+      under10k,
+      between10k50k,
+      gte50k,
+      partyFunding,
       stateBreakdown
     };
   }, [districts]);
@@ -284,45 +233,14 @@ export default function HouseDistrictsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto p-6">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">House Districts</h1>
-              <p className="text-gray-600">All 437 congressional districts with incumbent information and Israel funding data</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <label className="text-sm font-medium text-gray-700">Cycle:</label>
-                <select 
-                  value={selectedCycle} 
-                  onChange={(e) => setSelectedCycle(e.target.value)}
-                  className="border border-gray-300 rounded px-3 py-1 text-sm"
-                >
-                  <option value="2020">2020</option>
-                  <option value="2022">2022</option>
-                  <option value="2024">2024</option>
-                  <option value="2026">2026</option>
-                  <option value="last3">Last 3 Cycles (2020-2024)</option>
-                  <option value="all">All Cycles</option>
-                </select>
-              </div>
-                          <div className="flex gap-3">
-              <Link 
-                href="/congressional-map"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium"
-              >
-                View House Map
-              </Link>
-              <Link 
-                href="/senate-districts"
-                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium"
-              >
-                Senate Districts
-              </Link>
-            </div>
-            </div>
-          </div>
+        <div className="-mx-6 -mt-6 mb-6">
+          <PageHeader
+            title="House Districts"
+            subtitle="All 437 congressional districts with incumbent information and Israel funding data"
+            cycle={selectedCycle}
+            onCycleChange={setSelectedCycle}
+            active="house-list"
+          />
         </div>
 
         {/* Stats Overview */}
@@ -337,101 +255,47 @@ export default function HouseDistrictsPage() {
               <div className="text-2xl font-bold text-green-600">{formatCurrency(stats.avgFunding)}</div>
               <div className="text-sm text-green-600">Average per District</div>
             </div>
+          </div>
+
+          <h3 className="text-lg font-semibold text-gray-900 mb-3">Funding Distribution</h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <div className="bg-green-50 p-4 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">{stats.humanitarianCount}</div>
-              <div className="text-sm text-green-600">Humanitarian Representatives</div>
-              <div className="text-xs text-green-500">{stats.humanitarianPercent}% of total</div>
+              <div className="text-2xl font-bold text-green-700">{stats.zeroFunding}</div>
+              <div className="text-sm text-green-700">$0 (Green)</div>
+            </div>
+            <div className="bg-yellow-50 p-4 rounded-lg">
+              <div className="text-2xl font-bold text-yellow-700">{stats.under10k}</div>
+              <div className="text-sm text-yellow-700">$1-$10K (Yellow)</div>
+            </div>
+            <div className="bg-orange-50 p-4 rounded-lg">
+              <div className="text-2xl font-bold text-orange-700">{stats.between10k50k}</div>
+              <div className="text-sm text-orange-700">$10K-$50K (Orange)</div>
             </div>
             <div className="bg-red-50 p-4 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{stats.hardlineCount}</div>
-              <div className="text-sm text-red-600">Hardline Representatives</div>
-              <div className="text-xs text-red-500">{stats.hardlinePercent}% of total</div>
+              <div className="text-2xl font-bold text-red-700">{stats.gte50k}</div>
+              <div className="text-sm text-red-700">&gt;= $50K (Red)</div>
             </div>
           </div>
 
-          {/* Humanity Breakdown by Party */}
+          {/* Funding by Party */}
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Humanity Score by Party</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <div className="text-lg font-semibold text-blue-800 mb-2">Democrats ({stats.humanityByParty.democrats.total})</div>
-                <div className="space-y-1 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-green-600">Humanitarian (5):</span>
-                    <span className="font-semibold">{stats.humanityByParty.democrats.humanitarian}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-red-600">Hardline (0):</span>
-                    <span className="font-semibold">{stats.humanityByParty.democrats.hardline}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-blue-600">Funding:</span>
-                    <span className="font-semibold">{formatCurrency(stats.humanityByParty.democrats.funding)}</span>
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">Funding by Party</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {Object.entries(stats.partyFunding).map(([party, data]: any) => (
+                <div key={party} className="p-4 rounded-lg" style={{background: '#f9fafb'}}>
+                  <div className="text-lg font-semibold text-gray-800 mb-2">{party}</div>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between"><span>Districts</span><span className="font-semibold">{formatNumber(data.count)}</span></div>
+                    <div className="flex justify-between"><span>Total Funding</span><span className="font-semibold">{formatCurrency(data.total)}</span></div>
+                    <div className="flex justify-between"><span>Avg per District</span><span className="font-semibold">{formatCurrency(data.total / (data.count || 1))}</span></div>
                   </div>
                 </div>
-              </div>
-              <div className="bg-red-50 p-4 rounded-lg">
-                <div className="text-lg font-semibold text-red-800 mb-2">Republicans ({stats.humanityByParty.republicans.total})</div>
-                <div className="space-y-1 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-green-600">Humanitarian (5):</span>
-                    <span className="font-semibold">{stats.humanityByParty.republicans.humanitarian}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-red-600">Hardline (0):</span>
-                    <span className="font-semibold">{stats.humanityByParty.republicans.hardline}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-blue-600">Funding:</span>
-                    <span className="font-semibold">{formatCurrency(stats.humanityByParty.republicans.funding)}</span>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
-          {/* Humanity Breakdown by Gender */}
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Humanity Score by Gender</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <div className="text-lg font-semibold text-blue-800 mb-2">Male Representatives ({stats.humanityByGender.male.total})</div>
-                <div className="space-y-1 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-green-600">Humanitarian (5):</span>
-                    <span className="font-semibold">{stats.humanityByGender.male.humanitarian}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-red-600">Hardline (0):</span>
-                    <span className="font-semibold">{stats.humanityByGender.male.hardline}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-blue-600">Funding:</span>
-                    <span className="font-semibold">{formatCurrency(stats.humanityByGender.male.funding)}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-pink-50 p-4 rounded-lg">
-                <div className="text-lg font-semibold text-pink-800 mb-2">Female Representatives ({stats.humanityByGender.female.total})</div>
-                <div className="space-y-1 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-green-600">Humanitarian (5):</span>
-                    <span className="font-semibold">{stats.humanityByGender.female.humanitarian}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-red-600">Hardline (0):</span>
-                    <span className="font-semibold">{stats.humanityByGender.female.hardline}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-blue-600">Funding:</span>
-                    <span className="font-semibold">{formatCurrency(stats.humanityByGender.female.funding)}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Top States by Funding (compact) */}
 
-          {/* Top States by Funding */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Top States by Israel Funding</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -443,17 +307,12 @@ export default function HouseDistrictsPage() {
                     <div className="text-lg font-semibold text-gray-800 mb-2">{state} ({data.total} reps)</div>
                     <div className="space-y-1 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-green-600">Humanitarian:</span>
-                        <span className="font-semibold">{data.humanitarian}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-red-600">Hardline:</span>
-                        <span className="font-semibold">{data.hardline}</span>
-                      </div>
-                      <div className="flex justify-between">
                         <span className="text-blue-600">Funding:</span>
                         <span className="font-semibold">{formatCurrency(data.funding)}</span>
                       </div>
+                      <div className="flex justify-between"><span>Dem</span><span className="font-semibold">{formatNumber(data.democrats)}</span></div>
+                      <div className="flex justify-between"><span>Rep</span><span className="font-semibold">{formatNumber(data.republicans)}</span></div>
+                      <div className="flex justify-between"><span>Other</span><span className="font-semibold">{formatNumber(data.others)}</span></div>
                     </div>
                   </div>
                 ))}
@@ -530,33 +389,7 @@ export default function HouseDistrictsPage() {
                       <span className="text-lg">{getSortIcon('incumbent_party')}</span>
                     </div>
                   </th>
-                  <th 
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleSort('first_elected_year')}
-                  >
-                    <div className="flex items-center space-x-1">
-                      <span>First Elected</span>
-                      <span className="text-lg">{getSortIcon('first_elected_year')}</span>
-                    </div>
-                  </th>
-                  <th 
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleSort('incumbent_cash_on_hand')}
-                  >
-                    <div className="flex items-center space-x-1">
-                      <span>Cash on Hand</span>
-                      <span className="text-lg">{getSortIcon('incumbent_cash_on_hand')}</span>
-                    </div>
-                  </th>
-                  <th 
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleSort('incumbent_israel_score')}
-                  >
-                    <div className="flex items-center space-x-1">
-                      <span>Humanity Score</span>
-                      <span className="text-lg">{getSortIcon('incumbent_israel_score')}</span>
-                    </div>
-                  </th>
+                  
                   <th 
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                     onClick={() => handleSort('incumbent_total_israel_funding')}
@@ -594,19 +427,7 @@ export default function HouseDistrictsPage() {
                         {district.incumbent_party}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {district.first_elected_year || 'N/A'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {district.incumbent_cash_on_hand ? formatCurrency(district.incumbent_cash_on_hand) : 'N/A'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <div className="flex items-center space-x-2">
-                        <div className={`w-6 h-6 rounded-full ${getIsraelScoreColor(district.incumbent_israel_score)} flex items-center justify-center text-white text-xs font-bold`}>
-                          {getHumanityScoreLabel(district.incumbent_israel_score)}
-                        </div>
-                      </div>
-                    </td>
+                    
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {district.incumbent_total_israel_funding ? (
                         <Link 

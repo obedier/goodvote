@@ -1,581 +1,315 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
-
-declare global {
-  interface Window {
-    L: any;
-  }
-}
+import PageHeader from '@/components/ui/PageHeader';
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 export default function SenateMap() {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<any>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<mapboxgl.Map | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCycle, setSelectedCycle] = useState('2024');
   const [viewMode, setViewMode] = useState<'israel' | 'party'>('israel');
   const [israelFilter, setIsraelFilter] = useState<'all' | 'pro' | 'non-pro'>('all');
   const [partyFilter, setPartyFilter] = useState<'all' | 'dem' | 'rep' | 'ind'>('all');
-  const [selectedCycle, setSelectedCycle] = useState('2024');
-  const [leafletLoaded, setLeafletLoaded] = useState(false);
+  const [liveRows, setLiveRows] = useState<any[]>([]);
   const [selectedState, setSelectedState] = useState<any>(null);
-  const [senateData, setSenateData] = useState<any[]>([]);
 
-  // Load Leaflet (OpenStreetMap) - Free mapping solution
+  const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN as string | undefined;
+  const ALBERS_STYLE = process.env.NEXT_PUBLIC_MAPBOX_ALBERS_STYLE_URL as string | undefined;
+
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    // Load Leaflet CSS
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-    link.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
-    link.crossOrigin = '';
-    document.head.appendChild(link);
-
-    // Load Leaflet script
-    const script = document.createElement('script');
-    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-    script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
-    script.crossOrigin = '';
-    script.onload = () => {
-      setLeafletLoaded(true);
-    };
-    script.onerror = () => {
-      setError('Failed to load Leaflet mapping library');
-    };
-    document.head.appendChild(script);
-
-    return () => {
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
-      }
-      if (link.parentNode) {
-        link.parentNode.removeChild(link);
-      }
-    };
-  }, []);
-
-  // Initialize map
-  useEffect(() => {
-    if (!mapContainer.current || !leafletLoaded) return;
-
+    if (!MAPBOX_TOKEN || !ALBERS_STYLE || mapRef.current || !mapContainerRef.current) return;
     try {
-      // Initialize Leaflet map focused on continental US
-      map.current = window.L.map(mapContainer.current, {
-        center: [39.0, -95.0], // Continental US center
-        zoom: 4, // Zoom to show full US for states
-        maxZoom: 8,
-        minZoom: 3,
-        zoomControl: true,
-        attributionControl: true
+      mapboxgl.accessToken = MAPBOX_TOKEN;
+      mapRef.current = new mapboxgl.Map({
+        container: mapContainerRef.current,
+        style: ALBERS_STYLE,
+        center: [-98.5, 39.5],
+        zoom: 3,
+        attributionControl: false,
+        logoPosition: 'bottom-left',
       });
-
-      // Add OpenStreetMap tile layer (free, no API key required)
-      window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 18
-      }).addTo(map.current);
-
-      console.log('Map loaded successfully');
-      setMapLoaded(true);
-
-      return () => {
-        if (map.current) {
-          map.current.remove();
+      mapRef.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      mapRef.current.on('load', () => {
+        const map = mapRef.current!;
+        const layers = map.getStyle()?.layers || [];
+        for (const layer of layers) {
+          if (layer.type !== 'background') {
+            try { map.setLayoutProperty(layer.id, 'visibility', 'none'); } catch {}
+          }
         }
-      };
-    } catch (err) {
-      console.error('Error initializing map:', err);
+        setMapLoaded(true);
+      });
+      mapRef.current.on('error', (e) => {
+        const message = (e as any)?.error?.message || 'Mapbox error';
+        setError(message);
+      });
+    } catch {
       setError('Failed to initialize map');
     }
-  }, [leafletLoaded]);
-
-  // Load Senate data
-  useEffect(() => {
-    const loadSenateData = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`/api/senate-districts?cycle=${selectedCycle}`);
-        const data = await response.json();
-        
-        if (!response.ok) {
-          throw new Error(data.error || 'Failed to load senate data');
-        }
-        
-        setSenateData(data.data || []);
-      } catch (err) {
-        console.error('Error loading senate data:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load senate data');
-      } finally {
-        setLoading(false);
-      }
+    return () => {
+      if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; }
     };
+  }, [MAPBOX_TOKEN, ALBERS_STYLE]);
 
-    loadSenateData();
-  }, [selectedCycle]);
-
-  // Store state layer reference
-  const stateLayer = useRef<any>(null);
-
-  // Function to get color based on senate funding
-  const getStateColor = (stateData: any) => {
+  const getFillColor = () => {
     if (viewMode === 'israel') {
-      const totalFunding = (stateData.senator1_total_israel_funding || 0) + (stateData.senator2_total_israel_funding || 0);
-      
-      // Color based on combined funding amount
-      if (totalFunding < 10000) return '#44ff44'; // Low funding (green)
-      if (totalFunding < 50000) return '#ff8800'; // Medium funding (dark orange)
-      
-      // Red gradient based on funding level
-      if (totalFunding < 100000) return '#ff6600'; // Dark orange-red
-      if (totalFunding < 500000) return '#ff4400'; // Medium red
-      if (totalFunding < 1000000) return '#ff2200'; // Dark red
-      return '#ff0000'; // Bright red for highest funding
-    } else {
-      // Party mode - show based on majority party of senators
-      const dem = ((stateData.senator1_party === 'DEM' || stateData.senator1_party === 'Democratic') ? 1 : 0) +
-                 ((stateData.senator2_party === 'DEM' || stateData.senator2_party === 'Democratic') ? 1 : 0);
-      const rep = ((stateData.senator1_party === 'REP' || stateData.senator1_party === 'Republican') ? 1 : 0) +
-                 ((stateData.senator2_party === 'REP' || stateData.senator2_party === 'Republican') ? 1 : 0);
-      
-      if (rep > dem) return '#ff4444'; // Republican majority
-      if (dem > rep) return '#4444ff'; // Democratic majority
-      return '#9944ff'; // Split delegation (purple)
+      const totalExpr: any = ['+',
+        ['coalesce', ['to-number', ['get', 'senator1_total_israel_funding']], 0],
+        ['coalesce', ['to-number', ['get', 'senator2_total_israel_funding']], 0]
+      ];
+      return [
+        'case',
+        ['==', totalExpr, 0], '#22c55e',
+        ['all', ['>', totalExpr, 0], ['<', totalExpr, 10000]], '#fbbf24',
+        ['all', ['>=', totalExpr, 10000], ['<', totalExpr, 50000]], '#ea580c',
+        ['>=', totalExpr, 50000], '#dc2626',
+        '#9ca3af'
+      ];
     }
+    // Party: majority color; split is purple
+    const demCount: any = ['+', ['case', ['==', ['get', 'senator1_party'], 'DEM'], 1, 0], ['case', ['==', ['get', 'senator2_party'], 'DEM'], 1, 0]];
+    const repCount: any = ['+', ['case', ['==', ['get', 'senator1_party'], 'REP'], 1, 0], ['case', ['==', ['get', 'senator2_party'], 'REP'], 1, 0]];
+    return ['case', ['>', demCount, repCount], '#3b82f6', ['>', repCount, demCount], '#dc2626', '#6b21a8'];
   };
 
-  // Load and display state boundaries with Senate data
-  useEffect(() => {
-    if (!map.current || !mapLoaded || senateData.length === 0) return;
+  const getFillOpacity = () => {
+    if (viewMode === 'israel') {
+      const totalExpr: any = ['+',
+        ['coalesce', ['to-number', ['get', 'senator1_total_israel_funding']], 0],
+        ['coalesce', ['to-number', ['get', 'senator2_total_israel_funding']], 0]
+      ];
+      if (israelFilter === 'all') return 0.8 as any;
+      if (israelFilter === 'pro') return ['case', ['>', totalExpr, 0], 0.8, 0.1] as any;
+      return ['case', ['==', totalExpr, 0], 0.8, 0.1] as any;
+    }
+    if (partyFilter === 'all') return 0.8 as any;
+    const matchDem: any = ['any', ['==', ['get', 'senator1_party'], 'DEM'], ['==', ['get', 'senator2_party'], 'DEM']];
+    const matchRep: any = ['any', ['==', ['get', 'senator1_party'], 'REP'], ['==', ['get', 'senator2_party'], 'REP']];
+    return partyFilter === 'dem' ? ['case', matchDem, 0.8, 0.1] as any : ['case', matchRep, 0.8, 0.1] as any;
+  };
 
-    const loadStateMap = async () => {
-      try {
-        setLoading(true);
-        
-        // Load US states GeoJSON from CDN (free and reliable)
-        const statesResponse = await fetch('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json');
-        if (!statesResponse.ok) {
-          throw new Error('Failed to load states data');
-        }
-        
-        const statesData = await statesResponse.json();
-        
-        // Merge senate data with states GeoJSON
-        statesData.features = statesData.features.map((feature: any) => {
-          // Handle different property name formats in GeoJSON files
-          const stateCode = feature.properties.STUSPS || 
-                           feature.properties.state_code || 
-                           feature.properties.STATE_ABBR ||
-                           feature.properties.postal;
-          const senateInfo = senateData.find(s => s.state === stateCode);
-          
-          if (senateInfo) {
-            feature.properties = { ...feature.properties, ...senateInfo };
-          }
-          
-          return feature;
-        });
-
-        // Remove previous state layer if it exists
-        if (stateLayer.current) {
-          map.current.removeLayer(stateLayer.current);
-        }
-
-        // Create a GeoJSON layer for states
-        stateLayer.current = window.L.geoJSON(statesData, {
-          style: (feature: any) => ({
-            fillColor: getStateColor(feature.properties),
-            weight: 2,
-            opacity: 1,
-            color: '#ffffff',
-            fillOpacity: 0.7
-          }),
-          onEachFeature: (feature: any, layer: any) => {
-            // Add click event to update selected state
-            layer.on('click', () => {
-              setSelectedState(feature.properties);
-            });
-            
-            // Add hover effects
-            layer.on('mouseover', () => {
-              layer.setStyle({
-                weight: 4,
-                color: '#000',
-                fillOpacity: 0.9
-              });
-            });
-            
-            layer.on('mouseout', () => {
-              layer.setStyle({
-                weight: 2,
-                color: '#ffffff',
-                fillOpacity: 0.7
-              });
-            });
-          }
-        }).addTo(map.current);
-
-        console.log('State layer added successfully');
-        
-      } catch (err) {
-        console.error('Error loading state map:', err);
-        setError('Failed to load state boundaries');
-      } finally {
-        setLoading(false);
+  const updatePaint = useCallback(() => {
+    const map = mapRef.current; if (!map) return;
+    // Avoid touching style before it's fully loaded or after teardown
+    if (typeof (map as any).isStyleLoaded === 'function' && !(map as any).isStyleLoaded()) return;
+    try {
+      if (map.getLayer && map.getLayer('state-fill')) {
+        map.setPaintProperty('state-fill', 'fill-color', getFillColor() as any);
+        map.setPaintProperty('state-fill', 'fill-opacity', getFillOpacity() as any);
       }
-    };
-
-    loadStateMap();
-  }, [map.current, mapLoaded, senateData, viewMode]);
-
-  // Function to update map colors based on filters
-  const updateMapColors = useCallback(() => {
-    if (stateLayer.current) {
-      stateLayer.current.eachLayer((layer: any) => {
-        const properties = layer.feature.properties;
-        const color = getStateColor(properties);
-        
-        // Apply filtering based on current filters
-        let opacity = 0.7;
-        let visible = true;
-        
-        if (viewMode === 'israel') {
-          const totalFunding = (properties.senator1_total_israel_funding || 0) + (properties.senator2_total_israel_funding || 0);
-          if (israelFilter === 'pro' && totalFunding < 10000) {
-            visible = false;
-            opacity = 0.1;
-          } else if (israelFilter === 'non-pro' && totalFunding >= 10000) {
-            visible = false;
-            opacity = 0.1;
-          }
-        } else if (viewMode === 'party') {
-          const dem = ((properties.senator1_party === 'DEM' || properties.senator1_party === 'Democratic') ? 1 : 0) +
-                     ((properties.senator2_party === 'DEM' || properties.senator2_party === 'Democratic') ? 1 : 0);
-          const rep = ((properties.senator1_party === 'REP' || properties.senator1_party === 'Republican') ? 1 : 0) +
-                     ((properties.senator2_party === 'REP' || properties.senator2_party === 'Republican') ? 1 : 0);
-          
-          if (partyFilter === 'dem' && dem === 0) {
-            visible = false;
-            opacity = 0.1;
-          } else if (partyFilter === 'rep' && rep === 0) {
-            visible = false;
-            opacity = 0.1;
-          }
-        }
-        
-        layer.setStyle({ 
-          fillColor: color,
-          fillOpacity: visible ? opacity : 0.1
-        });
-      });
+    } catch {
+      // ignore transient errors during hot reload/unmount
     }
   }, [viewMode, israelFilter, partyFilter]);
 
-  // Update colors when filters change
+  useEffect(() => { if (mapLoaded) updatePaint(); }, [mapLoaded, updatePaint]);
+
   useEffect(() => {
-    updateMapColors();
-  }, [updateMapColors]);
+    if (!mapLoaded || !mapRef.current) return;
+    const map = mapRef.current;
+    const sourceId = 'states';
+    const fillId = 'state-fill';
+    const lineId = 'state-outline';
+    const hoverLineId = 'state-hover-outline';
+    let cancelled = false;
+
+    const run = async () => {
+      try {
+        const res = await fetch(`/states/us-states-albersbaked-simplified.geojson`);
+        if (!res.ok) throw new Error('Failed to load states');
+        let data = await res.json();
+
+        const resp = await fetch(`/api/senate-districts?cycle=${encodeURIComponent(selectedCycle)}`);
+        if (resp.ok) {
+          const payload = await resp.json();
+          const rows: any[] = payload?.data || [];
+          setLiveRows(rows);
+          const byState = new Map<string, any>();
+          for (const r of rows) byState.set(r.state, r);
+          // Normalize FIPS to postal if needed
+          const fipsToPostal: Record<string, string> = {
+            '01':'AL','02':'AK','04':'AZ','05':'AR','06':'CA','08':'CO','09':'CT','10':'DE','11':'DC','12':'FL','13':'GA','15':'HI','16':'ID','17':'IL','18':'IN','19':'IA','20':'KS','21':'KY','22':'LA','23':'ME','24':'MD','25':'MA','26':'MI','27':'MN','28':'MS','29':'MO','30':'MT','31':'NE','32':'NV','33':'NH','34':'NJ','35':'NM','36':'NY','37':'NC','38':'ND','39':'OH','40':'OK','41':'OR','42':'PA','44':'RI','45':'SC','46':'SD','47':'TN','48':'TX','49':'UT','50':'VT','51':'VA','53':'WA','54':'WV','55':'WI','56':'WY'
+          };
+          data = {
+            type: 'FeatureCollection',
+            features: (data?.features || []).map((f: any) => {
+              const props = f?.properties || {};
+              const rawFips = (typeof f?.id !== 'undefined') ? String(f.id) : (props.id || props.STATE || props.STATEFP || props.fips || props.ID);
+              const fips = rawFips ? String(rawFips).padStart(2, '0') : undefined;
+              const st = props.postal || props.STUSPS || props.state || props.STATE_ABBR || (fips ? fipsToPostal[fips] : undefined);
+              const stateName = props.state_name || props.STATE_NAME || props.name || '';
+              const live = st ? byState.get(st) : undefined;
+              const mergedProps = live ? { ...props, postal: st, state: st, state_name: stateName, ...live } : { ...props, postal: st, state: st, state_name: stateName };
+              return { ...f, properties: mergedProps };
+            })
+          };
+        }
+
+        if (!map.getSource(sourceId)) {
+          map.addSource(sourceId, { type: 'geojson', data } as any);
+          map.addLayer({ id: fillId, type: 'fill', source: sourceId, paint: { 'fill-color': getFillColor() as any, 'fill-opacity': getFillOpacity() as any } });
+          map.addLayer({ id: lineId, type: 'line', source: sourceId, paint: { 'line-color': '#ffffff', 'line-width': 0.75 } });
+          map.addLayer({ id: hoverLineId, type: 'line', source: sourceId, paint: { 'line-color': '#000000', 'line-width': 3 }, filter: ['==', ['id'], -1] });
+          // Fit bounds to fill screen
+          try {
+            const bounds = new mapboxgl.LngLatBounds();
+            for (const f of (data.features || [])) {
+              const g: any = f.geometry; if (!g) continue;
+              const walk = (c: any) => {
+                if (Array.isArray(c[0])) return c.forEach(walk);
+                const lng = c[0]; const lat = c[1];
+                if (Number.isFinite(lng) && Number.isFinite(lat)) bounds.extend([lng, lat]);
+              };
+              walk(g.coordinates);
+            }
+            map.fitBounds(bounds, { padding: 40, animate: false });
+          } catch {}
+          map.on('click', fillId, (e: any) => {
+            const f = e.features && e.features[0];
+            if (!f) return;
+            setSelectedState(f.properties);
+            new mapboxgl.Popup({ closeButton: true })
+              .setLngLat(e.lngLat)
+              .setHTML(`<div style="font-weight:600;">${f.properties?.state || f.properties?.state_name || f.properties?.name || ''}</div>`) 
+              .addTo(map);
+          });
+          map.on('mouseenter', fillId, () => { map.getCanvas().style.cursor = 'pointer'; });
+          map.on('mousemove', fillId, (e: any) => {
+            const f = e.features && e.features[0];
+            const id = f && typeof f.id !== 'undefined' ? f.id : -1;
+            try { map.setFilter(hoverLineId, ['==', ['id'], id]); } catch {}
+          });
+          map.on('mouseleave', fillId, () => {
+            map.getCanvas().style.cursor = '';
+            try { map.setFilter(hoverLineId, ['==', ['id'], -1]); } catch {}
+          });
+        } else {
+          const src = map.getSource(sourceId) as mapboxgl.GeoJSONSource;
+          src.setData(data as any);
+        }
+      } catch (e: any) {
+        setError(e?.message || 'Failed to load state boundaries');
+      }
+    };
+
+    run();
+    return () => { cancelled = true; };
+  }, [mapLoaded, selectedCycle]);
+
+  const pieData = useMemo(() => {
+    const totals = liveRows.map(r => (Number(r.senator1_total_israel_funding || 0) + Number(r.senator2_total_israel_funding || 0)));
+    const green = totals.filter(t => t === 0).length;
+    const yellow = totals.filter(t => t > 0 && t < 10000).length;
+    const orange = totals.filter(t => t >= 10000 && t < 50000).length;
+    const red = totals.filter(t => t >= 50000).length;
+    return { green, yellow, orange, red };
+  }, [liveRows]);
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-600 mb-4">Error: {error}</p>
-          <button 
-            onClick={() => window.location.reload()}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-          >
-            Reload Page
-          </button>
-        </div>
-      </div>
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center text-white">{error}</div>
     );
   }
 
   return (
-    <div className="h-screen relative bg-gray-900">
-      {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-20 bg-gray-800 shadow-lg">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-white">U.S. Senate Map</h1>
-              <p className="text-gray-300 text-sm">Interactive map of all 50 states with senator information</p>
-            </div>
-            <div className="flex gap-3">
-              <Link 
-                href="/senate-districts"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium"
-              >
-                Senate List
-              </Link>
-              <Link 
-                href="/congressional-map"
-                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium"
-              >
-                House Map
-              </Link>
-            </div>
-          </div>
+    <div className="min-h-screen bg-gray-900">
+      <PageHeader
+        title="U.S. Senate Map"
+        subtitle="Israel funding by state"
+        cycle={selectedCycle}
+        onCycleChange={setSelectedCycle}
+        active="senate-map"
+      />
 
-          {/* Filters */}
-          <div className="flex flex-wrap gap-4 items-center py-4 border-t border-gray-700 mt-4">
-            {/* Cycle Selector */}
-            <div className="flex items-center space-x-2">
-              <span className="text-white text-sm font-medium">Cycle:</span>
-              <select 
-                value={selectedCycle} 
-                onChange={(e) => setSelectedCycle(e.target.value)}
-                className="border border-gray-300 rounded px-3 py-1 text-sm bg-white text-black"
-              >
-                <option value="2020">2020</option>
-                <option value="2022">2022</option>
-                <option value="2024">2024</option>
-                <option value="2026">2026</option>
-                <option value="last3">Last 3 Cycles (2020-2024)</option>
-                <option value="all">All Cycles</option>
-              </select>
-            </div>
+      <div className="bg-gray-800 border-b border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap gap-4 items-center py-4">
 
-            {/* View Mode Toggle */}
             <div className="flex items-center space-x-2">
               <span className="text-white text-sm font-medium">View Mode:</span>
-              <div className="bg-gray-700 rounded-lg p-1 flex">
-                <button
-                  onClick={() => setViewMode('israel')}
-                  className={`px-3 py-1 text-sm rounded transition-colors ${
-                    viewMode === 'israel' 
-                      ? 'bg-blue-600 text-white' 
-                      : 'text-gray-300 hover:text-white'
-                  }`}
-                >
-                  Israel Funding
-                </button>
-                <button
-                  onClick={() => setViewMode('party')}
-                  className={`px-3 py-1 text-sm rounded transition-colors ${
-                    viewMode === 'party' 
-                      ? 'bg-blue-600 text-white' 
-                      : 'text-gray-300 hover:text-white'
-                  }`}
-                >
-                  Party Control
-                </button>
-              </div>
+              <button onClick={() => setViewMode('israel')} className={`px-3 py-1 rounded text-sm font-medium transition-colors ${viewMode === 'israel' ? 'bg-pink-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}>Israel Funding</button>
+              <button onClick={() => setViewMode('party')} className={`px-3 py-1 rounded text-sm font-medium transition-colors ${viewMode === 'party' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}>Party Affiliation</button>
             </div>
 
-            {/* Israel Filter */}
             {viewMode === 'israel' && (
               <div className="flex items-center space-x-2">
                 <span className="text-white text-sm font-medium">Filter:</span>
-                <select
-                  value={israelFilter}
-                  onChange={(e) => setIsraelFilter(e.target.value as 'all' | 'pro' | 'non-pro')}
-                  className="border border-gray-300 rounded px-3 py-1 text-sm bg-white text-black"
-                >
-                  <option value="all">All States</option>
-                  <option value="pro">High Funding (&gt;$10K)</option>
-                  <option value="non-pro">Low Funding (&lt;$10K)</option>
-                </select>
+                <label className="flex items-center text-gray-300 text-sm"><input type="radio" name="israelFilter" value="all" checked={israelFilter === 'all'} onChange={e => setIsraelFilter(e.target.value as any)} className="mr-2"/>All States</label>
+                <label className="flex items-center text-gray-300 text-sm"><input type="radio" name="israelFilter" value="pro" checked={israelFilter === 'pro'} onChange={e => setIsraelFilter(e.target.value as any)} className="mr-2"/>Pro-Israel (Yellow/Orange/Red)</label>
+                <label className="flex items-center text-gray-300 text-sm"><input type="radio" name="israelFilter" value="non-pro" checked={israelFilter === 'non-pro'} onChange={e => setIsraelFilter(e.target.value as any)} className="mr-2"/>Non-Pro ($0)</label>
               </div>
             )}
 
-            {/* Party Filter */}
             {viewMode === 'party' && (
               <div className="flex items-center space-x-2">
                 <span className="text-white text-sm font-medium">Filter:</span>
-                <select
-                  value={partyFilter}
-                  onChange={(e) => setPartyFilter(e.target.value as 'all' | 'dem' | 'rep' | 'ind')}
-                  className="border border-gray-300 rounded px-3 py-1 text-sm bg-white text-black"
-                >
-                  <option value="all">All States</option>
-                  <option value="dem">Democratic</option>
-                  <option value="rep">Republican</option>
-                </select>
+                <label className="flex items-center text-gray-300 text-sm"><input type="radio" name="partyFilter" value="all" checked={partyFilter === 'all'} onChange={e => setPartyFilter(e.target.value as any)} className="mr-2"/>All</label>
+                <label className="flex items-center text-gray-300 text-sm"><input type="radio" name="partyFilter" value="dem" checked={partyFilter === 'dem'} onChange={e => setPartyFilter(e.target.value as any)} className="mr-2"/>Dem</label>
+                <label className="flex items-center text-gray-300 text-sm"><input type="radio" name="partyFilter" value="rep" checked={partyFilter === 'rep'} onChange={e => setPartyFilter(e.target.value as any)} className="mr-2"/>Rep</label>
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* Map Container */}
-      <div className="absolute inset-0 pt-32">
-        <div ref={mapContainer} className="w-full h-full" />
-      </div>
+      <div className="relative">
+        <div ref={mapContainerRef} className="w-full h-screen" />
 
-      {/* Loading Spinner */}
-      {loading && (
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <div className="text-white text-center mb-4">Loading Senate data...</div>
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+        {/* Legend (upper-left) matching house map */}
+        <div className="absolute top-4 left-4 bg-gray-800 p-4 rounded-lg shadow-lg z-10 max-w-xs">
+          <h3 className="font-bold text-white text-sm mb-2">{viewMode === 'israel' ? 'Israel Funding by State' : 'Party Affiliation by State'}</h3>
+          <div className="space-y-1 text-xs">
+            {viewMode === 'israel' ? (
+              <>
+                <button onClick={() => alert(JSON.stringify(liveRows.filter(r => (Number(r.senator1_total_israel_funding||0)+Number(r.senator2_total_israel_funding||0))===0).map(r=>r.state)))} className="w-full text-left flex items-center justify-between hover:bg-gray-700 px-1 py-0.5 rounded">
+                  <div className="flex items-center"><div className="w-4 h-4 bg-green-500 rounded mr-2"></div><span className="text-gray-300">Green: $0</span></div>
+                  {liveRows.length ? <span className="text-gray-200 font-semibold">{pieData.green}</span> : null}
+                </button>
+                <button onClick={() => alert(JSON.stringify(liveRows.filter(r => {const t=Number(r.senator1_total_israel_funding||0)+Number(r.senator2_total_israel_funding||0);return t>0&&t<10000;}).map(r=>r.state)))} className="w-full text-left flex items-center justify-between hover:bg-gray-700 px-1 py-0.5 rounded">
+                  <div className="flex items-center"><div className="w-4 h-4 bg-yellow-500 rounded mr-2"></div><span className="text-gray-300">Yellow: $1-$10K</span></div>
+                  {liveRows.length ? <span className="text-gray-200 font-semibold">{pieData.yellow}</span> : null}
+                </button>
+                <button onClick={() => alert(JSON.stringify(liveRows.filter(r => {const t=Number(r.senator1_total_israel_funding||0)+Number(r.senator2_total_israel_funding||0);return t>=10000&&t<50000;}).map(r=>r.state)))} className="w-full text-left flex items-center justify-between hover:bg-gray-700 px-1 py-0.5 rounded">
+                  <div className="flex items-center"><div className="w-4 h-4 bg-orange-600 rounded mr-2"></div><span className="text-gray-300">Orange: $10K-$50K</span></div>
+                  {liveRows.length ? <span className="text-gray-200 font-semibold">{pieData.orange}</span> : null}
+                </button>
+                <button onClick={() => alert(JSON.stringify(liveRows.filter(r => {const t=Number(r.senator1_total_israel_funding||0)+Number(r.senator2_total_israel_funding||0);return t>=50000;}).map(r=>r.state)))} className="w-full text-left flex items-center justify-between hover:bg-gray-700 px-1 py-0.5 rounded">
+                  <div className="flex items-center"><div className="w-4 h-4 bg-red-600 rounded mr-2"></div><span className="text-gray-300">Red: ≥$50K</span></div>
+                  {liveRows.length ? <span className="text-gray-200 font-semibold">{pieData.red}</span> : null}
+                </button>
+                <div className="flex items-center"><div className="w-4 h-4 bg-gray-500 rounded mr-2"></div><span className="text-gray-300">No Data</span></div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center"><div className="w-4 h-4 bg-blue-500 rounded mr-2"></div><span className="text-gray-300">Democratic</span></div>
+                <div className="flex items-center"><div className="w-4 h-4 bg-red-500 rounded mr-2"></div><span className="text-gray-300">Republican</span></div>
+                <div className="flex items-center"><div className="w-4 h-4 bg-purple-600 rounded mr-2"></div><span className="text-gray-300">Split Delegation</span></div>
+              </>
+            )}
           </div>
         </div>
-      )}
 
-      {/* Leaflet Loading Message */}
-      {!leafletLoaded && !error && (
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <div className="text-white text-center mb-4">Loading Map Library...</div>
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-          </div>
-        </div>
-      )}
-
-      {/* Fixed State Details Popup */}
+        {/* State details popup */}
       {selectedState && (
         <div className="absolute top-4 left-4 bg-white p-6 rounded-lg shadow-xl z-20 max-w-md">
           <div className="flex justify-between items-start mb-4">
-            <h3 className="text-xl font-bold text-gray-900">
-              {selectedState.state || 'Unknown'} - {selectedState.state_name || 'Unknown State'}
-            </h3>
-            <button 
-              onClick={() => setSelectedState(null)}
-              className="text-gray-500 hover:text-gray-700 text-xl font-bold"
-            >
-              ×
-            </button>
-          </div>
-          
-          <div className="space-y-4">
-            {/* Senator 1 */}
-            <div className="border-b border-gray-200 pb-3">
-              <h4 className="font-semibold text-gray-800 mb-2">Senior Senator</h4>
-              <p className="text-gray-700">
-                <strong>Name:</strong>{' '}
-                {(selectedState.senator1_person_id) ? 
-                  <Link 
-                    href={`/candidates/${selectedState.senator1_person_id}/funding-breakdown`}
-                    className="text-blue-600 hover:text-blue-800 underline"
-                    target="_blank"
-                  >
-                    {selectedState.senator1_name || 'Unknown'}
-                  </Link> : 
-                  <span>{selectedState.senator1_name || 'Unknown'}</span>
-                }
-              </p>
-              
-              <p className="text-gray-700">
-                <strong>Party:</strong> {selectedState.senator1_party || 'Unknown'}
-              </p>
-              
-              <p className="text-gray-700">
-                <strong>Pro-Israel Funding:</strong>{' '}
-                {selectedState.senator1_person_id ? 
-                  <Link 
-                    href={`/israel-lobby/${selectedState.senator1_person_id}`}
-                    className="text-blue-600 hover:text-blue-800 underline font-semibold"
-                    target="_blank"
-                  >
-                    ${(selectedState.senator1_total_israel_funding || 0).toLocaleString()}
-                  </Link> : 
-                  <span className="font-semibold">${(selectedState.senator1_total_israel_funding || 0).toLocaleString()}</span>
-                }
-              </p>
+              <h3 className="text-xl font-bold text-gray-900">{selectedState.state || selectedState.state_name || selectedState.name || 'Unknown'}</h3>
+              <button onClick={() => setSelectedState(null)} className="text-gray-500 hover:text-gray-700 text-xl font-bold">×</button>
             </div>
-
-            {/* Senator 2 */}
-            <div>
-              <h4 className="font-semibold text-gray-800 mb-2">Junior Senator</h4>
-              <p className="text-gray-700">
-                <strong>Name:</strong>{' '}
-                {(selectedState.senator2_person_id) ? 
-                  <Link 
-                    href={`/candidates/${selectedState.senator2_person_id}/funding-breakdown`}
-                    className="text-blue-600 hover:text-blue-800 underline"
-                    target="_blank"
-                  >
-                    {selectedState.senator2_name || 'Unknown'}
-                  </Link> : 
-                  <span>{selectedState.senator2_name || 'Unknown'}</span>
-                }
-              </p>
-              
-              <p className="text-gray-700">
-                <strong>Party:</strong> {selectedState.senator2_party || 'Unknown'}
-              </p>
-              
-              <p className="text-gray-700">
-                <strong>Pro-Israel Funding:</strong>{' '}
-                {selectedState.senator2_person_id ? 
-                  <Link 
-                    href={`/israel-lobby/${selectedState.senator2_person_id}`}
-                    className="text-blue-600 hover:text-blue-800 underline font-semibold"
-                    target="_blank"
-                  >
-                    ${(selectedState.senator2_total_israel_funding || 0).toLocaleString()}
-                  </Link> : 
-                  <span className="font-semibold">${(selectedState.senator2_total_israel_funding || 0).toLocaleString()}</span>
-                }
-              </p>
-            </div>
-
-            {/* Total */}
-            <div className="pt-3 border-t border-gray-200">
-              <p className="text-gray-800 font-semibold">
-                <strong>Combined Funding:</strong>{' '}
-                ${((selectedState.senator1_total_israel_funding || 0) + (selectedState.senator2_total_israel_funding || 0)).toLocaleString()}
-              </p>
+            <div className="space-y-2">
+              <p className="text-gray-700"><strong>Senior Senator:</strong> {selectedState.senator1_name || 'Unknown'} ({selectedState.senator1_party || 'N/A'})</p>
+              <p className="text-gray-700"><strong>Funding:</strong> ${Number(selectedState.senator1_total_israel_funding || 0).toLocaleString()}</p>
+              <p className="text-gray-700"><strong>Junior Senator:</strong> {selectedState.senator2_name || 'Unknown'} ({selectedState.senator2_party || 'N/A'})</p>
+              <p className="text-gray-700"><strong>Funding:</strong> ${Number(selectedState.senator2_total_israel_funding || 0).toLocaleString()}</p>
+              <p className="text-gray-800 font-semibold"><strong>Combined:</strong> ${Number((selectedState.senator1_total_israel_funding || 0) + (selectedState.senator2_total_israel_funding || 0)).toLocaleString()}</p>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Legend */}
-      <div className="absolute bottom-4 right-4 bg-gray-800 p-4 rounded-lg shadow-lg z-10 max-w-xs">
-        <h3 className="font-bold text-white text-sm mb-2">
-          {viewMode === 'israel' ? 'Israel Funding by State' : 'Party Control by State'}
-        </h3>
-        <div className="space-y-1 text-xs">
-          {viewMode === 'israel' ? (
-            <>
-              <div className="flex items-center">
-                <div className="w-4 h-4 bg-green-500 rounded mr-2"></div>
-                <span className="text-gray-300">Low Funding (&lt;$10K)</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-4 h-4 bg-orange-600 rounded mr-2"></div>
-                <span className="text-gray-300">Medium Funding ($10K-$50K)</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-4 h-4" style={{backgroundColor: '#ff6600'}}></div>
-                <span className="text-gray-300">High ($50K-$100K)</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-4 h-4" style={{backgroundColor: '#ff4400'}}></div>
-                <span className="text-gray-300">Very High ($100K-$500K)</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-4 h-4" style={{backgroundColor: '#ff2200'}}></div>
-                <span className="text-gray-300">Extreme ($500K-$1M)</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-4 h-4" style={{backgroundColor: '#ff0000'}}></div>
-                <span className="text-gray-300">Highest (&gt;$1M)</span>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="flex items-center">
-                <div className="w-4 h-4 bg-red-500 rounded mr-2"></div>
-                <span className="text-gray-300">Republican Majority</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-4 h-4 bg-blue-500 rounded mr-2"></div>
-                <span className="text-gray-300">Democratic Majority</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-4 h-4 bg-purple-500 rounded mr-2"></div>
-                <span className="text-gray-300">Split Delegation</span>
-              </div>
-            </>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );

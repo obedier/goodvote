@@ -33,11 +33,11 @@ const goodvoteConfig = {
   database: process.env.DB_NAME || 'goodvote',
   user: process.env.DB_USER || 'osamabedier',
   password: process.env.DB_PASSWORD || '',
-  max: 3, // Further reduced to prevent connection exhaustion
-  min: 0, // Allow pool to shrink completely
-  idleTimeoutMillis: 10000, // Reduced idle timeout
-  connectionTimeoutMillis: 3000, // Reduced connection timeout
-  acquireTimeoutMillis: 3000, // Timeout for acquiring connection
+  max: 5, // Increased pool size
+  min: 1, // Keep at least one connection
+  idleTimeoutMillis: 30000, // Increased idle timeout
+  connectionTimeoutMillis: 10000, // Increased connection timeout
+  acquireTimeoutMillis: 10000, // Increased acquire timeout
 };
 
 const fecCompleteConfig = {
@@ -46,11 +46,11 @@ const fecCompleteConfig = {
   database: 'fec_gold', // Override environment variable to use correct database name
   user: process.env.FEC_DB_USER || process.env.DB_USER || 'osamabedier',
   password: process.env.FEC_DB_PASSWORD || process.env.DB_PASSWORD || '',
-  max: 3, // Further reduced to prevent connection exhaustion
-  min: 0, // Allow pool to shrink completely
-  idleTimeoutMillis: 10000, // Reduced idle timeout
-  connectionTimeoutMillis: 3000, // Reduced connection timeout
-  acquireTimeoutMillis: 3000, // Timeout for acquiring connection
+  max: 5, // Increased pool size
+  min: 1, // Keep at least one connection
+  idleTimeoutMillis: 30000, // Increased idle timeout
+  connectionTimeoutMillis: 10000, // Increased connection timeout
+  acquireTimeoutMillis: 10000, // Increased acquire timeout
 };
 
 // Create connection pools
@@ -85,7 +85,7 @@ export async function executeQuery(
   query: string, 
   params: any[] = [], 
   useFECDatabase: boolean = false,
-  timeoutMs: number = 10000
+  timeoutMs: number = 30000
 ): Promise<{ success: boolean; data?: any; error?: string }> {
   // Database selection: false = goodvote (app data), true = fec_gold (FEC data)
   const pool = useFECDatabase ? fecCompletePool : goodvotePool;
@@ -1831,7 +1831,9 @@ export async function performGlobalSearch(
 
     // Search donors (individual contributions)
     if (!filters.type || filters.type === 'donor') {
-      const donorQuery = `
+      let paramIndex = 1;
+      const donorParams: any[] = [`%${query}%`];
+      let donorQuery = `
         SELECT 
           ic.name as id,
           'donor' as type,
@@ -1842,24 +1844,34 @@ export async function performGlobalSearch(
           ic.file_year as election_year
         FROM individual_contributions ic
         LEFT JOIN committee_master cm ON ic.cmte_id = cm.cmte_id
-        WHERE ic.name ILIKE $1
-        ${filters.state ? 'AND ic.state = $' + (results.length + 2) : ''}
-        ${filters.min_amount ? 'AND ic.transaction_amt >= $' + (results.length + 3) : ''}
-        ${filters.max_amount ? 'AND ic.transaction_amt <= $' + (results.length + 4) : ''}
-        ${filters.election_year ? 'AND ic.file_year = $' + (results.length + 5) : ''}
-        ORDER BY ic.transaction_amt DESC
-        LIMIT $${results.length + 6} OFFSET $${results.length + 7}
+        WHERE ic.name ILIKE $${paramIndex}
       `;
-      
-      const donorParams = [
-        `%${query}%`,
-        ...(filters.state ? [filters.state] : []),
-        ...(filters.min_amount ? [filters.min_amount] : []),
-        ...(filters.max_amount ? [filters.max_amount] : []),
-        ...(filters.election_year ? [filters.election_year] : []),
-        limit,
-        offset,
-      ];
+      if (filters.state) {
+        paramIndex++;
+        donorQuery += ` AND ic.state = $${paramIndex}`;
+        donorParams.push(filters.state);
+      }
+      if (filters.min_amount) {
+        paramIndex++;
+        donorQuery += ` AND ic.transaction_amt >= $${paramIndex}`;
+        donorParams.push(filters.min_amount);
+      }
+      if (filters.max_amount) {
+        paramIndex++;
+        donorQuery += ` AND ic.transaction_amt <= $${paramIndex}`;
+        donorParams.push(filters.max_amount);
+      }
+      if (filters.election_year) {
+        paramIndex++;
+        donorQuery += ` AND ic.file_year = $${paramIndex}`;
+        donorParams.push(filters.election_year);
+      }
+      paramIndex++;
+      donorQuery += ` ORDER BY ic.transaction_amt DESC LIMIT $${paramIndex}`;
+      donorParams.push(limit);
+      paramIndex++;
+      donorQuery += ` OFFSET $${paramIndex}`;
+      donorParams.push(offset);
 
       const donorResult = await executeQuery(donorQuery, donorParams, true);
       if (donorResult.success && donorResult.data) {
@@ -1869,35 +1881,47 @@ export async function performGlobalSearch(
 
     // Search expenditures
     if (!filters.type || filters.type === 'expenditure') {
-      const expenditureQuery = `
+      let paramIndex = 1;
+      const expenditureParams: any[] = [`%${query}%`];
+      let expenditureQuery = `
         SELECT 
-                      oe.name as id,
+          oe.name as id,
           'expenditure' as type,
-                      oe.name as name,
+          oe.name as name,
           CONCAT('Expenditure of $', oe.transaction_amt, ' by ', COALESCE(cm.cmte_nm, 'Unknown Committee')) as description,
-                      oe.state as state,
-                      oe.transaction_amt as amount,
-          oe.election_year as election_year
+          oe.state as state,
+          oe.transaction_amt as amount,
+          oe.file_year as election_year
         FROM operating_expenditures oe
         LEFT JOIN committee_master cm ON oe.cmte_id = cm.cmte_id
-                  WHERE oe.name ILIKE $1
-                  ${filters.state ? 'AND oe.state = $' + (results.length + 2) : ''}
-        ${filters.min_amount ? 'AND oe.transaction_amt >= $' + (results.length + 3) : ''}
-        ${filters.max_amount ? 'AND oe.transaction_amt <= $' + (results.length + 4) : ''}
-        ${filters.election_year ? 'AND oe.file_year = $' + (results.length + 5) : ''}
-        ORDER BY oe.transaction_amt DESC
-        LIMIT $${results.length + 6} OFFSET $${results.length + 7}
+        WHERE oe.name ILIKE $${paramIndex}
       `;
-      
-      const expenditureParams = [
-        `%${query}%`,
-        ...(filters.state ? [filters.state] : []),
-        ...(filters.min_amount ? [filters.min_amount] : []),
-        ...(filters.max_amount ? [filters.max_amount] : []),
-        ...(filters.election_year ? [filters.election_year] : []),
-        limit,
-        offset,
-      ];
+      if (filters.state) {
+        paramIndex++;
+        expenditureQuery += ` AND oe.state = $${paramIndex}`;
+        expenditureParams.push(filters.state);
+      }
+      if (filters.min_amount) {
+        paramIndex++;
+        expenditureQuery += ` AND oe.transaction_amt >= $${paramIndex}`;
+        expenditureParams.push(filters.min_amount);
+      }
+      if (filters.max_amount) {
+        paramIndex++;
+        expenditureQuery += ` AND oe.transaction_amt <= $${paramIndex}`;
+        expenditureParams.push(filters.max_amount);
+      }
+      if (filters.election_year) {
+        paramIndex++;
+        expenditureQuery += ` AND oe.file_year = $${paramIndex}`;
+        expenditureParams.push(filters.election_year);
+      }
+      paramIndex++;
+      expenditureQuery += ` ORDER BY oe.transaction_amt DESC LIMIT $${paramIndex}`;
+      expenditureParams.push(limit);
+      paramIndex++;
+      expenditureQuery += ` OFFSET $${paramIndex}`;
+      expenditureParams.push(offset);
 
       const expenditureResult = await executeQuery(expenditureQuery, expenditureParams, true);
       if (expenditureResult.success && expenditureResult.data) {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Search, Users, Building, DollarSign, TrendingUp, Download, Filter } from 'lucide-react';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { BreadcrumbItem } from '@/types';
@@ -27,6 +28,7 @@ interface SearchFilters {
 }
 
 export default function SearchPage() {
+  const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
@@ -75,14 +77,20 @@ export default function SearchPage() {
     }
   }, [searchTerm]);
 
-  // Handle URL parameters on page load
+  // Handle URL parameters on load and when they change
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const typeParam = urlParams.get('type');
+    const qParam = searchParams.get('q') || '';
+    const typeParam = searchParams.get('type') || '';
     if (typeParam) {
       setFilters(prev => ({ ...prev, type: typeParam }));
     }
-  }, []);
+    if (qParam) {
+      setSearchTerm(qParam);
+      // Trigger initial search based on URL
+      // Delay to ensure state updates before fetch
+      setTimeout(() => performSearch(qParam), 0);
+    }
+  }, [searchParams]);
 
   const fetchSuggestions = async () => {
     try {

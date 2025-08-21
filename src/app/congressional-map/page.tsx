@@ -1,7 +1,10 @@
-'use client';
+"use client";
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
+import PageHeader from '@/components/ui/PageHeader';
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 declare global {
   interface Window {
@@ -10,103 +13,144 @@ declare global {
 }
 
 export default function CongressionalMap() {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<any>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<mapboxgl.Map | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
-  const [progressiveLoading, setProgressiveLoading] = useState(false);
-  const [loadingProgress, setLoadingProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCycle, setSelectedCycle] = useState('2024');
   const [viewMode, setViewMode] = useState<'israel' | 'party'>('israel');
   const [israelFilter, setIsraelFilter] = useState<'all' | 'pro' | 'non-pro'>('all');
   const [partyFilter, setPartyFilter] = useState<'all' | 'dem' | 'rep' | 'ind'>('all');
-  const [selectedCycle, setSelectedCycle] = useState('2024');
-  const [leafletLoaded, setLeafletLoaded] = useState(false);
-  const [pieChartData, setPieChartData] = useState<{
-    green: { count: number; percentage: number; districts: any[] };
-    orange: { count: number; percentage: number; districts: any[] };
-    red: { count: number; percentage: number; districts: any[] };
-  } | null>(null);
   const [selectedDistrict, setSelectedDistrict] = useState<any>(null);
+  const [pieChartData, setPieChartData] = useState<any>(null);
+  const [liveFundingRows, setLiveFundingRows] = useState<any[]>([]);
+  const districtLayer = useRef<any>(null); // kept for compatibility; not used with Mapbox
+  const leafletLoaded = true;
+  const progressiveLoading = false;
+  const [geojsonData, setGeojsonData] = useState<any>(null);
 
-  // Load Leaflet (OpenStreetMap) - Free mapping solution
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
+  const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN as string | undefined;
+  const ALBERS_STYLE = process.env.NEXT_PUBLIC_MAPBOX_ALBERS_STYLE_URL as string | undefined;
 
-    // Load Leaflet CSS
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-    link.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
-    link.crossOrigin = '';
-    document.head.appendChild(link);
+  // Derive initial view (center/zoom/bearing/pitch) from URL or localStorage
+  const getInitialView = () => {
+    // Defaults roughly centered on US
+    let center: [number, number] = [-98.5, 39.5];
+    let zoom = 3;
+    let bearing = 0;
+    let pitch = 0;
 
-    // Load Leaflet script
-    const script = document.createElement('script');
-    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-    script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
-    script.crossOrigin = '';
-    script.onload = () => {
-      setLeafletLoaded(true);
-    };
-    script.onerror = () => {
-      setError('Failed to load Leaflet mapping library');
-    };
-    document.head.appendChild(script);
-
-    return () => {
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
-      }
-      if (link.parentNode) {
-        link.parentNode.removeChild(link);
-      }
-    };
-  }, []);
-
-  // Initialize map
-  useEffect(() => {
-    if (!mapContainer.current || !leafletLoaded) return;
-
-    try {
-      // Initialize Leaflet map focused on continental US
-      map.current = window.L.map(mapContainer.current, {
-        center: [39.0, -95.0], // Continental US center
-        zoom: 5, // Zoom to show continental US
-        maxZoom: 10,
-        minZoom: 3,
-        zoomControl: true,
-        attributionControl: true
-      });
-
-      // Add OpenStreetMap tile layer (free, no API key required)
-      window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 18
-      }).addTo(map.current);
-
-      // Add a dark theme alternative
-      window.L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 19
-      }).addTo(map.current);
-
-      console.log('Map loaded successfully');
-      setMapLoaded(true);
-
-      return () => {
-        if (map.current) {
-          map.current.remove();
+    if (typeof window !== 'undefined') {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const cParam = params.get('center'); // format: lon,lat
+        const zParam = params.get('zoom');
+        const bParam = params.get('bearing');
+        const pParam = params.get('pitch');
+        if (cParam) {
+          const parts = cParam.split(',').map((v) => parseFloat(v));
+          if (parts.length === 2 && parts.every((n) => Number.isFinite(n))) {
+            center = [parts[0], parts[1]] as [number, number];
+          }
         }
-      };
-    } catch (error) {
-      console.error('Error initializing map:', error);
-      setError('Failed to initialize map');
+        if (zParam && Number.isFinite(parseFloat(zParam))) zoom = parseFloat(zParam);
+        if (bParam && Number.isFinite(parseFloat(bParam))) bearing = parseFloat(bParam);
+        if (pParam && Number.isFinite(parseFloat(pParam))) pitch = parseFloat(pParam);
+        // Fallback to stored default if no query params
+        if (!cParam && !zParam) {
+          const saved = localStorage.getItem('goodvote_map_default_view');
+          if (saved) {
+            const obj = JSON.parse(saved);
+            if (obj && Array.isArray(obj.center) && obj.center.length === 2 && Number.isFinite(obj.zoom)) {
+              center = [obj.center[0], obj.center[1]];
+              zoom = obj.zoom;
+              if (Number.isFinite(obj.bearing)) bearing = obj.bearing;
+              if (Number.isFinite(obj.pitch)) pitch = obj.pitch;
+            }
+          }
+        }
+      } catch {}
     }
-  }, [leafletLoaded]);
+    return { center, zoom, bearing, pitch };
+  };
+
+  // Initialize Mapbox GL with Albers USA projection style
+  useEffect(() => {
+    console.log('[MapInit] start', {
+      hasToken: !!MAPBOX_TOKEN,
+      hasStyle: !!ALBERS_STYLE,
+      location: typeof window !== 'undefined' ? window.location.href : 'ssr'
+    });
+    if (!MAPBOX_TOKEN || !ALBERS_STYLE) {
+      console.warn('[MapInit] Missing env', { MAPBOX_TOKEN_PRESENT: !!MAPBOX_TOKEN, ALBERS_STYLE_PRESENT: !!ALBERS_STYLE });
+      return;
+    }
+    if (mapRef.current || !mapContainerRef.current) return;
+    try {
+      mapboxgl.accessToken = MAPBOX_TOKEN;
+      const init = getInitialView();
+      mapRef.current = new mapboxgl.Map({
+        container: mapContainerRef.current,
+        style: ALBERS_STYLE,
+        center: init.center,
+        zoom: init.zoom,
+        bearing: init.bearing,
+        pitch: init.pitch,
+        attributionControl: false,
+        logoPosition: 'bottom-left',
+      });
+      mapRef.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      mapRef.current.on('load', () => {
+        console.log('[MapInit] map load event fired');
+        const map = mapRef.current!;
+        const layers = map.getStyle()?.layers || [];
+        for (const layer of layers) {
+          if (layer.type !== 'background') {
+            try { map.setLayoutProperty(layer.id, 'visibility', 'none'); } catch {}
+          }
+        }
+        console.log('[MapInit] base layers hidden', { hiddenCount: (layers || []).length });
+      setMapLoaded(true);
+      });
+      mapRef.current.on('error', (e) => {
+        // Surface Mapbox style/token errors to UI
+        const message = (e && (e as any).error && ((e as any).error.message || (e as any).error)) || 'Map error';
+        console.error('Mapbox GL error:', e);
+        setError(typeof message === 'string' ? message : 'Mapbox error');
+      });
+    } catch (e) {
+      setError('Failed to initialize Mapbox map');
+    }
+      return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, [MAPBOX_TOKEN, ALBERS_STYLE]);
+
+  // Button to save current map view as default
+  const saveCurrentViewAsDefault = () => {
+    const map = mapRef.current;
+    if (!map) return;
+    const c = map.getCenter();
+    const payload = {
+      center: [Number(c.lng.toFixed(6)), Number(c.lat.toFixed(6))],
+      zoom: Number(map.getZoom().toFixed(2)),
+      bearing: Number(map.getBearing().toFixed(1)),
+      pitch: Number(map.getPitch().toFixed(1)),
+    };
+    try {
+      localStorage.setItem('goodvote_map_default_view', JSON.stringify(payload));
+      console.log('[MapInit] saved default view', payload);
+    } catch {}
+  };
+
+  // If no Mapbox env, show an error hint
 
   // Function to get fill color based on current view mode and filters
   const getFillColor = () => {
+    const fundingExpr: any = ['coalesce', ['to-number', ['get', 'incumbent_total_israel_funding']], 0];
     if (viewMode === 'israel') {
       return [
         'case',
@@ -116,11 +160,12 @@ export default function CongressionalMap() {
         ['==', ['get', 'lookup_key'], 'TN-7'], '#000000',
         ['==', ['get', 'lookup_key'], 'TX-18'], '#000000',
         ['==', ['get', 'lookup_key'], 'VA-11'], '#000000',
-        // Israel funding system
-        ['>=', ['get', 'incumbent_total_israel_funding'], 10000], '#ec4899', // Pink: >$10K (Pro-Israel)
-        ['>=', ['get', 'incumbent_total_israel_funding'], 1000], '#fbbf24',   // Yellow: $1K-$10K (Pro-Israel)
-        ['>=', ['get', 'incumbent_total_israel_funding'], 0], '#22c55e',      // Green: <$1K (Non-Pro-Israel)
-        '#9ca3af' // Gray: No data
+        // Categories aligned with /house-districts
+        ['==', fundingExpr, 0], '#22c55e',           // green
+        ['all', ['>', fundingExpr, 0], ['<', fundingExpr, 10000]], '#fbbf24', // yellow
+        ['all', ['>=', fundingExpr, 10000], ['<', fundingExpr, 50000]], '#ea580c', // orange
+        ['>=', fundingExpr, 50000], '#dc2626',      // red
+        '#9ca3af'
       ];
     } else {
       return [
@@ -142,6 +187,7 @@ export default function CongressionalMap() {
 
   // Function to get fill opacity based on current filters
   const getFillOpacity = () => {
+    const fundingExpr: any = ['coalesce', ['to-number', ['get', 'incumbent_total_israel_funding']], 0];
     if (viewMode === 'israel') {
       if (israelFilter === 'all') {
         return 0.8;
@@ -154,10 +200,8 @@ export default function CongressionalMap() {
           ['==', ['get', 'lookup_key'], 'TN-7'], 0.8,
           ['==', ['get', 'lookup_key'], 'TX-18'], 0.8,
           ['==', ['get', 'lookup_key'], 'VA-11'], 0.8,
-          // Show pro-Israel districts (pink and yellow)
-          ['any',
-            ['>=', ['get', 'incumbent_total_israel_funding'], 1000], // Show pink and yellow (pro-Israel)
-          ], 0.8,
+          // Show pro-Israel districts (yellow/orange/red)
+          ['any', ['>', fundingExpr, 0]], 0.8,
           0.1 // Dim everything else
         ];
       } else {
@@ -169,10 +213,8 @@ export default function CongressionalMap() {
           ['==', ['get', 'lookup_key'], 'TN-7'], 0.8,
           ['==', ['get', 'lookup_key'], 'TX-18'], 0.8,
           ['==', ['get', 'lookup_key'], 'VA-11'], 0.8,
-          // Show non-pro-Israel districts (green)
-          ['any',
-            ['<', ['get', 'incumbent_total_israel_funding'], 1000], // Show green (non-pro-Israel)
-          ], 0.8,
+          // Show non-pro (exactly zero)
+          ['==', fundingExpr, 0], 0.8,
           0.1 // Dim everything else
         ];
       }
@@ -200,8 +242,7 @@ export default function CongressionalMap() {
     }
   };
 
-  // Store district layer reference
-  const districtLayer = useRef<any>(null);
+  // Store district layer reference (already defined above)
 
   // Function to get color based on properties
   const getDistrictColor = (properties: any) => {
@@ -225,117 +266,313 @@ export default function CongressionalMap() {
     }
   };
 
-  // Function to update map colors and filtering
+  // Function to update map colors and filtering (Mapbox GL)
   const updateMapColors = useCallback(() => {
-    if (districtLayer.current) {
-      districtLayer.current.eachLayer((layer: any) => {
-        const properties = layer.feature.properties;
-        const color = getDistrictColor(properties);
-        
-        // Apply filtering based on current filters
-        let opacity = 0.7;
-        let visible = true;
-        
-        if (viewMode === 'israel') {
-          const funding = properties.incumbent_total_israel_funding || 0;
-          if (israelFilter === 'pro' && funding < 10000) {
-            visible = false;
-            opacity = 0.1;
-          } else if (israelFilter === 'non-pro' && funding >= 10000) {
-            visible = false;
-            opacity = 0.1;
-          }
-        } else if (viewMode === 'party') {
-          const party = properties.incumbent_party;
-          if (partyFilter === 'dem' && party !== 'Democratic' && party !== 'DEM') {
-            visible = false;
-            opacity = 0.1;
-          } else if (partyFilter === 'rep' && party !== 'Republican' && party !== 'REP') {
-            visible = false;
-            opacity = 0.1;
-          } else if (partyFilter === 'ind' && (party === 'Democratic' || party === 'DEM' || party === 'Republican' || party === 'REP')) {
-            visible = false;
-            opacity = 0.1;
-          }
-        }
-        
-        layer.setStyle({ 
-          fillColor: color,
-          fillOpacity: visible ? opacity : 0.1
-        });
-      });
+    const map = mapRef.current;
+    if (!map) return;
+    if (map.getLayer('district-fill')) {
+      map.setPaintProperty('district-fill', 'fill-color', getFillColor() as any);
+      map.setPaintProperty('district-fill', 'fill-opacity', getFillOpacity() as any);
     }
   }, [viewMode, israelFilter, partyFilter]);
 
-  // Function to calculate pie chart data
-  const calculatePieChartData = () => {
-    if (districtLayer.current) {
-      const greenDistricts: any[] = [];
-      const orangeDistricts: any[] = [];
-      const redDistricts: any[] = [];
-      
-      districtLayer.current.eachLayer((layer: any) => {
-        const properties = layer.feature.properties;
-        if (properties.incumbent_name && properties.incumbent_name !== 'Unknown') {
-          const district = {
-            district: `${properties.state}-${properties.district}`,
-            name: properties.incumbent_name,
-            party: properties.incumbent_party,
-            funding: properties.incumbent_total_israel_funding || 0,
-            score: properties.incumbent_israel_score || 0
-          };
-          
-          const funding = properties.incumbent_total_israel_funding || 0;
-          if (funding < 10000) {
-            greenDistricts.push(district);
-          } else if (funding < 50000) {
-            orangeDistricts.push(district);
-          } else {
-            redDistricts.push(district);
-          }
-        }
-      });
-      
-      const totalDistricts = greenDistricts.length + orangeDistricts.length + redDistricts.length;
-      
-      setPieChartData({
-        green: {
-          count: greenDistricts.length,
-          percentage: totalDistricts > 0 ? Math.round((greenDistricts.length / totalDistricts) * 100) : 0,
-          districts: greenDistricts.sort((a, b) => b.funding - a.funding)
-        },
-        orange: {
-          count: orangeDistricts.length,
-          percentage: totalDistricts > 0 ? Math.round((orangeDistricts.length / totalDistricts) * 100) : 0,
-          districts: orangeDistricts.sort((a, b) => b.funding - a.funding)
-        },
-        red: {
-          count: redDistricts.length,
-          percentage: totalDistricts > 0 ? Math.round((redDistricts.length / totalDistricts) * 100) : 0,
-          districts: redDistricts.sort((a, b) => b.funding - a.funding)
-        }
-      });
+  // Calculate counts directly from live API rows to avoid geometry mismatch
+  const calculatePieChartDataFromRows = (rows: any[]) => {
+    const green: any[] = [];
+    const yellow: any[] = [];
+    const orange: any[] = [];
+    const red: any[] = [];
+    for (const r of rows) {
+      const funding = Number(r.incumbent_total_israel_funding || r.total_israel_funding || 0) || 0;
+      const item = {
+        district: `${r.state}-${r.district}`,
+        name: r.incumbent_name,
+        party: r.incumbent_party,
+        funding,
+        score: r.incumbent_israel_score || 0
+      };
+      if (funding === 0) green.push(item);
+      else if (funding > 0 && funding < 10000) yellow.push(item);
+      else if (funding >= 10000 && funding < 50000) orange.push(item);
+      else red.push(item);
     }
+    const total = green.length + yellow.length + orange.length + red.length;
+    setPieChartData({
+      green: { count: green.length, percentage: total ? Math.round((green.length / total) * 100) : 0, districts: green },
+      yellow: { count: yellow.length, percentage: total ? Math.round((yellow.length / total) * 100) : 0, districts: yellow },
+      orange: { count: orange.length, percentage: total ? Math.round((orange.length / total) * 100) : 0, districts: orange },
+      red: { count: red.length, percentage: total ? Math.round((red.length / total) * 100) : 0, districts: red },
+    });
   };
+
+  // Load GeoJSON and add Mapbox source/layers, then merge live funding from API view
+  useEffect(() => {
+    if (!mapLoaded || !mapRef.current) return;
+    const map = mapRef.current;
+    const sourceId = 'districts';
+    const fillId = 'district-fill';
+    const lineId = 'district-outline';
+    const hoverLineId = 'district-hover-outline';
+    let isCancelled = false;
+    // Use WGS84 Albers-baked GeoJSON so Mapbox renders Albers layout
+    const url = '/districts/cd119-albersbaked-simplified.geojson';
+    const t0 = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+    console.log('[Data] fetching', { url, location: typeof window !== 'undefined' ? window.location.href : 'ssr' });
+    fetch(url)
+      .then(async (r) => {
+        console.log('[Data] response', { status: r.status, ok: r.ok, url: r.url, contentType: r.headers.get('content-type'), contentLength: r.headers.get('content-length') });
+        if (!r.ok) throw new Error(`HTTP ${r.status} for ${url}`);
+        try {
+          const json = await r.json();
+          return json;
+        } catch (e) {
+          console.error('[Data] JSON parse failed', e);
+          throw e;
+        }
+      })
+      .then(async (data) => {
+        if (isCancelled) return;
+        console.log('[Data] loaded', { type: (data as any)?.type, features: (data as any)?.features?.length });
+        // If data already has properties (state, district, lookup_key), skip enrichment
+        const enrichWithMetadata = async (fc: any) => {
+          try {
+            const sampleProps = fc?.features?.[0]?.properties || {};
+            if (sampleProps.state || sampleProps.lookup_key || sampleProps.district) {
+              console.log('[Data] properties present, skipping enrichment', Object.keys(sampleProps));
+              return fc;
+            }
+            const res = await fetch('/district_data/congressional-districts-fixed.json');
+            if (!res.ok) throw new Error('metadata fetch failed');
+            const meta = await res.json();
+            const metaFeatures: any[] = (meta?.features || meta) as any[];
+            const geomFeatures: any[] = (fc?.features || []) as any[];
+            if (!metaFeatures?.length || metaFeatures.length < geomFeatures.length) return fc;
+            const mergedFeatures = geomFeatures.map((f, i) => {
+              const mp = (metaFeatures[i]?.properties || {}) as any;
+              const rawDistrict: any = mp.district ?? (mp.lookup_key ? String(mp.lookup_key).split('-')[1] : undefined);
+              const normalizedDistrict = typeof rawDistrict === 'string' && (rawDistrict.toUpperCase() === 'AL' || rawDistrict === '00')
+                ? 0 : Number(rawDistrict);
+              const key: string | undefined = mp.lookup_key || (mp.state && normalizedDistrict != null ? `${mp.state}-${normalizedDistrict}` : undefined);
+              const st: string | undefined = mp.state || (key ? String(key).split('-')[0] : undefined);
+              const distVal = normalizedDistrict;
+              return {
+                type: 'Feature',
+                geometry: f.geometry,
+                properties: {
+                  ...mp,
+                  lookup_key: key,
+                  state: st,
+                  district: distVal,
+                },
+              };
+            });
+            return { type: 'FeatureCollection', features: mergedFeatures };
+          } catch {
+            return fc;
+          }
+        };
+
+        // 1) Ensure features have state/district via metadata file
+        let mergedData = await enrichWithMetadata(data);
+
+        // 2) Fetch live funding from API view and merge into feature properties
+        try {
+          const apiUrl = `/api/house-districts?cycle=${encodeURIComponent(selectedCycle)}`;
+          console.log('[Data] fetching live funding', { apiUrl });
+          const resp = await fetch(apiUrl);
+          if (resp.ok) {
+            const payload = await resp.json();
+            const rows: any[] = payload?.data || [];
+            console.log('[Data] live funding rows', rows.length);
+            setLiveFundingRows(rows);
+            const byKey = new Map<string, any>();
+            for (const r of rows) {
+              const key = `${r.state}-${r.district}`;
+              byKey.set(key, r);
+            }
+            const features: any[] = (mergedData?.features || []) as any[];
+            mergedData = {
+              type: 'FeatureCollection',
+              features: features.map((f: any) => {
+                const p = f.properties || {};
+                const key = p.lookup_key || (p.state != null && p.district != null ? `${p.state}-${p.district}` : undefined);
+                const live = key ? byKey.get(key) : undefined;
+                if (live) {
+                  return {
+                    ...f,
+                    properties: {
+                      ...p,
+                      incumbent_name: live.incumbent_name,
+                      incumbent_party: live.incumbent_party,
+                      incumbent_person_id: live.incumbent_person_id,
+                      incumbent_israel_score: live.incumbent_israel_score,
+                      incumbent_total_israel_funding: live.incumbent_total_israel_funding,
+                    },
+                  };
+                }
+                return f;
+              }),
+            };
+          } else {
+            console.warn('[Data] live funding fetch failed', resp.status);
+          }
+        } catch (e) {
+          console.warn('[Data] live funding merge error', e);
+        }
+        setGeojsonData(mergedData);
+        console.log('[Map] adding source/layers');
+
+        // Compute bounds from GeoJSON to center and fill the screen
+        const computeBounds = (fc: any): [[number, number], [number, number]] => {
+          let minLon = 180;
+          let minLat = 90;
+          let maxLon = -180;
+          let maxLat = -90;
+
+          const update = (lon: number, lat: number) => {
+            if (lon < minLon) minLon = lon;
+            if (lat < minLat) minLat = lat;
+            if (lon > maxLon) maxLon = lon;
+            if (lat > maxLat) maxLat = lat;
+          };
+
+          const walk = (coords: any) => {
+            if (!coords) return;
+            if (typeof coords[0] === 'number' && typeof coords[1] === 'number') {
+              update(coords[0], coords[1]);
+              return;
+            }
+            for (const c of coords) walk(c);
+          };
+
+          const features: any[] = fc?.features || [];
+          for (const f of features) {
+            const g = f?.geometry;
+            if (!g) continue;
+            walk(g.coordinates);
+          }
+          return [
+            [Number.isFinite(minLon) ? minLon : -125, Number.isFinite(minLat) ? minLat : 24],
+            [Number.isFinite(maxLon) ? maxLon : -66, Number.isFinite(maxLat) ? maxLat : 50],
+          ];
+        };
+        if (!map.getSource(sourceId)) {
+          map.addSource(sourceId, { type: 'geojson', data: mergedData, generateId: true } as any);
+          console.log('[Map] source added', { sourceId });
+          map.addLayer({
+            id: fillId,
+            type: 'fill',
+            source: sourceId,
+            paint: {
+              'fill-color': getFillColor() as any,
+              'fill-opacity': getFillOpacity() as any,
+            },
+          });
+          console.log('[Map] fill layer added', { fillId });
+          map.addLayer({
+            id: lineId,
+            type: 'line',
+            source: sourceId,
+            paint: {
+              'line-color': '#ffffff',
+              'line-width': 0.5,
+            },
+          });
+          console.log('[Map] line layer added', { lineId });
+          // Add a hover outline layer above the normal outline
+          map.addLayer({
+            id: hoverLineId,
+            type: 'line',
+            source: sourceId,
+            paint: {
+              'line-color': '#000000',
+              'line-width': 3,
+            },
+            filter: ['==', ['id'], -1],
+          });
+          console.log('[Map] hover layer added', { hoverLineId });
+          try {
+            const b = computeBounds(mergedData);
+            const bounds = new mapboxgl.LngLatBounds(b[0], b[1]);
+            map.fitBounds(bounds, { padding: 40, animate: false });
+            console.log('[Map] fitBounds done', { bounds: b });
+          } catch {}
+          map.on('click', fillId, (e: any) => {
+            const f = e.features && e.features[0];
+            if (f) {
+              setSelectedDistrict(f.properties);
+              try {
+                const districtName = `${f.properties?.state || ''}-${f.properties?.district || ''}`.replace(/^-|-$|--/g, '');
+                new mapboxgl.Popup({ closeButton: true })
+                  .setLngLat(e.lngLat)
+                  .setHTML(`<div style="font-weight:600;">${districtName || 'Unknown District'}</div>`)
+                  .addTo(map);
+              } catch {}
+            }
+          });
+          map.on('mouseenter', fillId, () => {
+            map.getCanvas().style.cursor = 'pointer';
+          });
+          map.on('mousemove', fillId, (e: any) => {
+            const f = e.features && e.features[0];
+            const hoveredId = f && typeof f.id !== 'undefined' ? f.id : -1;
+            if (map.getLayer(hoverLineId)) {
+              try { map.setFilter(hoverLineId, ['==', ['id'], hoveredId]); } catch {}
+            }
+          });
+          map.on('mouseleave', fillId, () => {
+            map.getCanvas().style.cursor = '';
+            if (map.getLayer(hoverLineId)) {
+              try { map.setFilter(hoverLineId, ['==', ['id'], -1]); } catch {}
+            }
+          });
+        } else {
+          const src = map.getSource(sourceId) as mapboxgl.GeoJSONSource;
+          src.setData(mergedData as any);
+          console.log('[Map] source data updated');
+        }
+        calculatePieChartDataFromRows(liveFundingRows.length ? liveFundingRows : []);
+        const t1 = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+        console.log('[Perf] data->render ms', Math.round(t1 - t0));
+      })
+      .catch((err) => {
+        console.error('[Data] Failed to load district boundaries', err);
+        setError('Failed to load district boundaries');
+      });
+    return () => {
+      isCancelled = true;
+      if (!map) return;
+      if (map.getLayer(fillId)) map.removeLayer(fillId);
+      if (map.getLayer(hoverLineId)) map.removeLayer(hoverLineId);
+      if (map.getLayer(lineId)) map.removeLayer(lineId);
+      if (map.getSource(sourceId)) map.removeSource(sourceId);
+    };
+  }, [mapLoaded, selectedCycle]);
+
+  // Recompute distribution when live rows update
+  useEffect(() => {
+    if (liveFundingRows && Array.isArray(liveFundingRows)) {
+      calculatePieChartDataFromRows(liveFundingRows);
+    }
+  }, [liveFundingRows]);
 
   // Function to show debug modal with all candidate data
   const showDebugData = () => {
-    if (districtLayer.current) {
+    const features: any[] = (geojsonData?.features || []) as any[];
+    if (features.length) {
       const allDistricts: any[] = [];
-      districtLayer.current.eachLayer((layer: any) => {
-        const properties = layer.feature.properties;
-        if (properties.incumbent_name && properties.incumbent_name !== 'Unknown') {
+      for (const f of features) {
+        const p = f.properties || {};
+        if (p.incumbent_name && p.incumbent_name !== 'Unknown') {
           allDistricts.push({
-            district: `${properties.state}-${properties.district}`,
-            name: properties.incumbent_name,
-            party: properties.incumbent_party,
-            funding: properties.incumbent_total_israel_funding || 0,
-            score: properties.incumbent_israel_score || 0
+            district: `${p.state}-${p.district}`,
+            name: p.incumbent_name,
+            party: p.incumbent_party,
+            funding: p.incumbent_total_israel_funding || 0,
+            score: p.incumbent_israel_score || 0
           });
         }
-      });
-      
-      // Sort by funding amount (highest first)
+      }
       allDistricts.sort((a, b) => b.funding - a.funding);
       
       // Open debug data in new window
@@ -379,7 +616,7 @@ export default function CongressionalMap() {
                 <div class="stat-label">Total Districts</div>
               </div>
               <div class="stat">
-                <div class="stat-number">$${(allDistricts.reduce((sum, d) => sum + d.funding, 0)).toLocaleString()}</div>
+              <div class="stat-number">$${(allDistricts.reduce((sum: number, d: any) => sum + d.funding, 0)).toLocaleString()}</div>
                 <div class="stat-label">Total Funding</div>
               </div>
               <div class="stat">
@@ -389,7 +626,7 @@ export default function CongressionalMap() {
             </div>
             
             <div class="district-list">
-              ${allDistricts.map(district => `
+              ${allDistricts.map((district: any) => `
                 <div class="district-item">
                   <div class="district-info">
                     <div class="district-name">${district.name}</div>
@@ -411,7 +648,7 @@ export default function CongressionalMap() {
   };
 
   // Function to show debug data for specific color category
-  const showDebugDataForCategory = (category: 'green' | 'orange' | 'red') => {
+  const showDebugDataForCategory = (category: 'green' | 'yellow' | 'orange' | 'red') => {
     if (pieChartData) {
       const categoryData = pieChartData[category];
       const debugWindow = window.open('', '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
@@ -458,13 +695,13 @@ export default function CongressionalMap() {
                 <div class="stat-label">Percentage</div>
               </div>
               <div class="stat">
-                <div class="stat-number">$${(categoryData.districts.reduce((sum, d) => sum + d.funding, 0)).toLocaleString()}</div>
+                <div class="stat-number">$${(categoryData.districts.reduce((sum: number, d: any) => sum + d.funding, 0)).toLocaleString()}</div>
                 <div class="stat-label">Total Funding</div>
               </div>
             </div>
             
             <div class="district-list">
-              ${categoryData.districts.map(district => `
+              ${categoryData.districts.map((district: any) => `
                 <div class="district-item">
                   <div class="district-info">
                     <div class="district-name">${district.name}</div>
@@ -485,158 +722,10 @@ export default function CongressionalMap() {
     }
   };
 
-  // Progressive loading of district data
-  useEffect(() => {
-    if (!mapLoaded || !map.current) {
-      console.log('Map not ready yet:', { mapLoaded, mapExists: !!map.current });
-      return;
-    }
-
-    console.log('Starting to load district data...');
-    setProgressiveLoading(true);
-    setLoadingProgress(0);
-
-    // Step 1: Load simplified boundaries for quick display
-    fetch('/districts/congressional-districts-simplified-fixed.json')
-      .then(response => {
-        console.log('Fetch simplified response:', response.status, response.ok);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(simplifiedData => {
-        console.log('Simplified data loaded:', simplifiedData.type, simplifiedData.features?.length, 'features');
-        setLoadingProgress(30);
-        
-        try {
-          console.log('Adding simplified district layer to Leaflet map...');
-          
-          // Create a GeoJSON layer with styling
-          districtLayer.current = window.L.geoJSON(simplifiedData, {
-            style: (feature: any) => ({
-              fillColor: getDistrictColor(feature.properties),
-              weight: 1,
-              opacity: 0.8,
-              color: '#ffffff',
-              fillOpacity: 0.7
-            }),
-            onEachFeature: (feature: any, layer: any) => {
-              // Add click event to update selected district
-              layer.on('click', () => {
-                setSelectedDistrict(feature.properties);
-              });
-              
-              // Add hover effects
-              layer.on('mouseover', () => {
-                layer.setStyle({
-                  weight: 3,
-                  color: '#000',
-                  fillOpacity: 0.9
-                });
-              });
-              
-              layer.on('mouseout', () => {
-                layer.setStyle({
-                  weight: 1,
-                  color: '#ffffff',
-                  fillOpacity: 0.7
-                });
-              });
-            }
-          }).addTo(map.current);
-          
-          // Calculate pie chart data
-          calculatePieChartData();
-          
-          console.log('Simplified district layer added successfully');
-          setLoadingProgress(60);
-          
-          // Step 2: Load full detailed boundaries in background
-          return fetch('/districts/congressional-districts-fixed.json');
-        } catch (error) {
-          console.error('Error adding simplified map layers:', error);
-          setError('Failed to add district data to map');
-          setProgressiveLoading(false);
-          throw error;
-        }
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(fullData => {
-        console.log('Full data loaded:', fullData.type, fullData.features?.length, 'features');
-        setLoadingProgress(90);
-        
-        try {
-          console.log('Replacing with full detailed district layer...');
-          
-          // Remove simplified layer
-          if (districtLayer.current) {
-            map.current.removeLayer(districtLayer.current);
-          }
-          
-          // Create detailed GeoJSON layer
-          districtLayer.current = window.L.geoJSON(fullData, {
-            style: (feature: any) => ({
-              fillColor: getDistrictColor(feature.properties),
-              weight: 1,
-              opacity: 0.8,
-              color: '#ffffff',
-              fillOpacity: 0.7
-            }),
-            onEachFeature: (feature: any, layer: any) => {
-              // Add click event to update selected district
-              layer.on('click', () => {
-                setSelectedDistrict(feature.properties);
-              });
-              
-              // Add hover effects
-              layer.on('mouseover', () => {
-                layer.setStyle({
-                  weight: 3,
-                  color: '#000',
-                  fillOpacity: 0.9
-                });
-              });
-              
-              layer.on('mouseout', () => {
-                layer.setStyle({
-                  weight: 1,
-                  color: '#ffffff',
-                  fillOpacity: 0.7
-                });
-              });
-            }
-          }).addTo(map.current);
-          
-          // Calculate pie chart data
-          calculatePieChartData();
-          
-          console.log('Full district layer added successfully');
-          setLoadingProgress(100);
-          setProgressiveLoading(false);
-
-        } catch (error) {
-          console.error('Error adding map layers:', error);
-          setError('Failed to add district data to map');
-          setProgressiveLoading(false);
-        }
-
-      })
-      .catch(error => {
-        console.error('Error loading district data:', error);
-        setError('Failed to load district boundaries');
-        setProgressiveLoading(false);
-      });
-  }, [mapLoaded]); // Only depend on mapLoaded
 
   // Update colors when view mode or filters change
   useEffect(() => {
-    if (mapLoaded && map.current) {
+    if (mapLoaded) {
       console.log('Updating map colors:', { viewMode, israelFilter, partyFilter });
       updateMapColors();
     }
@@ -670,44 +759,19 @@ export default function CongressionalMap() {
 
   return (
     <div className="min-h-screen bg-gray-900">
-      {/* Header with title and filters */}
-      <div className="bg-gray-800 shadow-lg border-b border-gray-700">
+      {/* Unified header */}
+      <PageHeader
+        title="Congressional District Map"
+        subtitle="Israel funding by district"
+        cycle={selectedCycle}
+        onCycleChange={setSelectedCycle}
+        active="house-map"
+      />
+      
+      {/* Filters under header */}
+      <div className="bg-gray-800 border-b border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div>
-              <h1 className="text-2xl font-bold text-white">Congressional District Map</h1>
-              <p className="text-gray-300">Israel funding by district</p>
-            </div>
-            <div className="flex space-x-2">
-              <button
-                onClick={showDebugData}
-                className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-                title="Show all candidate funding data"
-              >
-                🐛 Debug Data
-              </button>
-              <a className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors" href="/house-districts">View District List</a>
-            </div>
-          </div>
-          
-          {/* Filters moved to header */}
-          <div className="flex flex-wrap gap-4 items-center py-4 border-t border-gray-700">
-            {/* Cycle Selector */}
-            <div className="flex items-center space-x-2">
-              <span className="text-white text-sm font-medium">Cycle:</span>
-              <select 
-                value={selectedCycle} 
-                onChange={(e) => setSelectedCycle(e.target.value)}
-                className="border border-gray-300 rounded px-3 py-1 text-sm bg-white text-black"
-              >
-                <option value="2020">2020</option>
-                <option value="2022">2022</option>
-                <option value="2024">2024</option>
-                <option value="2026">2026</option>
-                <option value="last3">Last 3 Cycles (2020-2024)</option>
-                <option value="all">All Cycles</option>
-              </select>
-            </div>
+          <div className="flex flex-wrap gap-4 items-center py-4">
             
             {/* View Mode Toggle */}
             <div className="flex items-center space-x-2">
@@ -857,7 +921,7 @@ export default function CongressionalMap() {
 
       {/* Map Container */}
       <div className="relative">
-        <div ref={mapContainer} className="w-full h-screen" />
+        <div ref={mapContainerRef} className="w-full h-screen" />
         
         {/* Loading Overlay */}
         {(!leafletLoaded || progressiveLoading) && (
@@ -953,87 +1017,32 @@ export default function CongressionalMap() {
         )}
 
         {/* Pie Chart */}
-        {pieChartData && viewMode === 'israel' && (
-          <div className="absolute top-4 right-4 bg-gray-800 p-4 rounded-lg shadow-lg z-10 max-w-xs">
-            <h3 className="font-bold text-white text-sm mb-3">District Distribution</h3>
-            <div className="space-y-2">
-              <div 
-                className="flex items-center justify-between cursor-pointer hover:bg-gray-700 p-2 rounded"
-                onClick={() => showDebugDataForCategory('green')}
-              >
-                <div className="flex items-center">
-                  <div className="w-4 h-4 bg-green-500 rounded mr-2"></div>
-                  <span className="text-gray-300 text-sm">Green (&lt;$10K)</span>
-                </div>
-                <div className="text-right">
-                  <div className="text-white font-bold">{pieChartData.green.count}</div>
-                  <div className="text-gray-400 text-xs">{pieChartData.green.percentage}%</div>
-                </div>
-              </div>
-              
-              <div 
-                className="flex items-center justify-between cursor-pointer hover:bg-gray-700 p-2 rounded"
-                onClick={() => showDebugDataForCategory('orange')}
-              >
-                <div className="flex items-center">
-                  <div className="w-4 h-4 bg-orange-600 rounded mr-2"></div>
-                  <span className="text-gray-300 text-sm">Orange ($10K-$50K)</span>
-                </div>
-                <div className="text-right">
-                  <div className="text-white font-bold">{pieChartData.orange.count}</div>
-                  <div className="text-gray-400 text-xs">{pieChartData.orange.percentage}%</div>
-                </div>
-              </div>
-              
-              <div 
-                className="flex items-center justify-between cursor-pointer hover:bg-gray-700 p-2 rounded"
-                onClick={() => showDebugDataForCategory('red')}
-              >
-                <div className="flex items-center">
-                  <div className="w-4 h-4 bg-red-500 rounded mr-2"></div>
-                  <span className="text-gray-300 text-sm">Red (&gt;$50K)</span>
-                </div>
-                <div className="text-right">
-                  <div className="text-white font-bold">{pieChartData.red.count}</div>
-                  <div className="text-gray-400 text-xs">{pieChartData.red.percentage}%</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Removed separate pie panel; merged counts into legend below */}
 
-        {/* Legend */}
-        <div className="absolute bottom-4 right-4 bg-gray-800 p-4 rounded-lg shadow-lg z-10 max-w-xs">
+        {/* Legend (upper-left) with counts from live API rows */}
+        <div className="absolute top-4 left-4 bg-gray-800 p-4 rounded-lg shadow-lg z-10 max-w-xs">
           <h3 className="font-bold text-white text-sm mb-2">
             {viewMode === 'israel' ? 'Israel Funding by District' : 'Party Affiliation by District'}
           </h3>
           <div className="space-y-1 text-xs">
             {viewMode === 'israel' ? (
               <>
-                <div className="flex items-center">
-                  <div className="w-4 h-4 bg-green-500 rounded mr-2"></div>
-                  <span className="text-gray-300">Low Funding (&lt;$10K)</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-4 h-4 bg-orange-600 rounded mr-2"></div>
-                  <span className="text-gray-300">Medium Funding ($10K-$50K)</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-4 h-4" style={{backgroundColor: '#ff6600'}}></div>
-                  <span className="text-gray-300">High ($50K-$100K)</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-4 h-4" style={{backgroundColor: '#ff4400'}}></div>
-                  <span className="text-gray-300">Very High ($100K-$500K)</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-4 h-4" style={{backgroundColor: '#ff2200'}}></div>
-                  <span className="text-gray-300">Extreme ($500K-$1M)</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-4 h-4" style={{backgroundColor: '#ff0000'}}></div>
-                  <span className="text-gray-300">Highest (&gt;$1M)</span>
-                </div>
+                <button onClick={() => showDebugDataForCategory('green')} className="w-full text-left flex items-center justify-between hover:bg-gray-700 px-1 py-0.5 rounded">
+                  <div className="flex items-center"><div className="w-4 h-4 bg-green-500 rounded mr-2"></div><span className="text-gray-300">Green: $0</span></div>
+                  {pieChartData && <span className="text-gray-200 font-semibold">{pieChartData.green.count}</span>}
+                </button>
+                <button onClick={() => showDebugDataForCategory('yellow')} className="w-full text-left flex items-center justify-between hover:bg-gray-700 px-1 py-0.5 rounded">
+                  <div className="flex items-center"><div className="w-4 h-4 bg-yellow-500 rounded mr-2"></div><span className="text-gray-300">Yellow: $1-$10K</span></div>
+                  {pieChartData && <span className="text-gray-200 font-semibold">{pieChartData.yellow.count}</span>}
+                </button>
+                <button onClick={() => showDebugDataForCategory('orange')} className="w-full text-left flex items-center justify-between hover:bg-gray-700 px-1 py-0.5 rounded">
+                  <div className="flex items-center"><div className="w-4 h-4 bg-orange-600 rounded mr-2"></div><span className="text-gray-300">Orange: $10K-$50K</span></div>
+                  {pieChartData && <span className="text-gray-200 font-semibold">{pieChartData.orange.count}</span>}
+                </button>
+                <button onClick={() => showDebugDataForCategory('red')} className="w-full text-left flex items-center justify-between hover:bg-gray-700 px-1 py-0.5 rounded">
+                  <div className="flex items-center"><div className="w-4 h-4 bg-red-600 rounded mr-2"></div><span className="text-gray-300">Red: ≥$50K</span></div>
+                  {pieChartData && <span className="text-gray-200 font-semibold">{pieChartData.red.count}</span>}
+                </button>
                 <div className="flex items-center">
                   <div className="w-4 h-4 bg-black rounded mr-2"></div>
                   <span className="text-gray-300">Non-Voting (Vacant/DC)</span>

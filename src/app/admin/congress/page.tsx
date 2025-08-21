@@ -39,6 +39,7 @@ export default function CongressPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchInput, setSearchInput] = useState('');
   const [category, setCategory] = useState(searchParams.get('category') || '');
   const [editingScore, setEditingScore] = useState<string | null>(null);
   const [overrideScore, setOverrideScore] = useState('');
@@ -264,8 +265,13 @@ export default function CongressPage() {
                 type="text"
                 id="search"
                 placeholder="Search by name or state..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    setSearchQuery(searchInput.trim());
+                  }
+                }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
@@ -275,6 +281,7 @@ export default function CongressPage() {
                 onClick={() => {
                   setCategory('');
                   setSearchQuery('');
+                  setSearchInput('');
                 }}
                 className="w-full bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors"
               >

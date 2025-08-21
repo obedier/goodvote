@@ -31,31 +31,93 @@ export async function GET(
       candidateParams.push(year);
     }
 
-    // Get candidate info
-    const candidateResult = await executeQuery(
-      `SELECT 
-        pc.person_id,
-        pc.cand_id,
-        pc.display_name,
-        pc.current_party,
-        pc.election_year
-      FROM person_candidates pc
-      WHERE pc.person_id = $1 
-        ${yearCondition}
-      ORDER BY pc.election_year DESC
-      LIMIT 1`,
-      candidateParams,
-      true
-    );
+    // Determine if the provided param is a FEC candidate ID or a GoodVote person ID
+    const isFecCandId = /^[HSP]\d{8}$/i.test(personId);
+    const year = parseInt(cycleParam) || 2024;
 
-    if (!candidateResult.success || !candidateResult.data || candidateResult.data.length === 0) {
-      return NextResponse.json(
-        { error: 'Candidate not found' },
-        { status: 404 }
+    let candidate: any = null;
+
+    if (!isFecCandId) {
+      // Treat as GoodVote person_id → look up mapping to cand_id
+      const candidateResult = await executeQuery(
+        `SELECT 
+          pc.person_id,
+          pc.cand_id,
+          pc.election_year
+        FROM person_candidates pc
+        WHERE pc.person_id = $1 
+          ${yearCondition}
+        ORDER BY pc.election_year DESC
+        LIMIT 1`,
+        candidateParams,
+        false
       );
+
+      if (candidateResult.success && candidateResult.data && candidateResult.data[0]) {
+        const row = candidateResult.data[0];
+        // Fetch canonical name/party from FEC candidate_master
+        const fecInfo = await executeQuery(
+          `SELECT cand_id, cand_name, cand_pty_affiliation AS party, cand_election_yr
+           FROM candidate_master
+           WHERE cand_id = $1
+           ORDER BY cand_election_yr DESC
+           LIMIT 1`,
+          [row.cand_id],
+          true
+        );
+        candidate = {
+          person_id: row.person_id,
+          cand_id: row.cand_id,
+          display_name: fecInfo.success && fecInfo.data[0] ? fecInfo.data[0].cand_name : row.cand_id,
+          current_party: fecInfo.success && fecInfo.data[0] ? fecInfo.data[0].party : null,
+          election_year: row.election_year
+        };
+      }
     }
 
-    const candidate = candidateResult.data[0];
+    if (!candidate) {
+      // Treat the param as a FEC candidate ID (or use as-is if nothing found above)
+      const fecFallback = await executeQuery(
+        `SELECT 
+           cand_id,
+           cand_name,
+           cand_pty_affiliation AS party,
+           cand_election_yr
+         FROM candidate_master
+         WHERE cand_id = $1
+         ORDER BY cand_election_yr DESC
+         LIMIT 1`,
+        [personId],
+        true
+      );
+
+      if (fecFallback.success && fecFallback.data && fecFallback.data[0]) {
+        // Try to resolve person_id from mapping table for this cand_id and cycle
+        const mapping = await executeQuery(
+          `SELECT person_id FROM person_candidates WHERE cand_id = $1 AND election_year = $2 LIMIT 1`,
+          [fecFallback.data[0].cand_id, year],
+          false
+        );
+        candidate = {
+          person_id: mapping.success && mapping.data[0] ? mapping.data[0].person_id : null,
+          cand_id: fecFallback.data[0].cand_id,
+          display_name: fecFallback.data[0].cand_name,
+          current_party: fecFallback.data[0].party,
+          election_year: fecFallback.data[0].cand_election_yr || year,
+        };
+      } else {
+        // Minimal stub to proceed with contributions using the provided ID as cand_id
+        candidate = {
+          person_id: isFecCandId ? null : personId,
+          cand_id: personId,
+          display_name: personId,
+          current_party: 'Unknown',
+          election_year: year,
+        };
+      }
+    }
+
+    // candidate is now ensured above
 
     // Build the complete query with year filtering
     const realContributionsQuery = `
@@ -94,9 +156,7 @@ filtered AS (
   FROM committee_candidate_contributions cc
   JOIN committee_master cm
     ON cc.cmte_id = cm.cmte_id
-  JOIN person_candidates pc
-    ON cc.cand_id = pc.cand_id
-  WHERE pc.person_id = $1
+  WHERE cc.cand_id = $1
     AND cc.transaction_amt > 0
     AND cc.transaction_tp IN ('24A','24K','24N','24F','24E','24C')
     AND (
@@ -130,20 +190,21 @@ WHERE f.rn = 1
 ORDER BY f.sub_id, f.transaction_dt DESC, f.transaction_amt DESC`;
 
     let completeQuery = realContributionsQuery;
-    let queryParams: any[] = [personId];
+    // Use FEC candidate ID for contributions filtering
+    let queryParams: any[] = [candidate.cand_id];
     
     if (cycleParam === 'last3') {
       completeQuery = completeQuery.replace(
-        'WHERE pc.person_id = $1',
-        'WHERE pc.person_id = $1 AND cc.file_year IN (2020, 2022, 2024)'
+        'WHERE cc.cand_id = $1',
+        'WHERE cc.cand_id = $1 AND cc.file_year IN (2020, 2022, 2024)'
       );
     } else if (cycleParam === 'all') {
       // No additional year filter needed
     } else {
       const year = parseInt(cycleParam);
       completeQuery = completeQuery.replace(
-        'WHERE pc.person_id = $1',
-        'WHERE pc.person_id = $1 AND cc.file_year = $2'
+        'WHERE cc.cand_id = $1',
+        'WHERE cc.cand_id = $1 AND cc.file_year = $2'
       );
       queryParams.push(year);
     }

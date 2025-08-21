@@ -12,37 +12,49 @@ export async function GET(request: NextRequest) {
     const sortBy = searchParams.get('sortBy') || 'last_name';
     const sortOrder = searchParams.get('sortOrder') || 'ASC';
 
-    let whereClause = '';
+    let countWhereClause = '';
+    let dataWhereClause = '';
     const params: any[] = [];
     let paramCount = 0;
 
     // Add category filter
     if (category) {
+      const base = `pro_israel_category`;
       if (category === 'pro-israel') {
-        whereClause += ` WHERE pro_israel_category IN ('Strong Pro-Israel', 'Moderate Pro-Israel')`;
+        countWhereClause += ` WHERE ${base} IN ('Strong Pro-Israel', 'Moderate Pro-Israel')`;
+        dataWhereClause += ` WHERE c.${base} IN ('Strong Pro-Israel', 'Moderate Pro-Israel')`;
       } else if (category === 'neutral') {
-        whereClause += ` WHERE pro_israel_category = 'Neutral'`;
+        countWhereClause += ` WHERE ${base} = 'Neutral'`;
+        dataWhereClause += ` WHERE c.${base} = 'Neutral'`;
       } else if (category === 'opposition') {
-        whereClause += ` WHERE pro_israel_category IN ('Limited Pro-Israel', 'Anti-Israel')`;
+        countWhereClause += ` WHERE ${base} IN ('Limited Pro-Israel', 'Anti-Israel')`;
+        dataWhereClause += ` WHERE c.${base} IN ('Limited Pro-Israel', 'Anti-Israel')`;
       }
     }
 
     // Add search filter
     if (search) {
-      const searchCondition = ` ${whereClause ? 'AND' : 'WHERE'} (
+      const countSearch = ` ${countWhereClause ? 'AND' : 'WHERE'} (
         representative_name ILIKE $${paramCount + 1} OR 
         first_name ILIKE $${paramCount + 1} OR 
         last_name ILIKE $${paramCount + 1} OR
         state ILIKE $${paramCount + 1}
       )`;
-      whereClause += searchCondition;
+      const dataSearch = ` ${dataWhereClause ? 'AND' : 'WHERE'} (
+        c.representative_name ILIKE $${paramCount + 1} OR 
+        c.first_name ILIKE $${paramCount + 1} OR 
+        c.last_name ILIKE $${paramCount + 1} OR
+        c.state ILIKE $${paramCount + 1}
+      )`;
+      countWhereClause += countSearch;
+      dataWhereClause += dataSearch;
       params.push(`%${search}%`);
       paramCount++;
     }
 
     // Get total count
     const countResult = await executeQuery(
-      `SELECT COUNT(*) as count FROM congress_member_pro_israel_report${whereClause}`,
+      `SELECT COUNT(*) as count FROM congress_member_pro_israel_report${countWhereClause}`,
       params,
       true
     );
@@ -50,6 +62,20 @@ export async function GET(request: NextRequest) {
     const totalCount = countResult.success ? parseInt(countResult.data?.[0]?.count || '0') : 0;
 
     // Get congress members with pagination - using curved_pro_israel_score as final score for now
+    // Whitelist sort columns and prefix with alias to avoid ambiguity
+    const allowedSortColumns = new Set([
+      'last_name',
+      'first_name',
+      'representative_name',
+      'state',
+      'party',
+      'pro_israel_contributions',
+      'pro_israel_opposition_amount',
+      'curved_pro_israel_score',
+      'pro_israel_category',
+    ]);
+    const safeSortBy = allowedSortColumns.has(sortBy) ? sortBy : 'last_name';
+
     const result = await executeQuery(
       `SELECT 
         c.representative_name,
@@ -72,8 +98,8 @@ export async function GET(request: NextRequest) {
         pc.person_id
       FROM congress_member_pro_israel_report c
       LEFT JOIN person_candidates pc ON c.fec_id = pc.cand_id AND pc.election_year = 2024
-      ${whereClause}
-      ORDER BY ${sortBy} ${sortOrder}, c.last_name ASC
+      ${dataWhereClause}
+      ORDER BY c.${safeSortBy} ${sortOrder}, c.last_name ASC
       LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`,
       [...params, limit, offset],
       true
