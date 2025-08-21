@@ -43,6 +43,7 @@ export default function HomePage() {
   }, []);
 
   const handleTotalUpdate = (total: number) => {
+    console.log('HomePage: handleTotalUpdate called with:', total);
     setTotalSpending(total);
   };
 

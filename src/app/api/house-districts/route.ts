@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getSimpleHouseDistricts } from '@/lib/house-districts-simple-optimized';
+import { getHouseDistrictsData } from '@/lib/house-districts-optimized';
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const cycle = searchParams.get('cycle') || '2024';
     
-    const districtsData = await getSimpleHouseDistricts(parseInt(cycle));
+    const districtsData = await getHouseDistrictsData(cycle);
     if (!districtsData.success) {
       return NextResponse.json(
         { error: districtsData.error },
@@ -20,5 +20,5 @@ export async function GET(request: Request) {
       { error: 'Internal server error' },
       { status: 500 }
     );
-    }
+  }
 } 

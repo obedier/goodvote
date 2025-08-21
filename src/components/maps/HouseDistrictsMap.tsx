@@ -13,6 +13,8 @@ export default function HouseDistrictsMap({ heightClass = 'h-[75vh]', onTotalUpd
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [counts, setCounts] = useState<{ green: number; yellow: number; orange: number; red: number } | null>(null);
 
+  console.log('HouseDistrictsMap component mounted/rendered with onTotalUpdate:', !!onTotalUpdate);
+
   useEffect(() => {
     const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN as string | undefined;
     const ALBERS_STYLE = process.env.NEXT_PUBLIC_MAPBOX_ALBERS_STYLE_URL as string | undefined;
@@ -111,58 +113,94 @@ export default function HouseDistrictsMap({ heightClass = 'h-[75vh]', onTotalUpd
     let isCancelled = false;
     (async () => {
       try {
-        // Fetch data from all 3 election cycles and all election types
+        // Fetch data from all 3 election cycles (House and Senate only - these have Israel funding data)
         const cycles = ['2020', '2022', '2024'];
         let allRows: any[] = [];
         
+        console.log('Starting data fetch for cycles:', cycles);
+        
         for (const cycle of cycles) {
           // Fetch House districts data
+          console.log(`Fetching house data for cycle ${cycle}`);
           const houseRes = await fetch(`/api/house-districts?cycle=${cycle}`);
           if (houseRes.ok) {
             const housePayload = await houseRes.json();
             const houseRows: any[] = housePayload?.data || [];
+            console.log(`House cycle ${cycle}: ${houseRows.length} rows`);
             allRows = allRows.concat(houseRows);
+          } else {
+            console.error(`Failed to fetch house data for cycle ${cycle}:`, houseRes.status);
           }
           
           // Fetch Senate districts data
+          console.log(`Fetching senate data for cycle ${cycle}`);
           const senateRes = await fetch(`/api/senate-districts?cycle=${cycle}`);
           if (senateRes.ok) {
             const senatePayload = await senateRes.json();
             const senateRows: any[] = senatePayload?.data || [];
+            console.log(`Senate cycle ${cycle}: ${senateRows.length} rows`);
             allRows = allRows.concat(senateRows);
-          }
-          
-          // Fetch Presidential data (if available)
-          try {
-            const presidentialRes = await fetch(`/api/elections/presidential?cycle=${cycle}`);
-            if (presidentialRes.ok) {
-              const presidentialPayload = await presidentialRes.json();
-              const presidentialRows: any[] = presidentialPayload?.data || [];
-              allRows = allRows.concat(presidentialRows);
-            }
-          } catch (e) {
-            // Presidential endpoint might not exist yet, continue without it
+          } else {
+            console.error(`Failed to fetch senate data for cycle ${cycle}:`, senateRes.status);
           }
         }
         
+        console.log(`Total rows collected: ${allRows.length}`);
+        
         let green = 0, yellow = 0, orange = 0, red = 0;
+        let totalSpending = 0;
+        
         for (const r of allRows) {
-          const funding = Number(r.incumbent_total_israel_funding || r.total_israel_funding || 0) || 0;
-          if (funding === 0) green += 1;
-          else if (funding > 0 && funding < 10000) yellow += 1;
-          else if (funding >= 10000 && funding < 50000) orange += 1;
-          else red += 1;
+          let funding = 0;
+          
+          // Handle house data
+          if (r.incumbent_total_israel_funding !== undefined || r.total_israel_funding !== undefined) {
+            funding = Number(r.incumbent_total_israel_funding || r.total_israel_funding || 0) || 0;
+            totalSpending += funding;
+            
+            if (funding === 0) green += 1;
+            else if (funding > 0 && funding < 10000) yellow += 1;
+            else if (funding >= 10000 && funding < 50000) orange += 1;
+            else red += 1;
+          }
+          
+          // Handle senate data - need to count both senators
+          if (r.senator1_total_israel_funding !== undefined || r.senator2_total_israel_funding !== undefined) {
+            const senator1Funding = Number(r.senator1_total_israel_funding || 0) || 0;
+            const senator2Funding = Number(r.senator2_total_israel_funding || 0) || 0;
+            
+            totalSpending += senator1Funding + senator2Funding;
+            
+            // Count senator1
+            if (senator1Funding === 0) green += 1;
+            else if (senator1Funding > 0 && senator1Funding < 10000) yellow += 1;
+            else if (senator1Funding >= 10000 && senator1Funding < 50000) orange += 1;
+            else red += 1;
+            
+            // Count senator2 (if exists)
+            if (r.senator2_name) {
+              if (senator2Funding === 0) green += 1;
+              else if (senator2Funding > 0 && senator2Funding < 10000) yellow += 1;
+              else if (senator2Funding >= 10000 && senator2Funding < 50000) orange += 1;
+              else red += 1;
+            }
+          }
         }
+        
+        console.log(`Calculated totals - Green: ${green}, Yellow: ${yellow}, Orange: ${orange}, Red: ${red}`);
+        console.log(`Total spending: $${totalSpending.toLocaleString()}`);
         
         if (!isCancelled) {
           setCounts({ green, yellow, orange, red });
-          // Calculate total spending across all cycles and election types and notify parent
-          const totalSpending = allRows.reduce((sum, r) => sum + Number(r.incumbent_total_israel_funding || r.total_israel_funding || 0), 0);
+          
           if (onTotalUpdate) {
+            console.log(`Calling onTotalUpdate with: $${totalSpending.toLocaleString()}`);
             onTotalUpdate(totalSpending);
           }
         }
-      } catch {}
+      } catch (error) {
+        console.error('Error in data fetching:', error);
+      }
     })();
     return () => { isCancelled = true; };
   }, []);
